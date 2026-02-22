@@ -1,30 +1,30 @@
 {
   "author": "SiegeSailor",
-  "bin": "./build/command.js",
+  "bin": {
+    "formulas": "./build/command.js"
+  },
   "bugs": {
     "url": "https://github.com/SiegeSailor/formulas/issues"
   },
   "dependencies": {
-    "chalk": "4.1.0",
-    "inquirer": "8.0.0",
-    "inquirer-press-to-continue": "1.1.4",
-    "jest": "29.3.1",
-    "nanospinner": "1.1.0",
-    "patch-package": "6.5.0",
-    "random-bigint": "0.0.1",
-    "ts-jest": "29.0.3",
-    "ts-node": "10.9.1",
-    "typescript": "4.9.3"
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.6",
+    "nanospinner": "^1.2.2"
   },
   "description": "Provide a collection of formula functions and a command line tool.",
   "devDependencies": {
-    "@types/inquirer": "9.0.3",
-    "@types/jest": "29.2.4",
-    "@types/node": "18.11.11"
+    "@types/inquirer": "^9.0.9",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.3.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "wabt": "^1.0.37"
   },
   "engines": {
-    "node": ">= 16.0.0",
-    "npm": ">= 8.0.0"
+    "node": ">= 20.0.0",
+    "npm": ">= 10.0.0"
   },
   "files": [
     "./build/**/*"
@@ -37,16 +37,27 @@
   ],
   "license": "ISC",
   "main": "./build/source/entry-point.js",
+  "types": "./build/source/entry-point.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/source/entry-point.d.ts",
+      "default": "./build/source/entry-point.js"
+    },
+    "./package.json": "./package.json"
+  },
   "name": "formulas",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SiegeSailor/formulas.git"
   },
   "scripts": {
-    "build": "npm run test && tsc",
+    "build": "npm run wasm:compile && npm run test && tsc && npm run wasm:copy",
     "start": "clear && ts-node ./source/command.ts",
+    "start:build": "node ./build/command.js",
     "test": "jest",
-    "postinstall": "npx patch-package"
+    "wasm:compile": "node ./scripts/compile-wasm.js",
+    "wasm:copy": "node ./scripts/copy-wasm.js",
+    "prepack": "npm run build"
   },
   "version": "1.0.0"
 }

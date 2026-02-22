@@ -2,24 +2,33 @@ import chalk from "chalk";
 
 import {
   babyStepGiantStep,
+  euclidean,
   fastModularExponentiation,
-  naorReingo,
+  primitiveRootSearch,
 } from "../entry-point";
 import { EActors } from "../common/constants";
 import { log, inquire, wrap } from "../common/utilities";
+import { randomBigIntBetween } from "../common/random";
 
 export async function prompt() {
   try {
     console.log("There are three people in this ElGamal encryption process:");
     console.log(
-      `\t${EActors.Alice} - Receiver\n\t${EActors.Bob} - Sender\n\t${EActors.Eve} - Eavesdropper`
+      `\t${EActors.Alice} - Receiver\n\t${EActors.Bob} - Sender\n\t${EActors.Eve} - Eavesdropper`,
     );
 
     const [p, g, r, x, y] = await inquire.continue(
       `${EActors.Alice} is going to pick prime number P, generator g, and random numbers r and x:`,
       () => {
-        const [p] = wrap.randomize(16, 5, 1);
-        const [g, r, x] = naorReingo(3, 2);
+        const [p] = wrap.randomize(8, 8, 1);
+        const [, roots] = primitiveRootSearch(Number(p));
+        const g = BigInt(roots[0]);
+
+        let r = randomBigIntBetween(2n, p - 2n);
+        while (euclidean(r, p - 1n) !== 1n) {
+          r = randomBigIntBetween(2n, p - 2n);
+        }
+        const x = randomBigIntBetween(2n, p - 2n);
         log.list([
           { name: "P", value: p },
           { name: "g", value: g },
@@ -28,52 +37,50 @@ export async function prompt() {
         ]);
 
         console.log(`\n\t${EActors.Alice} generates y:`);
-        const y = fastModularExponentiation(BigInt(g), BigInt(x), p);
+        const y = fastModularExponentiation(g, x, p);
         console.log(`\ty: ${chalk.gray(y)}`);
 
         console.log(
           `\n\t${EActors.Alice} sends ${chalk.bold.bgCyan(
-            "(g, r, p, y)"
-          )} as the public key to ${EActors.Bob} and ${EActors.Eve}.`
+            "(g, r, p, y)",
+          )} as the public key to ${EActors.Bob} and ${EActors.Eve}.`,
         );
 
         return [p, g, r, x, y];
-      }
+      },
     );
 
     const message = "This is a hardcoded secret message.";
     const [keyEncrypted, arrayOfEncryptedCode] = await inquire.continue(
       `${EActors.Bob} encrypts the message and sends it back to ${EActors.Alice} (while ${EActors.Eve} is eavesdropping).`,
       () => {
-        const keyEncrypted = fastModularExponentiation(BigInt(g), BigInt(r), p);
+        const keyEncrypted = fastModularExponentiation(g, r, p);
+        const sharedSecret = fastModularExponentiation(y, r, p);
         const arrayOfEncryptedCode = wrap.encrypt(message, (code) => {
-          return BigInt(code) * fastModularExponentiation(y, BigInt(r), p);
+          return (BigInt(code) * sharedSecret) % p;
         });
         console.log(`\tEncrypted key: ${chalk.gray(keyEncrypted)}`);
         console.log(`\tEncrypted message: ${chalk.gray(arrayOfEncryptedCode)}`);
 
-        const messageDecrypted =
-          message ||
-          wrap.decrypt(arrayOfEncryptedCode, (codeEncrypted) => {
-            return (
-              fastModularExponentiation(
-                keyEncrypted,
-                BigInt(Number(p) - 1 - x),
-                p
-              ) * codeEncrypted
-            );
-          });
+        const secret = fastModularExponentiation(keyEncrypted, x, p);
+        const inverseSecret = fastModularExponentiation(secret, p - 2n, p);
+        const messageDecrypted = wrap.decrypt(
+          arrayOfEncryptedCode,
+          (codeEncrypted) => {
+            return (codeEncrypted * inverseSecret) % p;
+          },
+        );
         console.log(
           `\n\t${
             EActors.Alice
           } can decrypt the message since she has the random number ${chalk.bold.bgCyan(
-            "(x)"
+            "(x)",
           )}.\n\tDecrypted message: ${chalk.gray(messageDecrypted)}\n\t${
             EActors.Alice
-          } verifies the message with ${EActors.Bob} privately.`
+          } verifies the message with ${EActors.Bob} privately.`,
         );
         return [keyEncrypted, arrayOfEncryptedCode];
-      }
+      },
     );
 
     await inquire.continue(
@@ -90,31 +97,33 @@ export async function prompt() {
         ]);
 
         console.log(
-          `\n\t${EActors.Eve} is going to figure out what the random number x is using Discrete Log with the information she has.`
+          `\n\t${EActors.Eve} is going to figure out what the random number x is using Discrete Log with the information she has.`,
         );
 
-        const xEavesdropped =
-          x || babyStepGiantStep(BigInt(g), BigInt(r), BigInt(p));
+        const xEavesdropped = babyStepGiantStep(g, y, p);
         console.log(
           `\tRandom number ${chalk.bold.bgCyan("(x)")}: ${chalk.gray(
-            `(${xEavesdropped})`
-          )}`
+            `(${xEavesdropped})`,
+          )}`,
         );
-        const messageEavesdropped =
-          message ||
-          wrap.decrypt(arrayOfEncryptedCode, (codeEncrypted) => {
-            return fastModularExponentiation(
-              codeEncrypted,
-              BigInt(xEavesdropped),
-              p
-            );
-          });
+        const secret = fastModularExponentiation(
+          keyEncrypted,
+          xEavesdropped,
+          p,
+        );
+        const inverseSecret = fastModularExponentiation(secret, p - 2n, p);
+        const messageEavesdropped = wrap.decrypt(
+          arrayOfEncryptedCode,
+          (codeEncrypted) => {
+            return (codeEncrypted * inverseSecret) % p;
+          },
+        );
         console.log(
           `\tDecrypted message: ${chalk.gray(messageEavesdropped)}\n\t${
             EActors.Eve
-          } verifies the message with ${EActors.Bob}.`
+          } verifies the message with ${EActors.Bob}.`,
         );
-      }
+      },
     );
   } catch (error) {
     throw error;

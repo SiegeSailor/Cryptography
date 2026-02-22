@@ -18,7 +18,7 @@ export default class Procedure {
     this.run = async function () {
       try {
         console.log(
-          chalk.bgCyan.bold(`\n ${ESymbols.ArrowDownloadBottom} ${name} `)
+          chalk.bgCyan.bold(`\n ${ESymbols.ArrowDownloadBottom} ${name} `),
         );
         await wrap();
 
@@ -28,13 +28,14 @@ export default class Procedure {
               type: "confirm",
               name: "_",
               message: "Do you want to restart this procedure?",
+              default: false,
             },
           ]);
           if (isRestart) await wrap();
           else break;
         }
         console.log(
-          chalk.bgCyan.bold(` ${ESymbols.ArrowDownloadTop} ${name} `)
+          chalk.bgCyan.bold(` ${ESymbols.ArrowDownloadTop} ${name} `),
         );
         console.log(chalk.gray("Going back to the previous menu.\n"));
       } catch (error) {

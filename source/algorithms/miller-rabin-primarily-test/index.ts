@@ -1,39 +1,62 @@
+import chalk from "chalk";
+import inquirer from "inquirer";
+
 import { _ as fastModularExponentiation } from "../fast-modular-exponentiation";
+import { randomBigIntBetween } from "../../common/random";
 
 export function _(input: bigint, level: number) {
-  const main = (input: bigint, odd: bigint) => {
-    let remainder = fastModularExponentiation(
-      BigInt(
-        (Math.floor(Math.random() * (Number(input) - 2)) %
-          (Number(input) - 4)) +
-          2
-      ),
-      odd,
-      input
-    );
-    if (remainder === BigInt(1) || remainder === input - BigInt(1)) return true;
+  if (input <= 1n || input === 4n) return false;
+  if (input <= 3n) return true;
+  if (level <= 0) {
+    throw new Error("level must be a positive integer.");
+  }
 
-    let oddCache = odd;
-    while (oddCache != input - BigInt(1)) {
-      remainder = (remainder * remainder) % input;
-      oddCache *= BigInt(2);
+  let odd = input - 1n;
+  while ((odd & 1n) === 0n) odd >>= 1n;
 
-      if (remainder === BigInt(1)) return false;
-      if (remainder === input - BigInt(1)) return true;
+  const witnessRound = (n: bigint, d: bigint) => {
+    const a = randomBigIntBetween(2n, n - 2n);
+    let remainder = fastModularExponentiation(a, d, n);
+    if (remainder === 1n || remainder === n - 1n) return true;
+
+    let dCache = d;
+    while (dCache !== n - 1n) {
+      remainder = (remainder * remainder) % n;
+      dCache <<= 1n;
+
+      if (remainder === 1n) return false;
+      if (remainder === n - 1n) return true;
     }
 
     return false;
   };
 
-  if (input <= 1 || input === BigInt(4)) return false;
-  if (input <= 3) return true;
-
-  let odd = input - BigInt(1);
-  while (odd % BigInt(2) === BigInt(0)) odd /= BigInt(2);
-
   for (let count = 0; count < level; count++) {
-    if (!main(input, odd)) return false;
+    if (!witnessRound(input, odd)) return false;
   }
 
   return true;
+}
+
+export async function prompt() {
+  console.log("\tisPrime(number, level) = result");
+  console.log(chalk.gray("\tisPrime(104729, 10) = true"));
+
+  const { input, level } = await inquirer.prompt([
+    {
+      type: "number",
+      name: "input",
+      message: `Enter ${chalk.italic("number")}:`,
+      default: 104729,
+    },
+    {
+      type: "number",
+      name: "level",
+      message: `Enter ${chalk.italic("level")}:`,
+      default: 10,
+    },
+  ]);
+
+  const result = _(BigInt(input), Number(level));
+  console.log(`\tisPrime(${input}, ${level}) = ${result}`);
 }

@@ -1,24 +1,48 @@
+import chalk from "chalk";
+import inquirer from "inquirer";
+
+import { randomBigIntBetween } from "../../common/random";
+
 export function _(count: number, digits: number) {
-  if (digits < 1) throw new Error("Numbers can't have digits less than 1.");
+  if (!Number.isInteger(count) || count <= 0) {
+    throw new Error("count must be a positive integer.");
+  }
+  if (!Number.isInteger(digits) || digits < 1) {
+    throw new Error("digits must be a positive integer.");
+  }
+
+  const lowerBound = 10n ** BigInt(Math.max(0, digits - 1));
+  const upperBound = 10n ** BigInt(digits) - 1n;
+
   const arrayOfResult: number[] = [];
-
-  const arrayOfLib: number[] = [1, 2, 2, 1];
-  const arrayOfBin: number[] = [];
-
   for (let i = 0; i < count; i++) {
-    let x = Math.random() % 16;
-    for (let j = 3; j >= 0; j--) {
-      arrayOfBin[j] = x % 2;
-      x /= 2;
-    }
-
-    let multiple = 1;
-    for (let l = 0; l < 4; l++)
-      multiple *= Math.pow(arrayOfLib[l], arrayOfBin[l]);
-    arrayOfResult.push(
-      Math.floor(Math.pow(2, multiple) * Math.pow(10, digits - 1))
-    );
+    arrayOfResult.push(Number(randomBigIntBetween(lowerBound, upperBound)));
   }
 
   return arrayOfResult;
+}
+
+export async function prompt() {
+  console.log(
+    "\tGenerate pseudo-random decimal numbers with fixed digit length.",
+  );
+  console.log(chalk.gray("\tcount = 3, digits = 2 -> [.., .., ..]"));
+
+  const { count, digits } = await inquirer.prompt([
+    {
+      type: "number",
+      name: "count",
+      message: `Enter ${chalk.italic("count")}:`,
+      default: 3,
+    },
+    {
+      type: "number",
+      name: "digits",
+      message: `Enter ${chalk.italic("digits")}:`,
+      default: 2,
+    },
+  ]);
+
+  const result = _(Number(count), Number(digits));
+  console.log(`\tResult = ${result}`);
 }

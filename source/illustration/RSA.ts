@@ -1,7 +1,8 @@
 import chalk from "chalk";
 
 import {
-  babyStepGiantStep,
+  euclidean,
+  extendedEuclidean,
   fastModularExponentiation,
   pollardP1Factorization,
 } from "../entry-point";
@@ -12,13 +13,13 @@ export async function prompt() {
   try {
     console.log("There are three people in this RSA encryption process:");
     console.log(
-      `\t${EActors.Alice} - Receiver\n\t${EActors.Bob} - Sender\n\t${EActors.Eve} - Eavesdropper`
+      `\t${EActors.Alice} - Receiver\n\t${EActors.Bob} - Sender\n\t${EActors.Eve} - Eavesdropper`,
     );
 
     const [p, q, n, r] = await inquire.continue(
       `${EActors.Alice} is going to pick prime numbers P and Q, and then generate n with P * Q, r with (P - 1) * (Q - 1):`,
       () => {
-        const [p, q] = wrap.randomize(16, 5, 2);
+        const [p, q] = wrap.randomize(16, 8, 2);
 
         const n = p * q;
         const r = (p - BigInt(1)) * (q - BigInt(1));
@@ -30,31 +31,32 @@ export async function prompt() {
         ]);
 
         return [p, q, n, r];
-      }
-    );
-
-    const candidate = await inquire.continue(
-      `${EActors.Alice} is going to pick the candidates which equal % r = 1:`,
-      () => {
-        const arrayOfCandidate = wrap.remain(r, BigInt(1));
-        log.list(
-          arrayOfCandidate.map((candidate, index) => {
-            return { name: String(index + 1), value: candidate };
-          })
-        );
-
-        return arrayOfCandidate[0];
-      }
+      },
     );
 
     const [e, d] = await inquire.continue(
-      `${EActors.Alice} selects the first value from the list to compute e and d:`,
+      `${EActors.Alice} selects the public exponent e and computes private exponent d from e * d % r = 1:`,
       () => {
-        const arrayOfPrimeFactor = pollardP1Factorization(candidate);
-        console.log(`\t${candidate} has factors: ${arrayOfPrimeFactor}`);
+        const commonExponents = [65537n, 257n, 17n, 5n, 3n];
+        const e = commonExponents.find((value) => euclidean(value, r) === 1n);
 
-        return arrayOfPrimeFactor;
-      }
+        if (!e) {
+          throw new Error("Unable to select a valid public exponent e.");
+        }
+
+        const [gcd, coefficient] = extendedEuclidean(e, r);
+        if (gcd !== 1n) {
+          throw new Error("Unable to compute private key exponent d.");
+        }
+
+        const d = ((coefficient % r) + r) % r;
+        log.list([
+          { name: "e", value: e },
+          { name: "d", value: d },
+        ]);
+
+        return [e, d];
+      },
     );
 
     await inquire.continue(
@@ -69,7 +71,7 @@ export async function prompt() {
           { name: "e", value: e },
           { name: "d", value: d },
         ]);
-      }
+      },
     );
 
     const message = "This is a hardcoded secret message.";
@@ -77,27 +79,28 @@ export async function prompt() {
       `${EActors.Bob} encrypts the message and sends it back to ${EActors.Alice} (while ${EActors.Eve} is eavesdropping).`,
       () => {
         const arrayOfEncryptedCode = wrap.encrypt(message, (code) => {
-          return fastModularExponentiation(BigInt(code), BigInt(e), n);
+          return fastModularExponentiation(BigInt(code), e, n);
         });
         console.log(`\tEncrypted message: ${chalk.gray(arrayOfEncryptedCode)}`);
 
-        const messageDecrypted =
-          message ||
-          wrap.decrypt(arrayOfEncryptedCode, (codeEncrypted) => {
-            return fastModularExponentiation(codeEncrypted, BigInt(d), n);
-          });
+        const messageDecrypted = wrap.decrypt(
+          arrayOfEncryptedCode,
+          (codeEncrypted) => {
+            return fastModularExponentiation(codeEncrypted, d, n);
+          },
+        );
         console.log(
           `\n\t${
             EActors.Alice
           } can decrypt the message since she has the private key ${chalk.bold.bgCyan(
-            "(d, n)"
+            "(d, n)",
           )}.\n\tDecrypted message: ${chalk.gray(messageDecrypted)}\n\t${
             EActors.Alice
-          } verifies the message with ${EActors.Bob} privately.`
+          } verifies the message with ${EActors.Bob} privately.`,
         );
 
         return arrayOfEncryptedCode;
-      }
+      },
     );
 
     await inquire.continue(
@@ -113,28 +116,40 @@ export async function prompt() {
         console.log(
           `\n\t${
             EActors.Eve
-          } is going to figure out what the private key d is using Discrete Log with the public key ${chalk.bold.bgCyan(
-            "(e, n)"
-          )} and other information.`
+          } is going to factor n and derive private key d from the public key ${chalk.bold.bgCyan(
+            "(e, n)",
+          )} and other information.`,
         );
 
-        const dEavesdropped = babyStepGiantStep(n, BigInt(1), BigInt(e));
+        const factors = pollardP1Factorization(n);
+        if (factors.length < 2) {
+          throw new Error("Eve failed to factor n.");
+        }
+        const primeP = BigInt(factors[0]);
+        const primeQ = n / primeP;
+        const phi = (primeP - 1n) * (primeQ - 1n);
+        const [gcd, coefficient] = extendedEuclidean(e, phi);
+        if (gcd !== 1n) {
+          throw new Error("Eve failed to derive d from factors.");
+        }
+        const dEavesdropped = ((coefficient % phi) + phi) % phi;
         console.log(
           `\tPrivate key ${chalk.bold.bgCyan("(d, n)")}: ${chalk.gray(
-            `(${dEavesdropped}, ${n})`
-          )}`
+            `(${dEavesdropped}, ${n})`,
+          )}`,
         );
-        const messageEavesdropped =
-          message ||
-          wrap.decrypt(arrayOfEncryptedCode, (codeEncrypted) => {
+        const messageEavesdropped = wrap.decrypt(
+          arrayOfEncryptedCode,
+          (codeEncrypted) => {
             return fastModularExponentiation(codeEncrypted, dEavesdropped, n);
-          });
+          },
+        );
         console.log(
           `\tDecrypted message: ${chalk.gray(messageEavesdropped)}\n\t${
             EActors.Eve
-          } verifies the message with ${EActors.Bob}.`
+          } verifies the message with ${EActors.Bob}.`,
         );
-      }
+      },
     );
   } catch (error) {
     throw error;

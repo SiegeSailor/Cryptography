@@ -1,11 +1,9 @@
 import inquirer from "inquirer";
-import InquirerPluginPressToContinue from "inquirer-press-to-continue";
 import chalk from "chalk";
+import { join } from "path";
 
 import { format, inquire } from "./common/utilities";
 import { EChoices } from "./common/constants";
-
-inquirer.registerPrompt("press-to-continue", InquirerPluginPressToContinue);
 
 async function main(message = "What do you want to do?") {
   return inquirer
@@ -25,17 +23,17 @@ async function main(message = "What do you want to do?") {
       switch (purpose) {
         case EChoices.Demonstrate:
           await inquire.procedure(
-            "source/illustration",
+            join(__dirname, "illustration"),
             "Which cryptograph procedure do you want to demonstrate?",
-            format.filename
+            format.filename,
           );
           main();
           break;
         case EChoices.Execute:
           await inquire.procedure(
-            "source/algorithms",
+            join(__dirname, "algorithms"),
             "Which cryptograph algorithm do you want to execute?",
-            format.foldername
+            format.foldername,
           );
           main();
           break;

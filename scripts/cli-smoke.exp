@@ -1,0 +1,66 @@
+#!/usr/bin/expect -f
+set timeout 180
+
+if {$argc != 2} {
+  puts "Usage: cli-smoke.exp <demo|exec> <index>"
+  exit 2
+}
+
+set mode [lindex $argv 0]
+set index [lindex $argv 1]
+
+proc run_demonstrate {index} {
+  expect {
+    -re "What do you want to do\?" { send "\r" }
+    timeout { exit 10 }
+  }
+
+  expect {
+    -re "Which cryptograph procedure do you want to demonstrate\?" { send "$index\r" }
+    timeout { exit 11 }
+  }
+
+  expect {
+    -re "Press Enter to continue\." { send "\r"; exp_continue }
+    -re "Enter .*bits.*:" { send "8\r"; exp_continue }
+    -re "Enter .*:" { send "\r"; exp_continue }
+    -re "Do you want to restart this procedure\?" { send "\033\[D\r"; exp_continue }
+    -re "Going back to the previous menu\." { }
+    timeout { exit 12 }
+  }
+}
+
+proc run_execute {index} {
+  expect {
+    -re "What do you want to do\?" { send "\033\[B\r" }
+    timeout { exit 20 }
+  }
+
+  expect {
+    -re "Which cryptograph algorithm do you want to execute\?" { send "$index\r" }
+    timeout { exit 21 }
+  }
+
+  expect {
+    -re "Press Enter to continue\." { send "\r"; exp_continue }
+    -re "Enter .*bits.*:" { send "8\r"; exp_continue }
+    -re "Enter .*:" { send "\r"; exp_continue }
+    -re "Do you want to restart this procedure\?" { send "\033\[D\r"; exp_continue }
+    -re "Going back to the previous menu\." { }
+    timeout { exit 22 }
+  }
+}
+
+spawn npm run start
+
+if {$mode == "demo"} {
+  run_demonstrate $index
+} elseif {$mode == "exec"} {
+  run_execute $index
+} else {
+  puts "Unknown mode: $mode"
+  exit 3
+}
+
+send "\003"
+exit 0

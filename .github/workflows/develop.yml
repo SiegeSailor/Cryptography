@@ -1,6 +1,10 @@
-name: Develop
+name: CI
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+    branches:
+      - main
 
 defaults:
   run:
@@ -13,14 +17,13 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - "19"
-          - "18"
-          - "16"
+          - "20"
+          - "22"
     steps:
       - name: Checkout repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Use node version ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
@@ -28,3 +31,5 @@ jobs:
         run: npm ci
       - name: Run unit tests
         run: npm run test -- --verbose --coverage
+      - name: Verify production build
+        run: npm run build

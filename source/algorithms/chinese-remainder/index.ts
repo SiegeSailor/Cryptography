@@ -1,28 +1,78 @@
+import chalk from "chalk";
+import inquirer from "inquirer";
+
+import { _ as euclidean } from "../euclidean";
+import { _ as extendedEuclidean } from "../extended-euclidean";
+
 export function _(arrayOfBase: number[], arrayOfModulo: number[]) {
   if (arrayOfBase.length !== arrayOfModulo.length)
     throw new Error("The length for the two given arrays should be the same.");
 
-  let modular = 1;
-  arrayOfModulo.forEach((modulo) => {
-    modular *= modulo;
-  });
+  const base = arrayOfBase.map((item) => BigInt(item));
+  const modulo = arrayOfModulo.map((item) => BigInt(item));
 
-  const length = arrayOfBase.length;
-  let x = 0;
-
-  for (let i = 0; i < length; i++) {
-    const modulo = modular / arrayOfModulo[i];
-    let y = 0;
-
-    for (let j = 0; j < arrayOfModulo[i]; j++) {
-      if ((modulo * j) % arrayOfModulo[i] == 1) {
-        y = j;
-        break;
+  for (let i = 0; i < modulo.length; i++) {
+    for (let j = i + 1; j < modulo.length; j++) {
+      if (euclidean(modulo[i], modulo[j]) !== 1n) {
+        throw new Error("All modulo values must be pairwise coprime.");
       }
     }
-
-    x = x + arrayOfBase[i] * modulo * y;
   }
 
-  return x % modular;
+  let modular = 1n;
+  modulo.forEach((item) => {
+    modular *= item;
+  });
+
+  let x = 0n;
+
+  for (let i = 0; i < base.length; i++) {
+    const partialModulo = modular / modulo[i];
+    const [gcd, inverse] = extendedEuclidean(partialModulo, modulo[i]);
+
+    if (gcd !== 1n) {
+      throw new Error("Unable to compute modular inverse for CRT.");
+    }
+
+    const normalizedInverse = ((inverse % modulo[i]) + modulo[i]) % modulo[i];
+    x += base[i] * partialModulo * normalizedInverse;
+  }
+
+  const result = ((x % modular) + modular) % modular;
+
+  if (result > Number.MAX_SAFE_INTEGER) {
+    throw new Error("CRT result exceeds Number.MAX_SAFE_INTEGER.");
+  }
+
+  return Number(result);
+}
+
+export async function prompt() {
+  console.log("\tx % m1 = r1, x % m2 = r2 ... x = result");
+  console.log(chalk.gray("\tx % 11 = 2, x % 19 = 1, x % 37 = 2. x = 2851"));
+
+  const { base, modulo } = await inquirer.prompt([
+    {
+      type: "input",
+      name: "base",
+      message: `Enter ${chalk.italic("remainders")} (comma-separated):`,
+      default: "2,1,2",
+    },
+    {
+      type: "input",
+      name: "modulo",
+      message: `Enter ${chalk.italic("modulos")} (comma-separated):`,
+      default: "11,19,37",
+    },
+  ]);
+
+  const remainders = String(base)
+    .split(",")
+    .map((item) => Number(item.trim()));
+  const modulos = String(modulo)
+    .split(",")
+    .map((item) => Number(item.trim()));
+
+  const result = _(remainders, modulos);
+  console.log(`\tResult x = ${result}`);
 }

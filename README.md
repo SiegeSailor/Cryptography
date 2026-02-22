@@ -4,10 +4,14 @@ Provides a collection of cryptography functions and a command line tool with int
 
 - [Formulas](#formulas)
   - [Prerequisites](#prerequisites)
+  - [Install from npm](#install-from-npm)
+  - [Use in TS/JS projects](#use-in-tsjs-projects)
+  - [WebAssembly acceleration](#webassembly-acceleration)
   - [Instructions](#instructions)
     - [Start](#start)
     - [Test](#test)
       - [Issues](#issues)
+  - [CI and Publishing](#ci-and-publishing)
   - [Algorithms](#algorithms)
   - [Encryption Flows](#encryption-flows)
 
@@ -17,9 +21,45 @@ See `engines` in [package.json](./package.json):
 
 ```json
 "engines": {
-    "node": ">= 16.0.0",
-    "npm": ">= 8.0.0"
+    "node": ">= 20.0.0",
+    "npm": ">= 10.0.0"
 },
+```
+
+## Install from npm
+
+```bash
+npm install formulas
+```
+
+## Use in TS/JS projects
+
+TypeScript:
+
+```ts
+import { fastModularExponentiation, millerRabinPrimarilyTest } from "formulas";
+
+const isPrime = millerRabinPrimarilyTest(104729n, 10);
+const modPow = fastModularExponentiation(2n, 100n, 71n);
+```
+
+JavaScript (CommonJS):
+
+```js
+const { fastModularExponentiation, euclidean } = require("formulas");
+
+const gcd = euclidean(614n, 513n);
+const modPow = fastModularExponentiation(2n, 100n, 71n);
+```
+
+## WebAssembly acceleration
+
+`fastModularExponentiation` uses a WebAssembly backend when possible (`u64` safe range) and transparently falls back to the TypeScript implementation for larger values.
+
+The wasm binary is generated from `source/wasm/modexp.wat` via:
+
+```bash
+npm run wasm:compile
 ```
 
 ## Instructions
@@ -58,7 +98,7 @@ Go to the folder you just created with `git clone`. It should be typically named
 cd formulas
 ```
 
-Install all the packages you need. Remember that you have to run this under `node >= 16.0.0` and `npm >= 8.0.0`. You can simply use `nvm use 16` if you have multiple versions on your local machine:
+Install all the packages you need. Remember that you have to run this under `node >= 20.0.0` and `npm >= 10.0.0`.
 
 ```bash
 npm install
@@ -68,6 +108,13 @@ Then you are able to run the command-line tool with:
 
 ```bash
 npm run start
+```
+
+Or run from the built output:
+
+```bash
+npm run build
+npm run start:build
 ```
 
 ![Command Start](./images/command-start.png)
@@ -111,6 +158,17 @@ module.exports = {
 };
 ```
 
+## CI and Publishing
+
+GitHub workflows are configured in `.github/workflows`:
+
+- `develop.yml`: runs CI on pushes and pull requests (GitHub flow), executes tests and build.
+- `publish.yml`: publishes to npm on GitHub Release publish (or manual dispatch).
+
+Required secret for publishing:
+
+- `NPM_TOKEN`: npm automation token with publish permission.
+
 ## Algorithms
 
 Available mathematic algorithm implantation:
@@ -134,3 +192,4 @@ Demonstrable command-line based encryption flow with three parties involved:
 
 - [RSA](./source/illustration/RSA.ts)
 - [ElGamal](./source/illustration/ElGamal.ts)
+- [Diffie-Hellman](./source/illustration/DiffieHellman.ts)

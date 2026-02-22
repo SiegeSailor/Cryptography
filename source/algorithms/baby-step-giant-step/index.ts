@@ -12,25 +12,25 @@ export function _(generator: bigint, base: bigint, modulo: bigint) {
   if (euclidean(base, modulo) != BigInt(1))
     throw new Error("Given base must satisfy GCD(base, modulo) = 1");
 
-  const numberOfSteps = Math.ceil(Math.sqrt(Number(modulo))) + 1;
+  const numberOfSteps = BigInt(Math.ceil(Math.sqrt(Number(modulo)))) + 1n;
 
-  const arrayOfCollision = new Array(Number(modulo)).fill(0);
-  for (let i = numberOfSteps; i >= 1; --i) {
+  const collision = new Map<bigint, bigint>();
+  for (let i = numberOfSteps; i >= 1n; i--) {
     const remainder = fastModularExponentiation(
       generator,
-      BigInt(i * numberOfSteps),
-      modulo
+      i * numberOfSteps,
+      modulo,
     );
-    arrayOfCollision[Number(remainder)] = i;
+    collision.set(remainder, i);
   }
 
-  for (let j = 0; j < numberOfSteps; ++j) {
-    const indexCurrent = Number(
-      (fastModularExponentiation(generator, BigInt(j), modulo) * base) % modulo
-    );
+  for (let j = 0n; j < numberOfSteps; j++) {
+    const indexCurrent =
+      (fastModularExponentiation(generator, j, modulo) * base) % modulo;
+    const step = collision.get(indexCurrent);
 
-    if (arrayOfCollision[indexCurrent] > 0) {
-      const result = BigInt(arrayOfCollision[indexCurrent] * numberOfSteps - j);
+    if (step && step > 0n) {
+      const result = step * numberOfSteps - j;
       if (result < modulo) return result;
     }
   }
@@ -65,6 +65,6 @@ export async function prompt() {
 
   const x = _(BigInt(generator), BigInt(base), BigInt(modulo));
   console.log(
-    `\t${generator}^x ${ESymbols.Congruent} ${base} % ${modulo}. x = ${x}`
+    `\t${generator}^x ${ESymbols.Congruent} ${base} % ${modulo}. x = ${x}`,
   );
 }

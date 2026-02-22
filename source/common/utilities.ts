@@ -1,10 +1,10 @@
 import inquirer from "inquirer";
-import type { KeyDescriptor } from "inquirer-press-to-continue";
 import chalk from "chalk";
 import { readdirSync } from "fs";
-import { join } from "path";
+import { isAbsolute, join } from "path";
 
-import { blumBlumShub, millerRabinPrimarilyTest } from "../entry-point";
+import { millerRabinPrimarilyTest } from "../entry-point";
+import { randomBigIntBits } from "./random";
 import Procedure from "./Procedure";
 
 export const math = {
@@ -42,11 +42,10 @@ export const inquire = {
   continue: async <T>(title: string, callback: () => T): Promise<T> => {
     try {
       log.highlight(title);
-      await inquirer.prompt<{ key: KeyDescriptor }>({
-        type: "press-to-continue",
+      await inquirer.prompt({
+        type: "input",
         name: "_",
-        anyKey: true,
-        pressToContinueMessage: "Press a key to continue.\n",
+        message: "Press Enter to continue.",
       });
 
       return await callback();
@@ -55,12 +54,15 @@ export const inquire = {
     }
   },
   procedure: async (
-    path: string,
+    procedurePath: string,
     message: string,
-    fileFormatter: (input: string) => string
+    fileFormatter: (input: string) => string,
   ) => {
     try {
-      const arrayOfFile = readdirSync(join(process.cwd(), path));
+      const targetPath = isAbsolute(procedurePath)
+        ? procedurePath
+        : join(process.cwd(), procedurePath);
+      const arrayOfFile = readdirSync(targetPath);
       const { _: index } = await inquirer.prompt([
         {
           type: "rawlist",
@@ -79,7 +81,7 @@ export const inquire = {
       const name = fileFormatter(arrayOfFile[index]);
       console.log(chalk.gray(name));
       const { prompt }: { prompt: () => Promise<void> } = await import(
-        join(process.cwd(), `${path}/${arrayOfFile[index]}`)
+        join(targetPath, arrayOfFile[index])
       );
       if (!prompt)
         throw new Error("The file is not ready for interactive commands.");
@@ -94,13 +96,24 @@ export const inquire = {
 
 export const wrap = {
   randomize: (bits: number, level: number, count: number) => {
-    const arrayOfPrime: bigint[] = [];
-    const generator = blumBlumShub(bits);
+    if (!Number.isInteger(bits) || bits < 8) {
+      throw new Error("bits must be an integer and at least 8.");
+    }
 
-    while (arrayOfPrime.length != count) {
-      const numberPseudoRandom = generator();
-      if (millerRabinPrimarilyTest(numberPseudoRandom, level))
-        arrayOfPrime.push(numberPseudoRandom);
+    const randomOdd = () => {
+      let candidate = randomBigIntBits(bits);
+      if ((candidate & 1n) === 0n) {
+        candidate += 1n;
+      }
+      return candidate;
+    };
+
+    const arrayOfPrime: bigint[] = [];
+    while (arrayOfPrime.length !== count) {
+      const candidate = randomOdd();
+      if (millerRabinPrimarilyTest(candidate, level)) {
+        arrayOfPrime.push(candidate);
+      }
     }
 
     return arrayOfPrime;
@@ -108,7 +121,7 @@ export const wrap = {
   remain: (modulo: bigint, remainder: bigint) => {
     if (remainder >= modulo)
       throw new Error(
-        "Desired remainder can't be equal to or larger than the given modulo."
+        "Desired remainder can't be equal to or larger than the given modulo.",
       );
 
     const arrayOfResult: bigint[] = [];
@@ -128,7 +141,7 @@ export const wrap = {
   },
   decrypt: (
     arrayOfEncryptedCode: bigint[],
-    callback: (codeEncrypted: bigint) => bigint
+    callback: (codeEncrypted: bigint) => bigint,
   ) => {
     return arrayOfEncryptedCode
       .map((codeEncrypted) => {

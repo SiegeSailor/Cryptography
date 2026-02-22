@@ -3,7 +3,6 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./source",
-    "charset": "UTF-8",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,
