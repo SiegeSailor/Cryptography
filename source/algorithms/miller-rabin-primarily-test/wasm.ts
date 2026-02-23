@@ -1,7 +1,4 @@
-import {
-  getAlgorithmWasmExports,
-  MAX_U64,
-} from "@/common/wasm";
+import { getAlgorithmWasmExports, MAX_U64 } from "@/common/wasm";
 
 export function wasmMillerRabinIfAvailable(
   input: bigint,

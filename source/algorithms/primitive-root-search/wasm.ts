@@ -31,7 +31,11 @@ export function wasmPrimitiveRootsIfAvailable(prime: bigint): bigint[] | null {
   }
 
   try {
-    const count = wasmExports.primitive_root_search_i64(prime, rootsPtr, maxRoots);
+    const count = wasmExports.primitive_root_search_i64(
+      prime,
+      rootsPtr,
+      maxRoots,
+    );
     const result: bigint[] = [];
     const limit = Math.min(count, maxRoots);
     for (let index = 0; index < limit; index++) {

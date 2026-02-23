@@ -33,7 +33,12 @@ export function wasmNaorReingoIfAvailable(
   }
 
   try {
-    const written = wasmExports.naor_reingo_fill_i64(count, digits, seed, outPtr);
+    const written = wasmExports.naor_reingo_fill_i64(
+      count,
+      digits,
+      seed,
+      outPtr,
+    );
     if (written !== count) {
       return null;
     }
