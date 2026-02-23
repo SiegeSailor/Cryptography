@@ -1,16 +1,43 @@
 # Formulas
 
-Cryptography and number-theory algorithms for Node.js, with both TypeScript implementations and optional per-algorithm WebAssembly acceleration.
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-## Install
+This library provides a collection of cryptography functions in JavaScript/TypeScript with optional per-algorithm WebAssembly acceleration. A CLI is available to interact with these algorithms and demonstrate key encryption flows.
+
+## Available
+
+There are currently 12 algorithms implemented:
+
+- [Baby Step Giant Step](./source/algorithms/baby-step-giant-step/)
+- [Blum Blum Shub](./source/algorithms/blum-blum-shub/)
+- [Chinese Remainder](./source/algorithms/chinese-remainder/)
+- [Euclidean](./source/algorithms/euclidean/)
+- [Extended Euclidean](./source/algorithms/extended-euclidean/)
+- [Fast Modular Exponentiation](./source/algorithms/fast-modular-exponentiation/)
+- [Miller Rabin Primality Test](./source/algorithms/miller-rabin-primality-test/)
+- [Multiplicative Inverse](./source/algorithms/multiplicative-inverse/)
+- [Naor Reingo](./source/algorithms/naor-reingo/)
+- [Pollard P-1 Factorization](./source/algorithms/pollard-p-1-factorization/)
+- [Pollard Rho](./source/algorithms/pollard-rho/)
+- [Primitive Root Search](./source/algorithms/primitive-root-search/)
+
+And, 3 key encryption flows:
+
+- [Diffie Hellman Key Exchange](./source/illustration/DiffieHellman.ts)
+- [ElGamal](./source/illustration/ElGamal.ts)
+- [RSA](./source/illustration/RSA.ts)
+
+## Installation
+
+The package is available on the public NPM. You can install it with:
 
 ```bash
 npm install formulas
 ```
 
-## Use as a library
+## Use as a Library
 
-TypeScript / ESM:
+You can use it in TypeScript/ESM:
 
 ```ts
 import {
@@ -24,7 +51,7 @@ const modPow = fastModularExponentiation(2n, 100n, 71n);
 const isPrime = millerRabinPrimarilyTest(104729n, 10);
 ```
 
-CommonJS:
+Or, you can use it in CommonJS:
 
 ```js
 const {
@@ -36,42 +63,8 @@ const {
 
 ## Use as a CLI
 
-Run directly with NPX (no global install):
+Run directly with NPX:
 
 ```bash
 npx formulas
 ```
-
-Or if installed locally:
-
-```bash
-npm run start:build
-```
-
-## WebAssembly behavior
-
-- Each algorithm folder contains:
-  - `index.ts` (TypeScript implementation)
-  - `index.test.ts` (tests)
-  - `main.c` (WASM source)
-- At runtime, each algorithm attempts to use its own compiled `main.wasm` when available.
-- If WASM is unavailable, input is unsupported by the WASM ABI, or loading fails, code falls back to TypeScript automatically.
-
-## Available algorithms
-
-- Baby Step Giant Step
-- Blum Blum Shub
-- Chinese Remainder
-- Euclidean
-- Extended Euclidean
-- Fast Modular Exponentiation
-- Miller Rabin Primality Test
-- Multiplicative Inverse
-- Naor Reingo
-- Pollard P-1 Factorization
-- Pollard Rho
-- Primitive Root Search
-
-## Local development
-
-See [CONTRIBUTION.md](./CONTRIBUTION.md).
