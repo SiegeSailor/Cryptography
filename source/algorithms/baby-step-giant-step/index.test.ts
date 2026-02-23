@@ -14,8 +14,8 @@ describe("Finding the Discrete Log for the given numbers", () => {
     `%p^x ${ESymbols.Congruent} %p % %p.\n\tx = ${chalk.greenBright("%p")}`,
     (generator, base, modulo, result) => {
       expect(
-        babyStepGiantStep(BigInt(generator), BigInt(base), BigInt(modulo))
+        babyStepGiantStep(BigInt(generator), BigInt(base), BigInt(modulo)),
       ).toEqual(BigInt(result));
-    }
+    },
   );
 });

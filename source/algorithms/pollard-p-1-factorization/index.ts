@@ -10,7 +10,11 @@ import { wasmPollardP1IfAvailable } from "@/wasm/algorithms";
 export default function _(input: bigint) {
   const pollardPMinusOne = (n: bigint) => {
     const maybeWasmFactor = wasmPollardP1IfAvailable(n, 2500);
-    if (maybeWasmFactor !== null && maybeWasmFactor > 1n && maybeWasmFactor < n) {
+    if (
+      maybeWasmFactor !== null &&
+      maybeWasmFactor > 1n &&
+      maybeWasmFactor < n
+    ) {
       return maybeWasmFactor;
     }
 

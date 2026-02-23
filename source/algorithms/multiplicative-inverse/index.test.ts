@@ -11,18 +11,18 @@ describe("Finding the Multiplicative Inverses of the given numbers", () => {
     { base: 1011, modulo: 913, result: [736, 1472, 2208, 2944, 3680] },
   ])(
     `y is the multiplicative inverse of $base $ $modulo ($base * y % $modulo = 1)\n\ty = ${chalk.greenBright(
-      "$result"
+      "$result",
     )}`,
     ({ base, modulo, result }) => {
       expect(
-        multiplicativeInverse(BigInt(base), BigInt(modulo), 5).sort()
+        multiplicativeInverse(BigInt(base), BigInt(modulo), 5).sort(),
       ).toEqual(
         result
           .map((item) => {
             return BigInt(item);
           })
-          .sort()
+          .sort(),
       );
-    }
+    },
   );
 });

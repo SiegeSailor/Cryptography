@@ -145,7 +145,13 @@ function normalizeI64(value: bigint) {
 
 export function wasmGcdIfAvailable(left: bigint, right: bigint): bigint | null {
   const exports = getExports("euclidean");
-  if (!exports?.gcd_u64 || left < 0n || right < 0n || !fitsInI64(left) || !fitsInI64(right)) {
+  if (
+    !exports?.gcd_u64 ||
+    left < 0n ||
+    right < 0n ||
+    !fitsInI64(left) ||
+    !fitsInI64(right)
+  ) {
     return null;
   }
 
@@ -186,7 +192,11 @@ export function wasmExtendedEuclideanIfAvailable(
   right: bigint,
 ): [bigint, bigint, bigint] | null {
   const exports = getExports("extended-euclidean");
-  if (!exports?.extended_euclidean_i64 || !fitsInI64(left) || !fitsInI64(right)) {
+  if (
+    !exports?.extended_euclidean_i64 ||
+    !fitsInI64(left) ||
+    !fitsInI64(right)
+  ) {
     return null;
   }
 
@@ -223,12 +233,20 @@ export function wasmMultiplicativeInverseIfAvailable(
   modulo: bigint,
 ): bigint | null {
   const exports = getExports("multiplicative-inverse");
-  if (!exports?.multiplicative_inverse_i64 || modulo <= 1n || !fitsInI64(base) || !fitsInI64(modulo)) {
+  if (
+    !exports?.multiplicative_inverse_i64 ||
+    modulo <= 1n ||
+    !fitsInI64(base) ||
+    !fitsInI64(modulo)
+  ) {
     return null;
   }
 
   try {
-    const value = exports.multiplicative_inverse_i64(normalizeI64(base), normalizeI64(modulo));
+    const value = exports.multiplicative_inverse_i64(
+      normalizeI64(base),
+      normalizeI64(modulo),
+    );
     if (value === -(1n << 63n)) {
       return null;
     }
@@ -243,7 +261,11 @@ export function wasmChineseRemainderIfAvailable(
   modulos: bigint[],
 ): bigint | null {
   const exports = getExports("chinese-remainder");
-  if (!exports?.chinese_remainder_i64 || remainders.length !== modulos.length || remainders.length === 0) {
+  if (
+    !exports?.chinese_remainder_i64 ||
+    remainders.length !== modulos.length ||
+    remainders.length === 0
+  ) {
     return null;
   }
   if (
@@ -269,7 +291,11 @@ export function wasmChineseRemainderIfAvailable(
   }
 
   try {
-    const result = exports.chinese_remainder_i64(remaindersPtr, modulosPtr, remainders.length);
+    const result = exports.chinese_remainder_i64(
+      remaindersPtr,
+      modulosPtr,
+      remainders.length,
+    );
     if (result === -(1n << 63n)) {
       return null;
     }
@@ -300,7 +326,12 @@ export function wasmBabyStepGiantStepIfAvailable(
   const limit = modulo > 2_000_000n ? 2_000_000n : modulo;
 
   try {
-    const result = exports.baby_step_giant_step_i64(generator, base, modulo, limit);
+    const result = exports.baby_step_giant_step_i64(
+      generator,
+      base,
+      modulo,
+      limit,
+    );
     if (result < 0n) {
       return null;
     }
@@ -310,7 +341,10 @@ export function wasmBabyStepGiantStepIfAvailable(
   }
 }
 
-export function wasmMillerRabinIfAvailable(input: bigint, level: number): boolean | null {
+export function wasmMillerRabinIfAvailable(
+  input: bigint,
+  level: number,
+): boolean | null {
   const exports = getExports("miller-rabin-primarily-test");
   if (
     !exports?.miller_rabin_u64 ||
@@ -354,7 +388,10 @@ export function wasmPollardRhoIfAvailable(
   }
 }
 
-export function wasmPollardP1IfAvailable(input: bigint, maxExponent: number): bigint | null {
+export function wasmPollardP1IfAvailable(
+  input: bigint,
+  maxExponent: number,
+): bigint | null {
   const exports = getExports("pollard-p-1-factorization");
   if (
     !exports?.pollard_p1_i64 ||

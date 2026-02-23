@@ -13,6 +13,6 @@ describe("Finding the Greatest Common Divisor of the given numbers", () => {
     `GCD(%p, %p) = x.\n\tx = ${chalk.greenBright("%p")}`,
     (left, right, result) => {
       expect(euclidean(BigInt(left), BigInt(right))).toEqual(BigInt(result));
-    }
+    },
   );
 });

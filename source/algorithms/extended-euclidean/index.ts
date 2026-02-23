@@ -44,6 +44,6 @@ export async function prompt() {
 
   const [result, x, y] = _(BigInt(left), BigInt(right));
   console.log(
-    `GCD(${left}, ${right}) = ${x} * ${left} + ${y} * ${right} = ${result}`
+    `GCD(${left}, ${right}) = ${x} * ${left} + ${y} * ${right} = ${result}`,
   );
 }

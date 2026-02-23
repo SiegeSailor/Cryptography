@@ -30,10 +30,10 @@ describe("Finding the Primitive Roots of the given numbers", () => {
     ],
   ])(
     `%p has some primitive roots.\n\tprimitive roots = ${chalk.greenBright(
-      "%p"
+      "%p",
     )}`,
     (input, result) => {
       expect(primitiveRootSearch(input)[1].sort()).toEqual(result.sort());
-    }
+    },
   );
 });

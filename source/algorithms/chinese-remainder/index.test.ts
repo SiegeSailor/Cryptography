@@ -13,6 +13,6 @@ describe("Finding a number by the product of different remainders", () => {
     `%p as integers and %p as modulo\n\tnumber is ${chalk.greenBright("%p")}`,
     (arrayOfBase, arrayOfModulo, result) => {
       expect(chineseRemainder(arrayOfBase, arrayOfModulo)).toEqual(result);
-    }
+    },
   );
 });

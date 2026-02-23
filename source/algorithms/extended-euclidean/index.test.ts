@@ -11,7 +11,7 @@ describe("Finding the Greatest Common Divisor of the given numbers in smallest i
     { left: 13, right: 26, x: 1, y: 0, result: 13 },
   ])(
     `GCD($left, $right) = x.\n\tx = ${chalk.greenBright(
-      "$x * $left + $y * $right"
+      "$x * $left + $y * $right",
     )}`,
     ({ left, right, x, y, result }) => {
       expect(extendedEuclidean(BigInt(left), BigInt(right))).toEqual([
@@ -19,6 +19,6 @@ describe("Finding the Greatest Common Divisor of the given numbers in smallest i
         BigInt(x),
         BigInt(y),
       ]);
-    }
+    },
   );
 });

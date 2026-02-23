@@ -13,6 +13,6 @@ describe("Determining if the given number is Prime", () => {
     `%p at level %p is prime.\n\tis ${chalk.greenBright("%p")}`,
     (input, level, result) => {
       expect(millerRabinPrimarilyTest(BigInt(input), level)).toEqual(result);
-    }
+    },
   );
 });

@@ -17,9 +17,9 @@ describe("Calculating the remainder from doing modulus for a number with exponen
         fastModularExponentiation(
           BigInt(base),
           BigInt(exponent),
-          BigInt(modulo)
-        )
+          BigInt(modulo),
+        ),
       ).toEqual(BigInt(result));
-    }
+    },
   );
 });
