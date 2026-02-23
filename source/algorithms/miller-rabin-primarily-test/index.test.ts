@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as millerRabinPrimarilyTest } from "./index";
+import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 
 describe("Determining if the given number is Prime", () => {
   test.each([

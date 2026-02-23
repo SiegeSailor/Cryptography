@@ -1,9 +1,10 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as extendedEuclidean } from "../extended-euclidean";
+import extendedEuclidean from "@/algorithms/extended-euclidean";
+import { wasmMultiplicativeInverseIfAvailable } from "@/wasm/algorithms";
 
-export function _(base: bigint, modulo: bigint, number: number) {
+export default function _(base: bigint, modulo: bigint, number: number) {
   if (modulo <= 1n) {
     throw new Error("modulo must be greater than 1.");
   }
@@ -11,12 +12,20 @@ export function _(base: bigint, modulo: bigint, number: number) {
     throw new Error("number must be a positive integer.");
   }
 
-  const [gcd, x] = extendedEuclidean(base, modulo);
-  if (gcd !== 1n) {
-    throw new Error("base and modulo must be coprime.");
+  const maybeWasmInverse = wasmMultiplicativeInverseIfAvailable(base, modulo);
+  let inverse: bigint;
+
+  if (maybeWasmInverse !== null) {
+    inverse = maybeWasmInverse;
+  } else {
+    const [gcd, x] = extendedEuclidean(base, modulo);
+    if (gcd !== 1n) {
+      throw new Error("base and modulo must be coprime.");
+    }
+
+    inverse = ((x % modulo) + modulo) % modulo;
   }
 
-  const inverse = ((x % modulo) + modulo) % modulo;
   const arrayOfInverse: bigint[] = [];
   for (let count = BigInt(1); count <= number; count++) {
     arrayOfInverse.push(inverse * count);

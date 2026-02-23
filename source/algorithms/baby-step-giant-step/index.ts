@@ -1,16 +1,26 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as euclidean } from "../euclidean";
-import { _ as fastModularExponentiation } from "../fast-modular-exponentiation";
-import { ESymbols } from "../../common/constants";
+import euclidean from "@/algorithms/euclidean";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import { ESymbols } from "@/common/constants";
+import { wasmBabyStepGiantStepIfAvailable } from "@/wasm/algorithms";
 
-export function _(generator: bigint, base: bigint, modulo: bigint) {
+export default function _(generator: bigint, base: bigint, modulo: bigint) {
   if (modulo <= 1) throw new Error("Given modulo must be higher than 1");
   if (euclidean(generator, modulo) != BigInt(1))
     throw new Error("Given generator must satisfy GCD(generator, modulo) = 1");
   if (euclidean(base, modulo) != BigInt(1))
     throw new Error("Given base must satisfy GCD(base, modulo) = 1");
+
+  const maybeWasmResult = wasmBabyStepGiantStepIfAvailable(
+    generator,
+    base,
+    modulo,
+  );
+  if (maybeWasmResult !== null) {
+    return maybeWasmResult;
+  }
 
   const numberOfSteps = BigInt(Math.ceil(Math.sqrt(Number(modulo)))) + 1n;
 

@@ -1,9 +1,10 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { randomBigIntBetween } from "../../common/random";
+import { randomBigIntBetween } from "@/common/random";
+import { wasmNaorReingoIfAvailable } from "@/wasm/algorithms";
 
-export function _(count: number, digits: number) {
+export default function _(count: number, digits: number) {
   if (!Number.isInteger(count) || count <= 0) {
     throw new Error("count must be a positive integer.");
   }
@@ -13,6 +14,15 @@ export function _(count: number, digits: number) {
 
   const lowerBound = 10n ** BigInt(Math.max(0, digits - 1));
   const upperBound = 10n ** BigInt(digits) - 1n;
+
+  const maybeWasmValues = wasmNaorReingoIfAvailable(
+    count,
+    digits,
+    BigInt(Date.now()),
+  );
+  if (maybeWasmValues !== null) {
+    return maybeWasmValues.map((value) => Number(value));
+  }
 
   const arrayOfResult: number[] = [];
   for (let i = 0; i < count; i++) {

@@ -11,6 +11,8 @@ coverage/
 
 # Production
 build/
+source/**/main.wasm
+source/wasm/*.wasm
 
 # Debug
 npm-debug.log*

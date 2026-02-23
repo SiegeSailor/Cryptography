@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as euclidean } from "./index";
+import euclidean from "@/algorithms/euclidean";
 
 describe("Finding the Greatest Common Divisor of the given numbers", () => {
   test.each([

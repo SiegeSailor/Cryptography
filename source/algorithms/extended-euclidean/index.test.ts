@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as extendedEuclidean } from "./index";
+import extendedEuclidean from "@/algorithms/extended-euclidean";
 
 describe("Finding the Greatest Common Divisor of the given numbers in smallest integers form", () => {
   test.each([

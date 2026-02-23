@@ -1,10 +1,11 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as fastModularExponentiation } from "./../fast-modular-exponentiation";
-import { _ as millerRabinPrimarilyTest } from "./../miller-rabin-primarily-test";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import { wasmPrimitiveRootsIfAvailable } from "@/wasm/algorithms";
 
-export function _(prime: number): [number[][], number[]] {
+export default function _(prime: number): [number[][], number[]] {
   if (!millerRabinPrimarilyTest(BigInt(prime), 10))
     throw new Error("The Given number must be prime.");
 
@@ -14,6 +15,26 @@ export function _(prime: number): [number[][], number[]] {
   );
 
   const arrayOfResult: number[] = [];
+
+  const maybeWasmRoots = wasmPrimitiveRootsIfAvailable(BigInt(prime));
+  if (maybeWasmRoots !== null) {
+    for (const root of maybeWasmRoots) {
+      arrayOfResult.push(Number(root));
+    }
+
+    for (let indexRow = 0; indexRow < table.length; indexRow++) {
+      for (let indexColumn = 0; indexColumn < table[0].length; indexColumn++) {
+        const exponent = fastModularExponentiation(
+          BigInt(indexRow + 1),
+          BigInt(indexColumn + 1),
+          BigInt(prime),
+        );
+        table[indexRow][indexColumn] = Number(exponent);
+      }
+    }
+
+    return [table, arrayOfResult];
+  }
 
   for (let indexRow = 0; indexRow < table.length; indexRow++) {
     const set = new Set<number>();

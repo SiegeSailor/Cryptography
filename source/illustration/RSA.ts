@@ -5,9 +5,9 @@ import {
   extendedEuclidean,
   fastModularExponentiation,
   pollardP1Factorization,
-} from "../entry-point";
-import { EActors } from "../common/constants";
-import { log, inquire, wrap } from "../common/utilities";
+} from "@/entry-point";
+import { EActors } from "@/common/constants";
+import { log, inquire, wrap } from "@/common/utilities";
 
 export async function prompt() {
   try {

@@ -3,9 +3,9 @@ import chalk from "chalk";
 import { readdirSync } from "fs";
 import { isAbsolute, join } from "path";
 
-import { millerRabinPrimarilyTest } from "../entry-point";
-import { randomBigIntBits } from "./random";
-import Procedure from "./Procedure";
+import { millerRabinPrimarilyTest } from "@/entry-point";
+import { randomBigIntBits } from "@/common/random";
+import Procedure from "@/common/Procedure";
 
 export const math = {
   absolute: (input: bigint) => {

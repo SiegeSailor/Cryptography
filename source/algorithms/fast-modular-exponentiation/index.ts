@@ -1,10 +1,10 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { ESymbols } from "../../common/constants";
-import { wasmPowModIfAvailable } from "../../wasm/modexp";
+import { ESymbols } from "@/common/constants";
+import { wasmPowModIfAvailable } from "@/wasm/algorithms";
 
-export function _(base: bigint, exponent: bigint, modulo: bigint): bigint {
+export default function _(base: bigint, exponent: bigint, modulo: bigint): bigint {
   if (modulo <= 0n) {
     throw new Error("modulo must be greater than 0.");
   }

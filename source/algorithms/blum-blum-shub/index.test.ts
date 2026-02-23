@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as blumBlumShub } from "./index";
+import blumBlumShub from "@/algorithms/blum-blum-shub";
 
 describe("Generate pseudo random numbers", () => {
   test.each([8, 12, 16])(

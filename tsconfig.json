@@ -3,6 +3,9 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": "./source",
+    "paths": {
+      "@/*": ["./*"]
+    },
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "incremental": true,

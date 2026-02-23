@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as primitiveRootSearch } from "./index";
+import primitiveRootSearch from "@/algorithms/primitive-root-search";
 
 describe("Finding the Primitive Roots of the given numbers", () => {
   test.each([

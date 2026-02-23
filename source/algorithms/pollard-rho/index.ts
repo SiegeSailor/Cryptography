@@ -1,11 +1,12 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as euclidean } from "../euclidean";
-import { math } from "../../common/utilities";
-import { randomBigIntBetween } from "../../common/random";
+import euclidean from "@/algorithms/euclidean";
+import { math } from "@/common/utilities";
+import { randomBigIntBetween } from "@/common/random";
+import { wasmPollardRhoIfAvailable } from "@/wasm/algorithms";
 
-export function _(input: bigint) {
+export default function _(input: bigint) {
   if (input <= 1n) {
     throw new Error("input must be greater than 1.");
   }
@@ -18,6 +19,17 @@ export function _(input: bigint) {
   for (let attempt = 0; attempt < 10; attempt++) {
     const c = randomBigIntBetween(1n, input - 1n);
     let x = randomBigIntBetween(2n, input - 1n);
+
+    const maybeWasmFactor = wasmPollardRhoIfAvailable(input, x, c, 100_000);
+    if (
+      maybeWasmFactor !== null &&
+      maybeWasmFactor > 1n &&
+      maybeWasmFactor < input &&
+      input % maybeWasmFactor === 0n
+    ) {
+      return maybeWasmFactor;
+    }
+
     let y = x;
     let divisor = 1n;
     let iterations = 0;

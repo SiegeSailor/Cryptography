@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as multiplicativeInverse } from "./index";
+import multiplicativeInverse from "@/algorithms/multiplicative-inverse";
 
 describe("Finding the Multiplicative Inverses of the given numbers", () => {
   test.each([

@@ -1,7 +1,7 @@
 import chalk from "chalk";
 
-import { _ as fastModularExponentiation } from "./index";
-import { ESymbols } from "../../common/constants";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import { ESymbols } from "@/common/constants";
 
 describe("Calculating the remainder from doing modulus for a number with exponentiation", () => {
   test.each([

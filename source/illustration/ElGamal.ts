@@ -5,10 +5,10 @@ import {
   euclidean,
   fastModularExponentiation,
   primitiveRootSearch,
-} from "../entry-point";
-import { EActors } from "../common/constants";
-import { log, inquire, wrap } from "../common/utilities";
-import { randomBigIntBetween } from "../common/random";
+} from "@/entry-point";
+import { EActors } from "@/common/constants";
+import { log, inquire, wrap } from "@/common/utilities";
+import { randomBigIntBetween } from "@/common/random";
 
 export async function prompt() {
   try {

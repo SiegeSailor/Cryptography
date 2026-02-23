@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as chineseRemainder } from "./index";
+import chineseRemainder from "@/algorithms/chinese-remainder";
 
 describe("Finding a number by the product of different remainders", () => {
   test.each([

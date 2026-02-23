@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as naorReingo } from "./index";
+import naorReingo from "@/algorithms/naor-reingo";
 
 describe("Generate pseudo random numbers", () => {
   test.each([1, 2, 5, 10, 15])(

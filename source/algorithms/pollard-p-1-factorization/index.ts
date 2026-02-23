@@ -1,13 +1,19 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as euclidean } from "../euclidean";
-import { _ as millerRabinPrimarilyTest } from "../miller-rabin-primarily-test";
-import { _ as fastModularExponentiation } from "../fast-modular-exponentiation";
-import { _ as pollardRho } from "../pollard-rho";
+import euclidean from "@/algorithms/euclidean";
+import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import pollardRho from "@/algorithms/pollard-rho";
+import { wasmPollardP1IfAvailable } from "@/wasm/algorithms";
 
-export function _(input: bigint) {
+export default function _(input: bigint) {
   const pollardPMinusOne = (n: bigint) => {
+    const maybeWasmFactor = wasmPollardP1IfAvailable(n, 2500);
+    if (maybeWasmFactor !== null && maybeWasmFactor > 1n && maybeWasmFactor < n) {
+      return maybeWasmFactor;
+    }
+
     let base = 2n;
 
     for (let exponent = 2n; exponent < 2500n; exponent++) {

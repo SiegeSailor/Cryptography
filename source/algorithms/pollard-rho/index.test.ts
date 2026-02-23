@@ -1,4 +1,4 @@
-import { _ as pollardRho } from "./index";
+import pollardRho from "@/algorithms/pollard-rho";
 
 describe("Finding the factor for the given input", () => {
   test.each([

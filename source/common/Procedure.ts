@@ -1,7 +1,7 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { ESymbols } from "./constants";
+import { ESymbols } from "@/common/constants";
 
 export default class Procedure {
   public run: () => Promise<void>;

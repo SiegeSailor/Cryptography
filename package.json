@@ -18,7 +18,9 @@
     "@types/node": "^25.3.0",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.6",
+    "tsc-alias": "^1.8.16",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
     "wabt": "^1.0.37"
   },
@@ -51,8 +53,8 @@
     "url": "git+https://github.com/SiegeSailor/formulas.git"
   },
   "scripts": {
-    "build": "npm run wasm:compile && npm run test && tsc && npm run wasm:copy",
-    "start": "clear && ts-node ./source/command.ts",
+    "build": "npm run wasm:compile && npm run test && tsc && tsc-alias && npm run wasm:copy",
+    "start": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
     "start:build": "node ./build/command.js",
     "test": "jest",
     "wasm:compile": "node ./scripts/compile-wasm.js",

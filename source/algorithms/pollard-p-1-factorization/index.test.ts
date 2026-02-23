@@ -1,6 +1,6 @@
 import chalk from "chalk";
 
-import { _ as pollardP1Factorization } from "./index";
+import pollardP1Factorization from "@/algorithms/pollard-p-1-factorization";
 
 describe("Factor the given number", () => {
   test.each([

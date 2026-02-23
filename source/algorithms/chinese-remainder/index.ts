@@ -1,15 +1,24 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as euclidean } from "../euclidean";
-import { _ as extendedEuclidean } from "../extended-euclidean";
+import euclidean from "@/algorithms/euclidean";
+import extendedEuclidean from "@/algorithms/extended-euclidean";
+import { wasmChineseRemainderIfAvailable } from "@/wasm/algorithms";
 
-export function _(arrayOfBase: number[], arrayOfModulo: number[]) {
+export default function _(arrayOfBase: number[], arrayOfModulo: number[]) {
   if (arrayOfBase.length !== arrayOfModulo.length)
     throw new Error("The length for the two given arrays should be the same.");
 
   const base = arrayOfBase.map((item) => BigInt(item));
   const modulo = arrayOfModulo.map((item) => BigInt(item));
+
+  const maybeWasmResult = wasmChineseRemainderIfAvailable(base, modulo);
+  if (maybeWasmResult !== null) {
+    if (maybeWasmResult > BigInt(Number.MAX_SAFE_INTEGER)) {
+      throw new Error("CRT result exceeds Number.MAX_SAFE_INTEGER.");
+    }
+    return Number(maybeWasmResult);
+  }
 
   for (let i = 0; i < modulo.length; i++) {
     for (let j = i + 1; j < modulo.length; j++) {

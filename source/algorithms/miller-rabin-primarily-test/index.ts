@@ -1,14 +1,20 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { _ as fastModularExponentiation } from "../fast-modular-exponentiation";
-import { randomBigIntBetween } from "../../common/random";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import { randomBigIntBetween } from "@/common/random";
+import { wasmMillerRabinIfAvailable } from "@/wasm/algorithms";
 
-export function _(input: bigint, level: number) {
+export default function _(input: bigint, level: number) {
   if (input <= 1n || input === 4n) return false;
   if (input <= 3n) return true;
   if (level <= 0) {
     throw new Error("level must be a positive integer.");
+  }
+
+  const maybeWasmResult = wasmMillerRabinIfAvailable(input, level);
+  if (maybeWasmResult !== null) {
+    return maybeWasmResult;
   }
 
   let odd = input - 1n;

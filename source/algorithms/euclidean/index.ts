@@ -1,7 +1,14 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-export function _(left: bigint, right: bigint): bigint {
+import { wasmGcdIfAvailable } from "@/wasm/algorithms";
+
+export default function _(left: bigint, right: bigint): bigint {
+  const wasmResult = wasmGcdIfAvailable(left, right);
+  if (wasmResult !== null) {
+    return wasmResult;
+  }
+
   while (right !== BigInt(0)) {
     const cache = right;
     right = left % right;

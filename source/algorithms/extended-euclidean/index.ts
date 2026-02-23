@@ -1,7 +1,14 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-export function _(left: bigint, right: bigint) {
+import { wasmExtendedEuclideanIfAvailable } from "@/wasm/algorithms";
+
+export default function _(left: bigint, right: bigint) {
+  const wasmResult = wasmExtendedEuclideanIfAvailable(left, right);
+  if (wasmResult !== null) {
+    return wasmResult;
+  }
+
   const recursion = (left: bigint, right: bigint) => {
     if (right == BigInt(0)) return [left, BigInt(1), BigInt(0)];
 

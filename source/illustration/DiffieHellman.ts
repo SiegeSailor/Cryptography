@@ -4,10 +4,10 @@ import {
   babyStepGiantStep,
   fastModularExponentiation,
   primitiveRootSearch,
-} from "../entry-point";
-import { EActors } from "../common/constants";
-import { inquire, log, wrap } from "../common/utilities";
-import { randomBigIntBetween } from "../common/random";
+} from "@/entry-point";
+import { EActors } from "@/common/constants";
+import { inquire, log, wrap } from "@/common/utilities";
+import { randomBigIntBetween } from "@/common/random";
 
 export async function prompt() {
   console.log(

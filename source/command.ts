@@ -2,8 +2,8 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import { join } from "path";
 
-import { format, inquire } from "./common/utilities";
-import { EChoices } from "./common/constants";
+import { format, inquire } from "@/common/utilities";
+import { EChoices } from "@/common/constants";
 
 async function main(message = "What do you want to do?") {
   return inquirer
