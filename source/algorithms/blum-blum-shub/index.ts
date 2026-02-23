@@ -4,9 +4,9 @@ import inquirer from "inquirer";
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import { randomBigIntBits, randomBigIntBetween } from "@/common/random";
-import { wasmBlumBlumShubNextIfAvailable } from "@/wasm/algorithms";
+import { wasmBlumBlumShubNextIfAvailable } from "./wasm";
 
-export default function _(bits: number) {
+export default function main(bits: number) {
   if (!Number.isInteger(bits) || bits < 8) {
     throw new Error("Given bits must be an integer and at least 8.");
   }
@@ -73,6 +73,6 @@ export async function prompt() {
     },
   ]);
 
-  const x = _(bits)();
+  const x = main(bits)();
   console.log(`\t${bits}-bit x = ${x}`);
 }

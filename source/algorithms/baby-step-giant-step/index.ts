@@ -4,9 +4,9 @@ import inquirer from "inquirer";
 import euclidean from "@/algorithms/euclidean";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import { ESymbols } from "@/common/constants";
-import { wasmBabyStepGiantStepIfAvailable } from "@/wasm/algorithms";
+import { wasmBabyStepGiantStepIfAvailable } from "./wasm";
 
-export default function _(generator: bigint, base: bigint, modulo: bigint) {
+export default function main(generator: bigint, base: bigint, modulo: bigint) {
   if (modulo <= 1) throw new Error("Given modulo must be higher than 1");
   if (euclidean(generator, modulo) != BigInt(1))
     throw new Error("Given generator must satisfy GCD(generator, modulo) = 1");
@@ -73,7 +73,7 @@ export async function prompt() {
     },
   ]);
 
-  const x = _(BigInt(generator), BigInt(base), BigInt(modulo));
+  const x = main(BigInt(generator), BigInt(base), BigInt(modulo));
   console.log(
     `\t${generator}^x ${ESymbols.Congruent} ${base} % ${modulo}. x = ${x}`,
   );

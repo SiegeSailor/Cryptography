@@ -1,11 +1,9 @@
 import chalk from "chalk";
 
-import {
-  euclidean,
-  extendedEuclidean,
-  fastModularExponentiation,
-  pollardP1Factorization,
-} from "@/entry-point";
+import euclidean from "@/algorithms/euclidean";
+import extendedEuclidean from "@/algorithms/extended-euclidean";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import pollardP1Factorization from "@/algorithms/pollard-p-1-factorization";
 import { EActors } from "@/common/constants";
 import { log, inquire, wrap } from "@/common/utilities";
 

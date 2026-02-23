@@ -3,9 +3,9 @@ import inquirer from "inquirer";
 
 import euclidean from "@/algorithms/euclidean";
 import extendedEuclidean from "@/algorithms/extended-euclidean";
-import { wasmChineseRemainderIfAvailable } from "@/wasm/algorithms";
+import { wasmChineseRemainderIfAvailable } from "./wasm";
 
-export default function _(arrayOfBase: number[], arrayOfModulo: number[]) {
+export default function main(arrayOfBase: number[], arrayOfModulo: number[]) {
   if (arrayOfBase.length !== arrayOfModulo.length)
     throw new Error("The length for the two given arrays should be the same.");
 
@@ -82,6 +82,6 @@ export async function prompt() {
     .split(",")
     .map((item) => Number(item.trim()));
 
-  const result = _(remainders, modulos);
+  const result = main(remainders, modulos);
   console.log(`\tResult x = ${result}`);
 }

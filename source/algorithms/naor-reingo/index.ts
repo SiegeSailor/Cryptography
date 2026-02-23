@@ -2,9 +2,9 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 
 import { randomBigIntBetween } from "@/common/random";
-import { wasmNaorReingoIfAvailable } from "@/wasm/algorithms";
+import { wasmNaorReingoIfAvailable } from "./wasm";
 
-export default function _(count: number, digits: number) {
+export default function main(count: number, digits: number) {
   if (!Number.isInteger(count) || count <= 0) {
     throw new Error("count must be a positive integer.");
   }
@@ -53,6 +53,6 @@ export async function prompt() {
     },
   ]);
 
-  const result = _(Number(count), Number(digits));
+  const result = main(Number(count), Number(digits));
   console.log(`\tResult = ${result}`);
 }

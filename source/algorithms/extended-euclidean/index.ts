@@ -1,9 +1,9 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { wasmExtendedEuclideanIfAvailable } from "@/wasm/algorithms";
+import { wasmExtendedEuclideanIfAvailable } from "./wasm";
 
-export default function _(left: bigint, right: bigint) {
+export default function main(left: bigint, right: bigint) {
   const wasmResult = wasmExtendedEuclideanIfAvailable(left, right);
   if (wasmResult !== null) {
     return wasmResult;
@@ -12,7 +12,7 @@ export default function _(left: bigint, right: bigint) {
   const recursion = (left: bigint, right: bigint) => {
     if (right == BigInt(0)) return [left, BigInt(1), BigInt(0)];
 
-    const arrayOfResult = _(right, left % right);
+    const arrayOfResult = main(right, left % right);
     return [
       arrayOfResult[0],
       arrayOfResult[2],
@@ -42,7 +42,7 @@ export async function prompt() {
     },
   ]);
 
-  const [result, x, y] = _(BigInt(left), BigInt(right));
+  const [result, x, y] = main(BigInt(left), BigInt(right));
   console.log(
     `GCD(${left}, ${right}) = ${x} * ${left} + ${y} * ${right} = ${result}`,
   );

@@ -1,9 +1,9 @@
 import chalk from "chalk";
 import inquirer from "inquirer";
 
-import { wasmGcdIfAvailable } from "@/wasm/algorithms";
+import { wasmGcdIfAvailable } from "./wasm";
 
-export default function _(left: bigint, right: bigint): bigint {
+export default function main(left: bigint, right: bigint): bigint {
   const wasmResult = wasmGcdIfAvailable(left, right);
   if (wasmResult !== null) {
     return wasmResult;
@@ -36,6 +36,6 @@ export async function prompt() {
     },
   ]);
 
-  const result = _(BigInt(left), BigInt(right));
+  const result = main(BigInt(left), BigInt(right));
   console.log(`GCD(${left}, ${right}) = ${result}`);
 }

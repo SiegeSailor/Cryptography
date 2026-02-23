@@ -7,35 +7,36 @@
     "url": "https://github.com/SiegeSailor/formulas/issues"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
-    "inquirer": "^8.2.6",
-    "nanospinner": "^1.2.2"
+    "chalk": "4.1.2",
+    "inquirer": "8.2.6",
+    "nanospinner": "1.2.2"
   },
-  "description": "Provide a collection of formula functions and a command line tool.",
+  "description": "Provide a collection of cryptography functions and a CLI.",
   "devDependencies": {
-    "@types/inquirer": "^9.0.9",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.3.0",
-    "jest": "^30.2.0",
-    "ts-jest": "^29.4.6",
-    "tsc-alias": "^1.8.16",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3",
-    "wabt": "^1.0.37"
+    "@types/inquirer": "9.0.9",
+    "@types/jest": "30.0.0",
+    "@types/node": "25.3.0",
+    "jest": "30.2.0",
+    "ts-jest": "29.4.6",
+    "tsc-alias": "1.8.16",
+    "ts-node": "10.9.2",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "5.9.3",
+    "wabt": "1.0.37"
   },
   "engines": {
-    "node": ">= 20.0.0",
-    "npm": ">= 10.0.0"
+    "node": ">= 25.2.1",
+    "npm": ">= 11.6.2"
   },
   "files": [
     "./build/**/*"
   ],
   "homepage": "https://github.com/SiegeSailor/formulas#readme",
   "keywords": [
-    "typescript",
     "command-line-tool",
-    "package"
+    "cryptography",
+    "typescript",
+    "webassembly"
   ],
   "license": "ISC",
   "main": "./build/source/entry-point.js",
@@ -47,19 +48,28 @@
     },
     "./package.json": "./package.json"
   },
-  "name": "formulas",
+  "name": "@siegesailor-open-source/formulas",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SiegeSailor/formulas.git"
   },
   "scripts": {
-    "build": "npm run wasm:compile && npm run test && tsc && tsc-alias && npm run wasm:copy",
-    "start": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
-    "start:build": "node ./build/command.js",
+    "clean": "rm -rf ./build ./build-cache",
+    "dev": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
+    "start": "npm run dev",
+    "run:build": "node ./build/command.js",
+    "start:build": "npm run run:build",
     "test": "jest",
-    "wasm:compile": "node ./scripts/compile-wasm.js",
-    "wasm:copy": "node ./scripts/copy-wasm.js",
-    "prepack": "npm run build"
+    "test:ci": "jest --ci --runInBand",
+    "build:wasm": "node ./scripts/compile-wasm.js",
+    "build:ts": "tsc && npx --no-install tsc-alias",
+    "build:assets": "node ./scripts/copy-wasm.js",
+    "build": "npm run build:wasm && npm run build:ts && npm run build:assets",
+    "wasm:compile": "npm run build:wasm",
+    "wasm:copy": "npm run build:assets",
+    "verify": "npm run test && npm run build",
+    "ci": "npm run test:ci && npm run build",
+    "prepack": "npm run verify"
   },
   "version": "1.0.0"
 }

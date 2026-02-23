@@ -5,9 +5,9 @@ import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import pollardRho from "@/algorithms/pollard-rho";
-import { wasmPollardP1IfAvailable } from "@/wasm/algorithms";
+import { wasmPollardP1IfAvailable } from "./wasm";
 
-export default function _(input: bigint) {
+export default function main(input: bigint) {
   const pollardPMinusOne = (n: bigint) => {
     const maybeWasmFactor = wasmPollardP1IfAvailable(n, 2500);
     if (
@@ -80,6 +80,6 @@ export async function prompt() {
     },
   ]);
 
-  const result = _(BigInt(input));
+  const result = main(BigInt(input));
   console.log(`\tFactors = ${result}`);
 }

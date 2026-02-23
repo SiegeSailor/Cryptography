@@ -2,9 +2,9 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 
 import extendedEuclidean from "@/algorithms/extended-euclidean";
-import { wasmMultiplicativeInverseIfAvailable } from "@/wasm/algorithms";
+import { wasmMultiplicativeInverseIfAvailable } from "./wasm";
 
-export default function _(base: bigint, modulo: bigint, number: number) {
+export default function main(base: bigint, modulo: bigint, number: number) {
   if (modulo <= 1n) {
     throw new Error("modulo must be greater than 1.");
   }
@@ -61,6 +61,6 @@ export async function prompt() {
     },
   ]);
 
-  const result = _(BigInt(base), BigInt(modulo), Number(number));
+  const result = main(BigInt(base), BigInt(modulo), Number(number));
   console.log(`\tResult = ${result}`);
 }

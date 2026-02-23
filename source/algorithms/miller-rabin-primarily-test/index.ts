@@ -3,9 +3,9 @@ import inquirer from "inquirer";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import { randomBigIntBetween } from "@/common/random";
-import { wasmMillerRabinIfAvailable } from "@/wasm/algorithms";
+import { wasmMillerRabinIfAvailable } from "./wasm";
 
-export default function _(input: bigint, level: number) {
+export default function main(input: bigint, level: number) {
   if (input <= 1n || input === 4n) return false;
   if (input <= 3n) return true;
   if (level <= 0) {
@@ -63,6 +63,6 @@ export async function prompt() {
     },
   ]);
 
-  const result = _(BigInt(input), Number(level));
+  const result = main(BigInt(input), Number(level));
   console.log(`\tisPrime(${input}, ${level}) = ${result}`);
 }

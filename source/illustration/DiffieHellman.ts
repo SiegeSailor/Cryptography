@@ -1,10 +1,8 @@
 import chalk from "chalk";
 
-import {
-  babyStepGiantStep,
-  fastModularExponentiation,
-  primitiveRootSearch,
-} from "@/entry-point";
+import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
+import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import primitiveRootSearch from "@/algorithms/primitive-root-search";
 import { EActors } from "@/common/constants";
 import { inquire, log, wrap } from "@/common/utilities";
 import { randomBigIntBetween } from "@/common/random";

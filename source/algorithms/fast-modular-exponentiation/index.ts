@@ -2,9 +2,9 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 
 import { ESymbols } from "@/common/constants";
-import { wasmPowModIfAvailable } from "@/wasm/algorithms";
+import { wasmPowModIfAvailable } from "./wasm";
 
-export default function _(
+export default function main(
   base: bigint,
   exponent: bigint,
   modulo: bigint,

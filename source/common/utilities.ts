@@ -3,7 +3,7 @@ import chalk from "chalk";
 import { readdirSync } from "fs";
 import { isAbsolute, join } from "path";
 
-import { millerRabinPrimarilyTest } from "@/entry-point";
+import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import { randomBigIntBits } from "@/common/random";
 import Procedure from "@/common/Procedure";
 

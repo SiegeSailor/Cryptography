@@ -3,9 +3,9 @@ import inquirer from "inquirer";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
-import { wasmPrimitiveRootsIfAvailable } from "@/wasm/algorithms";
+import { wasmPrimitiveRootsIfAvailable } from "./wasm";
 
-export default function _(prime: number): [number[][], number[]] {
+export default function main(prime: number): [number[][], number[]] {
   if (!millerRabinPrimarilyTest(BigInt(prime), 10))
     throw new Error("The Given number must be prime.");
 
@@ -77,6 +77,6 @@ export async function prompt() {
     },
   ]);
 
-  const result = _(prime);
+  const result = main(prime);
   console.log(`primitive roots for ${prime} = ${result[1].sort()}`);
 }

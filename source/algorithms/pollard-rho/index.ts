@@ -4,9 +4,9 @@ import inquirer from "inquirer";
 import euclidean from "@/algorithms/euclidean";
 import { math } from "@/common/utilities";
 import { randomBigIntBetween } from "@/common/random";
-import { wasmPollardRhoIfAvailable } from "@/wasm/algorithms";
+import { wasmPollardRhoIfAvailable } from "./wasm";
 
-export default function _(input: bigint) {
+export default function main(input: bigint) {
   if (input <= 1n) {
     throw new Error("input must be greater than 1.");
   }

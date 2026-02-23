@@ -1,54 +1,96 @@
-# CONTRIBUTION
+# CONTRIBUTING
+
+Thank you for contributing to Formulas. Please read through the following guideline to ensure that we don't spend unnecessary time reviewing your contributions.
 
 ## Prerequisites
 
-- Node.js >= 20
-- npm >= 10
-- Optional for local WASM compilation: `clang` with `wasm32` target support
+Required software for the client module:
 
-## Setup
+- [Node.js](https://nodejs.org/): `25.2.1`
+- [Clang](https://clang.llvm.org/): `17.0.0` with `wasm32` target support (optional, for local WASM compilation)
 
-```bash
-git clone https://github.com/SiegeSailor/formulas.git
-cd formulas
-npm install
+## Branching Strategy
+
+This is basically a Git Flow with some adjustment to fit the NPM release process:
+
+| Branch           | Git Tags                                | NPM Package      | Created From | Merge To             |
+| ---------------- | --------------------------------------- | ---------------- | ------------ | -------------------- |
+| `main`           | `#.#.#`                                 | Same as Git Tags |              |                      |
+| `develop`        |                                         |                  |              | `release`            |
+| `feature-<name>` |                                         |                  | `develop`    | `develop`            |
+| `release`        | `#.#.#-release.#` for prereleases       | Same as Git Tags | `develop`    | `main` and `develop` |
+| `hotfix-<name>`  | `#.#.#-hotfix-<name>.#` for prereleases | Same as Git Tags | `main`       | `main` and `develop` |
+
+## Project Structure
+
+The project is structured as follows:
+
+```shell
+├── source/
+│   ├── algorithms/
+│   │   └── <algorithm>/
+│   │       ├── index.ts       # algorithm implementation
+│   │       ├── index.test.ts  # tests
+│   │       ├── wasm.ts        # algorithm-local WASM availability wrapper
+│   │       └── main.c         # C source used to compile per-algorithm WASM
+│   ├── common/
+│   │   ├── constants.ts
+│   │   ├── random.ts
+│   │   ├── utilities.ts
+│   │   └── wasm.ts            # shared low-level WASM utilities
+│   ├── illustration/
+│   ├── command.ts
+│   └── entry-point.ts         # package public exports only
+├── scripts/
+│   ├── compile-wasm.js
+│   ├── copy-wasm.js
+│   └── cli-smoke.exp
+└── build/
 ```
-
-## Project structure
-
-- `source/algorithms/<algorithm>/index.ts`: TypeScript implementation
-- `source/algorithms/<algorithm>/index.test.ts`: tests
-- `source/algorithms/<algorithm>/main.c`: C source used to compile per-algorithm WASM
-- `source/entry-point.ts`: library exports
-- `source/command.ts`: CLI entry
 
 ## Commands
 
-Run tests:
+Run local development CLI (TypeScript):
+
+```bash
+npm run dev
+```
+
+Run unit tests:
 
 ```bash
 npm test
 ```
 
-Run CLI in TS (dev mode):
+Run CI test mode:
 
 ```bash
-npm run start
+npm run test:ci
 ```
 
-Build package:
+Build package artifacts:
 
 ```bash
 npm run build
 ```
 
-This build runs:
+Run full verification (tests + build):
 
-1. `npm run wasm:compile` (compile each algorithm `main.c` to `main.wasm` when toolchain supports it)
-2. `npm test`
-3. `tsc`
-4. `tsc-alias`
-5. `npm run wasm:copy` (copy generated wasm files into build output)
+```bash
+npm run verify
+```
+
+Run CI pipeline locally:
+
+```bash
+npm run ci
+```
+
+Build internals:
+
+1. `npm run build:wasm` (compile each algorithm `main.c` to `main.wasm` when toolchain supports it)
+2. `npm run build:ts` (`tsc` + `tsc-alias`)
+3. `npm run build:assets` (copy generated wasm files into build output)
 
 ## WASM notes
 
@@ -56,8 +98,18 @@ This build runs:
 - If your local `clang` does not support `wasm32`, the compile script prints a warning and skips wasm generation.
 - Runtime still works because all algorithms preserve TypeScript fallback paths.
 
+## WebAssembly behavior
+
+- Each algorithm folder contains:
+  - `index.ts` (TypeScript implementation)
+  - `index.test.ts` (tests)
+  - `main.c` (WASM source)
+- At runtime, each algorithm attempts to use its own compiled `main.wasm` when available.
+- If WASM is unavailable, input is unsupported by the WASM ABI, or loading fails, code falls back to TypeScript automatically.
+
 ## Coding conventions
 
 - Use default export for each algorithm function in `index.ts`.
 - Use `@/` imports for code under `source/` (configured in `tsconfig.json`).
+- Do not import internal code from `@/entry-point`; import directly from `@/<folder>` (e.g., `@/algorithms/...`).
 - Keep algorithm APIs stable and deterministic for tests.
