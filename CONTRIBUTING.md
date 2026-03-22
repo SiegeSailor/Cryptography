@@ -33,12 +33,12 @@ WASM_CLANG=/opt/homebrew/opt/llvm/bin/clang npm run build-webassembly-strict
 
 This is basically a Git Flow with some adjustment to fit the NPM release process:
 
-| Branch           | Git Tags                          | NPM Package      | Created From | Merge To             |
-| ---------------- | --------------------------------- | ---------------- | ------------ | -------------------- |
-| `develop`        |                                   |                  |              | `release`            |
-| `feature-<name>` |                                   |                  | `develop`    | `develop`            |
-| `main`           | `#.#.#`                           | Same as Git Tags |              |                      |
-| `release`        | `#.#.#-release.#` for prereleases | Same as Git Tags | `develop`    | `main` and `develop` |
+| Branch           | Release           | Created From | Merge To             |
+| ---------------- | ----------------- | ------------ | -------------------- |
+| `develop`        |                   |              | `release`            |
+| `feature-<name>` |                   | `develop`    | `develop`            |
+| `main`           | `#.#.#`           |              |                      |
+| `release`        | `#.#.#-release.#` | `develop`    | `main` and `develop` |
 
 ## Project Structure
 
