@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import { ESymbols } from "@/common/constants";

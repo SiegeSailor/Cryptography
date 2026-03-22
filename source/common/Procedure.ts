@@ -1,7 +1,7 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
 
 import { ESymbols } from "@/common/constants";
+import { getInquirer } from "@/common/inquirer";
 
 export default class Procedure {
   public run: () => Promise<void>;
@@ -23,6 +23,7 @@ export default class Procedure {
         await wrap();
 
         while (true) {
+          const inquirer = await getInquirer();
           const { _: isRestart } = await inquirer.prompt([
             {
               type: "confirm",

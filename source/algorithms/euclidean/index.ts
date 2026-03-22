@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import { wasmGcdIfAvailable } from "./wasm";
 
@@ -18,6 +18,7 @@ export default function main(left: bigint, right: bigint): bigint {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log("\tGCD(left, right) = result");
   console.log(chalk.gray("\tGCD(614, 513) = 1"));
 

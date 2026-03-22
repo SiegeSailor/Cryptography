@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import euclidean from "@/algorithms/euclidean";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
@@ -49,6 +49,7 @@ export default function main(generator: bigint, base: bigint, modulo: bigint) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log(`\tgenerator^x ${ESymbols.Congruent} base % modulo. x = result`);
   console.log(chalk.gray(`\t92^x ${ESymbols.Congruent} 13 % 5. x = 3`));
 

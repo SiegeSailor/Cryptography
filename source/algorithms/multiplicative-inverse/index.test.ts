@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 
 import multiplicativeInverse from "@/algorithms/multiplicative-inverse";
 

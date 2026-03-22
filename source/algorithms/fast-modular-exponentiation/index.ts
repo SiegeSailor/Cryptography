@@ -1,5 +1,4 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
 
 import { ESymbols } from "@/common/constants";
 import { wasmPowModIfAvailable } from "./wasm";

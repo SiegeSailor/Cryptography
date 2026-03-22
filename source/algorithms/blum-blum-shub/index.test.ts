@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 
 import blumBlumShub from "@/algorithms/blum-blum-shub";
 

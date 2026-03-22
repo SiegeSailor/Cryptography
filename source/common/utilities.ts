@@ -1,11 +1,11 @@
-import inquirer from "inquirer";
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 import { readdirSync } from "fs";
 import { isAbsolute, join } from "path";
 
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import { randomBigIntBits } from "@/common/random";
 import Procedure from "@/common/Procedure";
+import { getInquirer } from "@/common/inquirer";
 
 export const math = {
   absolute: (input: bigint) => {
@@ -42,6 +42,7 @@ export const inquire = {
   continue: async <T>(title: string, callback: () => T): Promise<T> => {
     try {
       log.highlight(title);
+      const inquirer = await getInquirer();
       await inquirer.prompt({
         type: "input",
         name: "_",
@@ -59,6 +60,7 @@ export const inquire = {
     fileFormatter: (input: string) => string,
   ) => {
     try {
+      const inquirer = await getInquirer();
       const targetPath = isAbsolute(procedurePath)
         ? procedurePath
         : join(process.cwd(), procedurePath);

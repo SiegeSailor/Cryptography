@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
@@ -66,6 +66,7 @@ export default function main(input: bigint) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log(
     "\tFactorize a composite number using Pollard p-1 (with fallback). ",
   );

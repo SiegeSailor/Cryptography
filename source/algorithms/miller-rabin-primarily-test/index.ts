@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import { randomBigIntBetween } from "@/common/random";
@@ -45,6 +45,7 @@ export default function main(input: bigint, level: number) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log("\tisPrime(number, level) = result");
   console.log(chalk.gray("\tisPrime(104729, 10) = true"));
 

@@ -26,26 +26,19 @@ This is basically a Git Flow with some adjustment to fit the NPM release process
 The project is structured as follows:
 
 ```shell
-├── source/
-│   ├── algorithms/
-│   │   └── <algorithm>/
-│   │       ├── index.ts       # algorithm implementation
-│   │       ├── index.test.ts  # tests
-│   │       ├── wasm.ts        # algorithm-local WASM availability wrapper
-│   │       └── main.c         # C source used to compile per-algorithm WASM
-│   ├── common/
-│   │   ├── constants.ts
-│   │   ├── random.ts
-│   │   ├── utilities.ts
-│   │   └── wasm.ts            # shared low-level WASM utilities
-│   ├── illustration/
+├── 📁 source
+│   ├── 📁 algorithms
+│   │   └── 📁 [algorithm]
+│   │       ├── index.ts      # algorithm implementation
+│   │       ├── index.test.ts # tests
+│   │       ├── wasm.ts       # algorithm-local WASM availability wrapper
+│   │       └── main.c        # algorithm implementation in C for WASM compilation
+│   ├── 📁 common
+│   ├── 📁 illustration       # key encryption flows
 │   ├── command.ts
-│   └── entry-point.ts         # package public exports only
-├── scripts/
-│   ├── compile-wasm.js
-│   ├── copy-wasm.js
-│   └── cli-smoke.exp
-└── build/
+│   └── entry-point.ts        # package public exports only
+├── 📁 scripts
+└── 📁 build
 ```
 
 ## Commands
@@ -62,16 +55,22 @@ Run unit tests:
 npm test
 ```
 
-Run CI test mode:
+Run local CI test step:
 
 ```bash
-npm run test:ci
+npm run ci:test
 ```
 
 Build package artifacts:
 
 ```bash
 npm run build
+```
+
+Run built CLI:
+
+```bash
+npm run start:build
 ```
 
 Run full verification (tests + build):
@@ -88,9 +87,21 @@ npm run ci
 
 Build internals:
 
-1. `npm run build:wasm` (compile each algorithm `main.c` to `main.wasm` when toolchain supports it)
-2. `npm run build:ts` (`tsc` + `tsc-alias`)
-3. `npm run build:assets` (copy generated wasm files into build output)
+1. `npm run prebuild` → `npm run build:wasm` (compile each algorithm `main.c` to `main.wasm` when toolchain supports it)
+2. `npm run build` → `npm run build:ts` + `npm run build:assets`
+3. `npm run postbuild` (build completion summary)
+
+CI internals:
+
+1. `npm run preci` → `npm run clean`
+2. `npm run ci` → `npm run ci:test` + `npm run ci:build`
+3. `npm run postci` (CI completion summary)
+
+Verify internals:
+
+1. `npm run preverify` → `npm run test`
+2. `npm run verify` → `npm run build`
+3. `npm run postverify` (verification completion summary)
 
 ## WASM notes
 

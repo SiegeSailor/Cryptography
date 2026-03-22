@@ -7,13 +7,12 @@
     "url": "https://github.com/SiegeSailor/formulas/issues"
   },
   "dependencies": {
-    "chalk": "4.1.2",
-    "inquirer": "8.2.6",
+    "chalk": "5.6.2",
+    "inquirer": "13.3.0",
     "nanospinner": "1.2.2"
   },
   "description": "Provide a collection of cryptography functions and a CLI.",
   "devDependencies": {
-    "@types/inquirer": "9.0.9",
     "@types/jest": "30.0.0",
     "@types/node": "25.3.0",
     "jest": "30.2.0",
@@ -21,8 +20,7 @@
     "tsc-alias": "1.8.16",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
-    "typescript": "5.9.3",
-    "wabt": "1.0.37"
+    "typescript": "5.9.3"
   },
   "engines": {
     "node": ">= 25.2.1",
@@ -57,18 +55,22 @@
     "clean": "rm -rf ./build ./build-cache",
     "dev": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
     "start": "npm run dev",
-    "run:build": "node ./build/command.js",
-    "start:build": "npm run run:build",
+    "start:build": "node ./build/command.js",
     "test": "jest",
-    "test:ci": "jest --ci --runInBand",
+    "ci:test": "jest --ci --runInBand",
+    "prebuild": "npm run build:wasm",
     "build:wasm": "node ./scripts/compile-wasm.js",
     "build:ts": "tsc && npx --no-install tsc-alias",
     "build:assets": "node ./scripts/copy-wasm.js",
-    "build": "npm run build:wasm && npm run build:ts && npm run build:assets",
-    "wasm:compile": "npm run build:wasm",
-    "wasm:copy": "npm run build:assets",
-    "verify": "npm run test && npm run build",
-    "ci": "npm run test:ci && npm run build",
+    "build": "npm run build:ts && npm run build:assets",
+    "postbuild": "echo \"Build pipeline completed.\"",
+    "preci": "npm run clean",
+    "ci:build": "npm run build",
+    "ci": "npm run ci:test && npm run ci:build",
+    "postci": "echo \"CI pipeline completed.\"",
+    "preverify": "npm run test",
+    "verify": "npm run build",
+    "postverify": "echo \"Verification completed.\"",
     "prepack": "npm run verify"
   },
   "version": "1.0.0"

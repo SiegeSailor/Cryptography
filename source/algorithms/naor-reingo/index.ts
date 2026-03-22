@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import { randomBigIntBetween } from "@/common/random";
 import { wasmNaorReingoIfAvailable } from "./wasm";
@@ -33,6 +33,7 @@ export default function main(count: number, digits: number) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log(
     "\tGenerate pseudo-random decimal numbers with fixed digit length.",
   );

@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import { wasmExtendedEuclideanIfAvailable } from "./wasm";
 
@@ -24,6 +24,7 @@ export default function main(left: bigint, right: bigint) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log("\tGCD(left, right) = result");
   console.log(chalk.gray("\tGCD(106, 112) = -19 * 106 + 18 * 112 = 2"));
 

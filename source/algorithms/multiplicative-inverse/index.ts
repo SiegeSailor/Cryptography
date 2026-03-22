@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 import { wasmMultiplicativeInverseIfAvailable } from "./wasm";
@@ -35,6 +35,7 @@ export default function main(base: bigint, modulo: bigint, number: number) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log("\tmultiplicativeInverse(base, modulo, count) = [values]");
   console.log(
     chalk.gray("\tmultiplicativeInverse(23, 41, 5) = [25,50,75,100,125]"),

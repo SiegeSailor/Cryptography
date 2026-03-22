@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import euclidean from "@/algorithms/euclidean";
 import extendedEuclidean from "@/algorithms/extended-euclidean";
@@ -57,6 +57,7 @@ export default function main(arrayOfBase: number[], arrayOfModulo: number[]) {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log("\tx % m1 = r1, x % m2 = r2 ... x = result");
   console.log(chalk.gray("\tx % 11 = 2, x % 19 = 1, x % 37 = 2. x = 2851"));
 

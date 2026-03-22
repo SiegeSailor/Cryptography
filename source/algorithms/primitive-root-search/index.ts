@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import inquirer from "inquirer";
+import chalk from "@/common/chalk";
+import { getInquirer } from "@/common/inquirer";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
@@ -61,6 +61,7 @@ export default function main(prime: number): [number[][], number[]] {
 }
 
 export async function prompt() {
+  const inquirer = await getInquirer();
   console.log("\tprimitive roots for x = y1, y2, y3...");
   console.log(
     chalk.gray(

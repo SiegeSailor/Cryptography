@@ -1,54 +1,54 @@
-import inquirer from "inquirer";
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 import { join } from "path";
 
 import { format, inquire } from "@/common/utilities";
 import { EChoices } from "@/common/constants";
+import { getInquirer } from "@/common/inquirer";
 
 async function main(message = "What do you want to do?") {
-  return inquirer
-    .prompt([
+  try {
+    const inquirer = await getInquirer();
+    const { _: purpose } = await inquirer.prompt([
       {
-        type: "list",
+        type: "rawlist",
         name: "_",
         message,
         choices: [
-          { name: EChoices.Demonstrate },
-          { name: EChoices.Execute },
-          { name: EChoices.Exit },
+          { name: EChoices.Demonstrate, value: EChoices.Demonstrate },
+          { name: EChoices.Execute, value: EChoices.Execute },
+          { name: EChoices.Exit, value: EChoices.Exit },
         ],
       },
-    ])
-    .then(async ({ _: purpose }) => {
-      switch (purpose) {
-        case EChoices.Demonstrate:
-          await inquire.procedure(
-            join(__dirname, "illustration"),
-            "Which cryptograph procedure do you want to demonstrate?",
-            format.filename,
-          );
-          main();
-          break;
-        case EChoices.Execute:
-          await inquire.procedure(
-            join(__dirname, "algorithms"),
-            "Which cryptograph algorithm do you want to execute?",
-            format.foldername,
-          );
-          main();
-          break;
-        case EChoices.Exit:
-          console.log(chalk.gray("Successfully terminated the program.\n"));
-          break;
-        default:
-          throw new Error("Something wrong with the prompt flow.");
-      }
-    })
-    .catch((_) => {
-      const error: Error = _;
-      console.error(`\t${chalk.red(error.message)}`);
-      main("Unexpected result. Please restart your flow.");
-    });
+    ]);
+
+    switch (purpose) {
+      case EChoices.Demonstrate:
+        await inquire.procedure(
+          join(__dirname, "illustration"),
+          "Which cryptograph procedure do you want to demonstrate?",
+          format.filename,
+        );
+        main();
+        break;
+      case EChoices.Execute:
+        await inquire.procedure(
+          join(__dirname, "algorithms"),
+          "Which cryptograph algorithm do you want to execute?",
+          format.foldername,
+        );
+        main();
+        break;
+      case EChoices.Exit:
+        console.log(chalk.gray("Successfully terminated the program.\n"));
+        break;
+      default:
+        throw new Error("Something wrong with the prompt flow.");
+    }
+  } catch (_) {
+    const error: Error = _ as Error;
+    console.error(`\t${chalk.red(error.message)}`);
+    main("Unexpected result. Please restart your flow.");
+  }
 }
 
 main();

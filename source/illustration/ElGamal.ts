@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 
 import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
 import euclidean from "@/algorithms/euclidean";

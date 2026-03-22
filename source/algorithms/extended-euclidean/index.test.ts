@@ -1,4 +1,4 @@
-import chalk from "chalk";
+import chalk from "@/common/chalk";
 
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 
