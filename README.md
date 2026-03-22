@@ -67,10 +67,10 @@ const {
 
 ## Use as a CLI
 
+![CLI](./images/CLI.png)
+
 Run directly with NPX:
 
 ```bash
 npx @siegesailor/cryptography
 ```
-
-![CLI](./images/CLI.png)
