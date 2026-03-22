@@ -25,12 +25,6 @@ And, a CLI is available to interact with these algorithms and demonstrate the 3 
 - [ElGamal](./source/illustration/ElGamal.ts)
 - [RSA](./source/illustration/RSA.ts)
 
-### Prerequisites
-
-Required software for this module:
-
-- [Node.js](https://nodejs.org/): `>= 25.2.1`
-
 ## Installation
 
 The package is available on NPM:
@@ -38,6 +32,12 @@ The package is available on NPM:
 ```bash
 npm install @siegesailor/cryptography
 ```
+
+### Prerequisites
+
+Required software for this module:
+
+- [Node.js](https://nodejs.org/): `>= 25.2.1`
 
 ## Use as a Library
 
