@@ -1,6 +1,6 @@
 # CONTRIBUTING
 
-Thank you for contributing to Formulas. Please read through the following guideline to ensure that we don't spend unnecessary time reviewing your contributions.
+Thank you for contributing to Cryptography. Please read through the following guideline to ensure that we don't spend unnecessary time reviewing your contributions.
 
 ## Prerequisites
 

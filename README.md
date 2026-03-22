@@ -32,7 +32,7 @@ And, 3 key encryption flows:
 The package is available on the public NPM. You can install it with:
 
 ```bash
-npm install formulas
+npm install @siegesailor/cryptography
 ```
 
 ## Use as a Library
@@ -44,7 +44,7 @@ import {
   fastModularExponentiation,
   millerRabinPrimarilyTest,
   euclidean,
-} from "formulas";
+} from "@siegesailor/cryptography";
 
 const gcd = euclidean(614n, 513n);
 const modPow = fastModularExponentiation(2n, 100n, 71n);
@@ -58,7 +58,7 @@ const {
   euclidean,
   fastModularExponentiation,
   millerRabinPrimarilyTest,
-} = require("formulas");
+} = require("@siegesailor/cryptography");
 ```
 
 ## Use as a CLI
@@ -66,5 +66,5 @@ const {
 Run directly with NPX:
 
 ```bash
-npx formulas
+npx @siegesailor/cryptography
 ```
