@@ -1,25 +1,44 @@
 # CONTRIBUTING
 
-Thank you for contributing to Cryptography. Please read through the following guideline to ensure that we don't spend unnecessary time reviewing your contributions.
+Thank you for contributing to Cryptography. Please read through the following guideline before making any contributions.
 
 ## Prerequisites
 
 Required software for the client module:
 
-- [Node.js](https://nodejs.org/): `25.2.1`
-- [Clang](https://clang.llvm.org/): `17.0.0` with `wasm32` target support (optional, for local WASM compilation)
+- [Node.js](https://nodejs.org/): `>= 25.2.1`
+- [LLVM Clang](https://clang.llvm.org/) with `wasm32` target support
+- [LLVM LLD](https://lld.llvm.org/) (`wasm-ld` linker)
+
+macOS setup for WASM builds:
+
+```bash
+brew install llvm
+brew install lld
+```
+
+The build script auto-detects compilers in this order:
+
+1. `WASM_CLANG` environment variable (if set)
+2. `/opt/homebrew/opt/llvm/bin/clang`
+3. `clang` from your `PATH`
+
+If you want to use a specific compiler explicitly:
+
+```bash
+WASM_CLANG=/opt/homebrew/opt/llvm/bin/clang npm run build:wasm:strict
+```
 
 ## Branching Strategy
 
 This is basically a Git Flow with some adjustment to fit the NPM release process:
 
-| Branch           | Git Tags                                | NPM Package      | Created From | Merge To             |
-| ---------------- | --------------------------------------- | ---------------- | ------------ | -------------------- |
-| `main`           | `#.#.#`                                 | Same as Git Tags |              |                      |
-| `develop`        |                                         |                  |              | `release`            |
-| `feature-<name>` |                                         |                  | `develop`    | `develop`            |
-| `release`        | `#.#.#-release.#` for prereleases       | Same as Git Tags | `develop`    | `main` and `develop` |
-| `hotfix-<name>`  | `#.#.#-hotfix-<name>.#` for prereleases | Same as Git Tags | `main`       | `main` and `develop` |
+| Branch           | Git Tags                          | NPM Package      | Created From | Merge To             |
+| ---------------- | --------------------------------- | ---------------- | ------------ | -------------------- |
+| `develop`        |                                   |                  |              | `release`            |
+| `feature-<name>` |                                   |                  | `develop`    | `develop`            |
+| `main`           | `#.#.#`                           | Same as Git Tags |              |                      |
+| `release`        | `#.#.#-release.#` for prereleases | Same as Git Tags | `develop`    | `main` and `develop` |
 
 ## Project Structure
 
@@ -55,6 +74,12 @@ Run unit tests:
 npm test
 ```
 
+Run tests with strict local WASM verification:
+
+```bash
+npm run test:wasm
+```
+
 Run local CI test step:
 
 ```bash
@@ -65,6 +90,12 @@ Build package artifacts:
 
 ```bash
 npm run build
+```
+
+Build and verify WASM artifacts only:
+
+```bash
+npm run verify:wasm
 ```
 
 Run built CLI:
@@ -88,8 +119,9 @@ npm run ci
 Build internals:
 
 1. `npm run prebuild` → `npm run build:wasm` (compile each algorithm `main.c` to `main.wasm` when toolchain supports it)
-2. `npm run build` → `npm run build:ts` + `npm run build:assets`
-3. `npm run postbuild` (build completion summary)
+2. `npm run build:wasm:strict` (fails fast when no wasm32-capable clang is available)
+3. `npm run build` → `npm run build:ts` + `npm run build:assets`
+4. `npm run postbuild` (build completion summary)
 
 CI internals:
 
@@ -106,7 +138,8 @@ Verify internals:
 ## WASM notes
 
 - Generated `.wasm` files are ignored by git and should not be committed.
-- If your local `clang` does not support `wasm32`, the compile script prints a warning and skips wasm generation.
+- If no wasm32-capable compiler is detected, `npm run build:wasm` prints a warning and skips wasm generation.
+- Use `npm run build:wasm:strict` to fail immediately when wasm compilation is unavailable.
 - Runtime still works because all algorithms preserve TypeScript fallback paths.
 
 ## WebAssembly behavior
