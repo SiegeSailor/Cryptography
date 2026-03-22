@@ -26,7 +26,7 @@ The build script auto-detects compilers in this order:
 If you want to use a specific compiler explicitly:
 
 ```bash
-WASM_CLANG=/opt/homebrew/opt/llvm/bin/clang npm run build:wasm:strict
+WASM_CLANG=/opt/homebrew/opt/llvm/bin/clang npm run build-webassembly-strict
 ```
 
 ## Branching Strategy
@@ -62,84 +62,45 @@ The project is structured as follows:
 
 ## Commands
 
-Run local development CLI (TypeScript):
+### NPM script rules (condensed)
 
-```bash
-npm run dev
-```
+1. `ci:<command>` is reserved for GitHub workflows only.
+2. `dev:<command>` is reserved for local development workflows.
+3. Unprefixed commands are atomic internal building blocks and use hyphenated names.
+4. Workflow files call only `ci:*` scripts.
+5. Scripts that only print echo messages are removed.
+6. `pre*` and `post*` hooks are not used for orchestration.
 
-Run unit tests:
+### Command reference
 
-```bash
-npm test
-```
-
-Run tests with strict local WASM verification:
-
-```bash
-npm run test:wasm
-```
-
-Run local CI test step:
-
-```bash
-npm run ci:test
-```
-
-Build package artifacts:
-
-```bash
-npm run build
-```
-
-Build and verify WASM artifacts only:
-
-```bash
-npm run verify:wasm
-```
-
-Run built CLI:
-
-```bash
-npm run start:build
-```
-
-Run full verification (tests + build):
-
-```bash
-npm run verify
-```
-
-Run CI pipeline locally:
-
-```bash
-npm run ci
-```
-
-Build internals:
-
-1. `npm run prebuild` → `npm run build:wasm` (compile each algorithm `main.c` to `main.wasm` when toolchain supports it)
-2. `npm run build:wasm:strict` (fails fast when no wasm32-capable clang is available)
-3. `npm run build` → `npm run build:ts` + `npm run build:assets`
-4. `npm run postbuild` (build completion summary)
-
-CI internals:
-
-1. `npm run preci` → `npm run clean`
-2. `npm run ci` → `npm run ci:test` + `npm run ci:build`
-3. `npm run postci` (CI completion summary)
-
-Verify internals:
-
-1. `npm run preverify` → `npm run test`
-2. `npm run verify` → `npm run build`
-3. `npm run postverify` (verification completion summary)
+| Command | Scope | Purpose |
+| --- | --- | --- |
+| `npm run clean-workspace-files` | internal | Remove generated build directories. |
+| `npm run run-cli-typescript` | internal | Run CLI directly from TypeScript sources. |
+| `npm run run-cli-compiled` | internal | Run CLI from compiled build output. |
+| `npm run test-unit-suite` | internal | Run Jest test suite with default config. |
+| `npm run build-webassembly-binaries` | internal | Compile algorithm `main.c` files to `main.wasm` when available. |
+| `npm run build-webassembly-strict` | internal | Compile wasm and fail when wasm compilation is unavailable. |
+| `npm run verify-webassembly-runtime` | internal | Validate wasm artifacts and execute wasm smoke checks. |
+| `npm run build-typescript-output` | internal | Compile TypeScript and rewrite path aliases. |
+| `npm run build-webassembly-assets` | internal | Copy generated wasm binaries to build output tree. |
+| `npm run dev:clean` | local dev | Clean workspace outputs during local work. |
+| `npm run dev:run` | local dev | Start local TypeScript CLI flow. |
+| `npm run dev:run-compiled` | local dev | Start compiled CLI flow. |
+| `npm run dev:test` | local dev | Run local unit tests. |
+| `npm run dev:test-wasm` | local dev | Strict wasm build + wasm runtime verify + unit tests. |
+| `npm run dev:build` | local dev | Build wasm binaries, TypeScript output, and wasm assets. |
+| `npm run ci:install` | CI/workflow | Install dependencies for workflow jobs. |
+| `npm run ci:test` | CI/workflow | Run CI-mode tests with verbose coverage output. |
+| `npm run ci:build` | CI/workflow | Build artifacts for CI validation. |
+| `npm run ci:verify` | CI/workflow | Execute CI test then CI build. |
+| `npm run ci:publish` | CI/workflow | Publish package to npm with provenance. |
 
 ## WASM notes
 
 - Generated `.wasm` files are ignored by git and should not be committed.
-- If no wasm32-capable compiler is detected, `npm run build:wasm` prints a warning and skips wasm generation.
-- Use `npm run build:wasm:strict` to fail immediately when wasm compilation is unavailable.
+- If no wasm32-capable compiler is detected, `npm run build-webassembly-binaries` prints a warning and skips wasm generation.
+- Use `npm run build-webassembly-strict` to fail immediately when wasm compilation is unavailable.
 - Runtime still works because all algorithms preserve TypeScript fallback paths.
 
 ## WebAssembly behavior

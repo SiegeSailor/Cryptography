@@ -51,7 +51,7 @@ proc run_execute {index} {
   }
 }
 
-spawn npm run start
+spawn npm run dev:run
 
 if {$mode == "demo"} {
   run_demonstrate $index
