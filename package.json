@@ -1,10 +1,10 @@
 {
   "author": "SiegeSailor",
   "bin": {
-    "formulas": "./build/command.js"
+    "@siegesailor/cryptography": "./build/command.js"
   },
   "bugs": {
-    "url": "https://github.com/SiegeSailor/formulas/issues"
+    "url": "https://github.com/SiegeSailor/cryptography/issues"
   },
   "dependencies": {
     "chalk": "5.6.2",
@@ -29,7 +29,7 @@
   "files": [
     "./build/**/*"
   ],
-  "homepage": "https://github.com/SiegeSailor/formulas#readme",
+  "homepage": "https://github.com/SiegeSailor/cryptography#readme",
   "keywords": [
     "command-line-tool",
     "cryptography",
@@ -46,10 +46,10 @@
     },
     "./package.json": "./package.json"
   },
-  "name": "@siegesailor-open-source/formulas",
+  "name": "@siegesailor/cryptography",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SiegeSailor/formulas.git"
+    "url": "git+https://github.com/SiegeSailor/cryptography.git"
   },
   "scripts": {
     "clean": "rm -rf ./build ./build-cache",
