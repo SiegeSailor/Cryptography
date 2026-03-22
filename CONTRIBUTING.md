@@ -44,7 +44,7 @@ This is basically a Git Flow with some adjustment to fit the NPM release process
 
 The project is structured as follows:
 
-```shell
+```plaintext
 ├── 📁 source
 │   ├── 📁 algorithms
 │   │   └── 📁 [algorithm]
@@ -73,28 +73,28 @@ The project is structured as follows:
 
 ### Command reference
 
-| Command | Scope | Purpose |
-| --- | --- | --- |
-| `npm run clean-workspace-files` | internal | Remove generated build directories. |
-| `npm run run-cli-typescript` | internal | Run CLI directly from TypeScript sources. |
-| `npm run run-cli-compiled` | internal | Run CLI from compiled build output. |
-| `npm run test-unit-suite` | internal | Run Jest test suite with default config. |
-| `npm run build-webassembly-binaries` | internal | Compile algorithm `main.c` files to `main.wasm` when available. |
-| `npm run build-webassembly-strict` | internal | Compile wasm and fail when wasm compilation is unavailable. |
-| `npm run verify-webassembly-runtime` | internal | Validate wasm artifacts and execute wasm smoke checks. |
-| `npm run build-typescript-output` | internal | Compile TypeScript and rewrite path aliases. |
-| `npm run build-webassembly-assets` | internal | Copy generated wasm binaries to build output tree. |
-| `npm run dev:clean` | local dev | Clean workspace outputs during local work. |
-| `npm run dev:run` | local dev | Start local TypeScript CLI flow. |
-| `npm run dev:run-compiled` | local dev | Start compiled CLI flow. |
-| `npm run dev:test` | local dev | Run local unit tests. |
-| `npm run dev:test-wasm` | local dev | Strict wasm build + wasm runtime verify + unit tests. |
-| `npm run dev:build` | local dev | Build wasm binaries, TypeScript output, and wasm assets. |
-| `npm run ci:install` | CI/workflow | Install dependencies for workflow jobs. |
-| `npm run ci:test` | CI/workflow | Run CI-mode tests with verbose coverage output. |
-| `npm run ci:build` | CI/workflow | Build artifacts for CI validation. |
-| `npm run ci:verify` | CI/workflow | Execute CI test then CI build. |
-| `npm run ci:publish` | CI/workflow | Publish package to npm with provenance. |
+| Command                      | Purpose                                                         |
+| ---------------------------- | --------------------------------------------------------------- |
+| `build-typescript-output`    | Compile TypeScript and rewrite path aliases.                    |
+| `build-webassembly-assets`   | Copy generated wasm binaries to build output tree.              |
+| `build-webassembly-binaries` | Compile algorithm `main.c` files to `main.wasm` when available. |
+| `build-webassembly-strict`   | Compile wasm and fail when wasm compilation is unavailable.     |
+| `clean-workspace-files`      | Remove generated build directories.                             |
+| `run-cli-compiled`           | Run CLI from compiled build output.                             |
+| `run-cli-typescript`         | Run CLI directly from TypeScript sources.                       |
+| `test-unit-suite`            | Run Jest test suite with default config.                        |
+| `verify-webassembly-runtime` | Validate wasm artifacts and execute wasm smoke checks.          |
+| `ci:build`                   | Build artifacts for CI validation.                              |
+| `ci:install`                 | Install dependencies for workflow jobs.                         |
+| `ci:publish`                 | Publish package to npm with provenance.                         |
+| `ci:test`                    | Run CI-mode tests with verbose coverage output.                 |
+| `ci:verify`                  | Execute CI test then CI build.                                  |
+| `dev:build`                  | Build wasm binaries, TypeScript output, and wasm assets.        |
+| `dev:clean`                  | Clean workspace outputs during local work.                      |
+| `dev:run-compiled`           | Start compiled CLI flow.                                        |
+| `dev:run`                    | Start local TypeScript CLI flow.                                |
+| `dev:test-wasm`              | Strict wasm build + wasm runtime verify + unit tests.           |
+| `dev:test`                   | Run local unit tests.                                           |
 
 ## WASM notes
 
