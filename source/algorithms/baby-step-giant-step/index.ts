@@ -1,9 +1,9 @@
-import chalk from "@/common/chalk";
+import { ESymbols } from "@/common/constants";
 import { getInquirer } from "@/common/inquirer";
-
+import chalk from "@/common/chalk";
 import euclidean from "@/algorithms/euclidean";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import { ESymbols } from "@/common/constants";
+
 import { wasmBabyStepGiantStepIfAvailable } from "./wasm";
 
 export default function main(generator: bigint, base: bigint, modulo: bigint) {
