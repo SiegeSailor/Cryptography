@@ -1,4 +1,4 @@
-name: Publish
+name: Release
 
 on:
   push:
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository code
@@ -37,8 +37,8 @@ jobs:
       - name: Verify package
         run: npm run ci:verify
 
-      - name: Publish with semantic-release
-        run: npm run ci:publish
+      - name: Create release with semantic-release
+        run: npm run ci:release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

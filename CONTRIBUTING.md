@@ -86,7 +86,8 @@ The project is structured as follows:
 | `verify-webassembly-runtime` | Validate wasm artifacts and execute wasm smoke checks.          |
 | `ci:build`                   | Build artifacts for CI validation.                              |
 | `ci:install`                 | Install dependencies for workflow jobs.                         |
-| `ci:publish`                 | Publish package to npm with provenance.                         |
+| `ci:publish`                 | Run semantic-release for tags, GitHub release, and npm publish. |
+| `ci:release`                 | Run semantic-release for tags, GitHub release, and npm publish. |
 | `ci:test`                    | Run CI-mode tests with verbose coverage output.                 |
 | `ci:verify`                  | Execute CI test then CI build.                                  |
 | `dev:build`                  | Build wasm binaries, TypeScript output, and wasm assets.        |
@@ -118,3 +119,9 @@ The project is structured as follows:
 - Use `@/` imports for code under `source/` (configured in `tsconfig.json`).
 - Do not import internal code from `@/entry-point`; import directly from `@/<folder>` (e.g., `@/algorithms/...`).
 - Keep algorithm APIs stable and deterministic for tests.
+
+## Workflows
+
+- `Test`: runs on every push and executes test validation (`ci:test`).
+- `Publish`: runs on every push to `main` using Node.js 25 and semantic-release.
+- `Release`: runs on every push to `main` using Node.js 25 and semantic-release.
