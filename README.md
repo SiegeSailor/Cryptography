@@ -4,20 +4,23 @@
 
 This library provides a collection of cryptography algorithms. It serves as a learning resource for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows. The library is also production-ready, with a focus on performance and security, making it suitable for use in real-world applications:
 
-| Algorithm                                                                       | JavaScript | TypeScript | WebAssembly |
-| ------------------------------------------------------------------------------- | ---------- | ---------- | ----------- |
-| [Baby Step Giant Step](./source/algorithms/baby-step-giant-step/)               | ✅         | ✅         | ✅          |
-| [Blum Blum Shub](./source/algorithms/blum-blum-shub/)                           | ✅         | ✅         | ✅          |
-| [Chinese Remainder](./source/algorithms/chinese-remainder/)                     | ✅         | ✅         | ✅          |
-| [Euclidean](./source/algorithms/euclidean/)                                     | ✅         | ✅         | ✅          |
-| [Extended Euclidean](./source/algorithms/extended-euclidean/)                   | ✅         | ✅         | ✅          |
-| [Fast Modular Exponentiation](./source/algorithms/fast-modular-exponentiation/) | ✅         | ✅         | ✅          |
-| [Miller Rabin Primality Test](./source/algorithms/miller-rabin-primality-test/) | ✅         | ✅         | ✅          |
-| [Multiplicative Inverse](./source/algorithms/multiplicative-inverse/)           | ✅         | ✅         | ✅          |
-| [Naor Reingo](./source/algorithms/naor-reingo/)                                 | ✅         | ✅         | ✅          |
-| [Pollard P-1 Factorization](./source/algorithms/pollard-p-1-factorization/)     | ✅         | ✅         | ✅          |
-| [Pollard Rho](./source/algorithms/pollard-rho/)                                 | ✅         | ✅         | ✅          |
-| [Primitive Root Search](./source/algorithms/primitive-root-search/)             | ✅         | ✅         | ✅          |
+| Algorithm                   | JavaScript | TypeScript | WebAssembly |
+| --------------------------- | ---------- | ---------- | ----------- |
+| Baby Step Giant Step        | ✅         | ✅         | ✅          |
+| Blum Blum Shub              | ✅         | ✅         | ✅          |
+| Chinese Remainder           | ✅         | ✅         | ✅          |
+| Euclidean                   | ✅         | ✅         | ✅          |
+| Extended Euclidean          | ✅         | ✅         | ✅          |
+| Fast Modular Exponentiation | ✅         | ✅         | ✅          |
+| Miller Rabin Primality Test | ✅         | ✅         | ✅          |
+| Multiplicative Inverse      | ✅         | ✅         | ✅          |
+| Naor Reingo                 | ✅         | ✅         | ✅          |
+| Pollard P-1 Factorization   | ✅         | ✅         | ✅          |
+| Pollard Rho                 | ✅         | ✅         | ✅          |
+| Primitive Root Search       | ✅         | ✅         | ✅          |
+
+> [!tip]
+> Zero configuration needed. WebAssembly availability is determined at runtime, with a safe fallback to JavaScript with TypeScript support implemented.
 
 And, a CLI is available to interact with these algorithms and demonstrate the 3 key encryption flows:
 
@@ -46,13 +49,13 @@ You can use it in ESM:
 ```ts
 import {
   fastModularExponentiation,
-  millerRabinPrimarilyTest,
+  millerRabinPrimalityTest,
   euclidean,
 } from "@siegesailor/cryptography";
 
 const gcd = euclidean(614n, 513n);
 const modPow = fastModularExponentiation(2n, 100n, 71n);
-const isPrime = millerRabinPrimarilyTest(104729n, 10);
+const isPrime = millerRabinPrimalityTest(104729n, 10);
 ```
 
 Or, you can use it in CommonJS:
@@ -61,7 +64,7 @@ Or, you can use it in CommonJS:
 const {
   euclidean,
   fastModularExponentiation,
-  millerRabinPrimarilyTest,
+  millerRabinPrimalityTest,
 } = require("@siegesailor/cryptography");
 ```
 
