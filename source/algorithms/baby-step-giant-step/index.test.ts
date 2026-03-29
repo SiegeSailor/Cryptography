@@ -1,7 +1,7 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 
 import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
-import { ESymbols } from "@/common/constants";
+import { ESymbols } from "@/shared/constants";
 
 describe("Finding the Discrete Log for the given numbers", () => {
   test.each([

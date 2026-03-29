@@ -26,7 +26,7 @@ Compilers are detected in the following order:
 2. `/opt/homebrew/opt/llvm/bin/clang`
 3. `clang` in `PATH`
 
-> [!note]
+> [!tip]
 > Use a specific compiler explicitly:
 >
 > ```shell
@@ -54,11 +54,7 @@ The project is structured as follows:
 ├── 📁 source
 │   ├── 📁 algorithms
 │   │   └── 📁 [algorithm]
-│   │       ├── index.ts      # algorithm implementation
-│   │       ├── index.test.ts # tests
-│   │       ├── wasm.ts       # algorithm-local WASM availability wrapper
-│   │       └── main.c        # algorithm implementation in C for WASM compilation
-│   ├── 📁 common
+│   ├── 📁 shared
 │   ├── 📁 illustration       # key encryption flows
 │   ├── command.ts
 │   └── entry-point.ts        # package public exports only
@@ -85,31 +81,87 @@ The project is structured as follows:
 | `test`               | Run Jest test suite with default config.                        |
 | `test:coverage`      | Run Jest with coverage output for CI and release validation.    |
 
-## WASM notes
+## WebAssembly Behavior
 
-- Generated `.wasm` files are ignored by git and should not be committed.
-- If no wasm32-capable compiler is detected, `npm run build:wasm` prints a warning and skips wasm generation.
-- Use `npm run build:wasm:strict` to fail immediately when wasm compilation is unavailable.
-- Runtime still works because all algorithms preserve TypeScript fallback paths.
+<!--
+Some notes on WebAssembly behavior and guardrails:
 
-## WebAssembly behavior
+- Generated `.wasm` files are ignored on purpose
+- NPM scripts skip WASM generation when no compiler is detected, unless `WASM_STRICT` is used to fail immediately
+- If WASM is unavailable at runtime (Algorithms attempt to use its own compiled `main.wasm`), code falls back to TypeScript automatically
+-->
 
+Some notes on WebAssembly behavior and guardrails:
+
+```mermaid
+flowchart TD
+  A[Run build:wasm] --> B{Compiler found?}
+  B -->|Yes| C[Compile main.c to main.wasm]
+  B -->|No| D{WASM_STRICT set?}
+  D -->|Yes| E[Fail build immediately]
+  D -->|No| F[Skip wasm generation]
+  C --> G[Do not commit generated .wasm files]
+  F --> H[Runtime uses TypeScript fallback]
+  C --> I{WASM loads at runtime?}
+  I -->|Yes| J[Use compiled main.wasm]
+  I -->|No| H
+```
+
+## Coding conventions
+
+<!--
 - Each algorithm folder contains:
   - `index.ts` (TypeScript implementation)
   - `index.test.ts` (tests)
   - `main.c` (WASM source)
-- At runtime, each algorithm attempts to use its own compiled `main.wasm` when available.
-- If WASM is unavailable, input is unsupported by the WASM ABI, or loading fails, code falls back to TypeScript automatically.
-
-## Coding conventions
-
 - Use default export for each algorithm function in `index.ts`.
+- Use a shared higher-order WASM wrapper under `source/shared/wasm.ts` for runtime loading only.
 - Use `@/` imports for code under `source/` (configured in `tsconfig.json`).
 - Do not import internal code from `@/entry-point`; import directly from `@/<folder>` (e.g., `@/algorithms/...`).
 - Keep algorithm APIs stable and deterministic for tests.
+-->
+
+Each algorithm folder contains:
+
+```plaintext
+├── index.ts      # algorithm implementation
+├── index.test.ts # tests
+└── main.c        # algorithm implementation in C for WASM compilation
+```
+
+- Use `export default function main` for each algorithm implementation
+  1. Check if WASM (`main.wasm` compiled from `main.c`) is available with a global generic wrapper
+  2. If available, proceed with WASM implementation
+     1. Check input prerequisites in C
+     2. Errors thrown in C should be propagated and handled in TypeScript
+        - Friendly error messages are provided in C already
+  3. If not available, fall back to TypeScript implementation
+     1. Check input prerequisites in TypeScript
+     2. Errors thrown in TypeScript should be consistent with C error messages when the same input is given
+- Use `export async function prompt` for each algorithm CLI demonstration
+- Use `@/*` imports for code under `source/*`
+- Do not import internal code from `@/entry-point`
+- Keep algorithm APIs stable and deterministic for tests
 
 ## Workflows
 
+<!--
 - `Test`: runs on every push and executes `npm run test:coverage -- --ci --runInBand --verbose`.
 - `Publish`: runs on every push to `main` using Node.js 25 and semantic-release.
 - `Release`: runs on every push to `main` using Node.js 25 and semantic-release.
+-->
+
+```mermaid
+flowchart LR
+  A[Push event] --> B[Test workflow]
+  B --> C[Runs on every push]
+  B --> D[Artifact: validation result]
+  A --> E{Main branch?}
+  E -->|Yes| F[Publish workflow]
+  F --> G[Triggered by pushes to main]
+  F --> H[Artifacts: package publish and release metadata]
+  E -->|Yes| I[Release workflow]
+  I --> J[Triggered by pushes to main]
+  I --> K[Artifacts: release tag and release record]
+  E -->|No| L[Only test workflow runs]
+```

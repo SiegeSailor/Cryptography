@@ -1,4 +1,4 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 
 import chineseRemainder from "@/algorithms/chinese-remainder";
 

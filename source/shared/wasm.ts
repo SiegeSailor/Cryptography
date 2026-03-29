@@ -93,6 +93,33 @@ export function getAlgorithmWasmExports(
   }
 }
 
+export function withAlgorithmWasm<TResult>(
+  key: AlgorithmWasmKey,
+  execute: (wasmExports: WasmExports) => TResult | null,
+): TResult | null {
+  const wasmExports = getAlgorithmWasmExports(key);
+  if (!wasmExports) {
+    return null;
+  }
+
+  try {
+    return execute(wasmExports);
+  } catch {
+    return null;
+  }
+}
+
+export function createOptionalWasmInvoker<TArgs extends unknown[], TResult>(
+  key: AlgorithmWasmKey,
+  execute: (wasmExports: WasmExports, ...args: TArgs) => TResult | null,
+) {
+  return (...args: TArgs): TResult | null => {
+    return withAlgorithmWasm(key, (wasmExports) =>
+      execute(wasmExports, ...args),
+    );
+  };
+}
+
 export function fitsInI64(value: bigint) {
   return value >= MIN_I64 && value <= MAX_U64;
 }

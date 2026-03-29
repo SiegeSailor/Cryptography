@@ -1,9 +1,26 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import { randomBigIntBetween } from "@/common/random";
-import { wasmMillerRabinIfAvailable } from "./wasm";
+import { randomBigIntBetween } from "@/shared/random";
+import { createOptionalWasmInvoker, MAX_U64 } from "@/shared/wasm";
+
+const runWasmMillerRabin = createOptionalWasmInvoker<[bigint, number], boolean>(
+  "miller-rabin-primarily-test",
+  (wasmExports, input, level) => {
+    if (
+      !wasmExports.miller_rabin_u64 ||
+      input < 0n ||
+      input > MAX_U64 ||
+      !Number.isInteger(level) ||
+      level <= 0
+    ) {
+      return null;
+    }
+
+    return wasmExports.miller_rabin_u64(input, level) === 1;
+  },
+);
 
 export default function main(input: bigint, level: number) {
   if (input <= 1n || input === 4n) return false;
@@ -12,7 +29,7 @@ export default function main(input: bigint, level: number) {
     throw new Error("level must be a positive integer.");
   }
 
-  const maybeWasmResult = wasmMillerRabinIfAvailable(input, level);
+  const maybeWasmResult = runWasmMillerRabin(input, level);
   if (maybeWasmResult !== null) {
     return maybeWasmResult;
   }
@@ -44,26 +61,37 @@ export default function main(input: bigint, level: number) {
   return true;
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log("\tisPrime(number, level) = result");
-  console.log(chalk.gray("\tisPrime(104729, 10) = true"));
+const runPrompt = createAlgorithmPrompt(
+  "miller-rabin-primarily-test",
+  async ({ ask, writeLine }) => {
+    writeLine("\tisPrime(number, level) = result");
+    writeLine(chalk.gray("\tisPrime(104729, 10) = true"));
 
-  const { input, level } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "input",
-      message: `Enter ${chalk.italic("number")}:`,
-      default: 104729,
-    },
-    {
-      type: "number",
-      name: "level",
-      message: `Enter ${chalk.italic("level")}:`,
-      default: 10,
-    },
-  ]);
+    const { input, level } = await ask<{ input: number; level: number }>([
+      {
+        type: "number",
+        name: "input",
+        message: `Enter ${chalk.italic("number")}:`,
+        default: 104729,
+      },
+      {
+        type: "number",
+        name: "level",
+        message: `Enter ${chalk.italic("level")}:`,
+        default: 10,
+      },
+    ]);
 
-  const result = main(BigInt(input), Number(level));
-  console.log(`\tisPrime(${input}, ${level}) = ${result}`);
+    const result = main(BigInt(input), Number(level));
+    writeLine(`\tisPrime(${input}, ${level}) = ${result}`);
+
+    return {
+      inputs: { input, level },
+      result,
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

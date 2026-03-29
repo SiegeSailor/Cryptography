@@ -1,9 +1,54 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
-import { wasmPrimitiveRootsIfAvailable } from "./wasm";
+import {
+  createI64Allocator,
+  createOptionalWasmInvoker,
+  fitsInI64,
+  I64_BYTES,
+} from "@/shared/wasm";
+
+const runWasmPrimitiveRoots = createOptionalWasmInvoker<[bigint], bigint[]>(
+  "primitive-root-search",
+  (wasmExports, prime) => {
+    if (
+      !wasmExports.primitive_root_search_i64 ||
+      prime <= 2n ||
+      !fitsInI64(prime)
+    ) {
+      return null;
+    }
+
+    const maxRoots = Number(prime - 1n);
+    if (!Number.isFinite(maxRoots) || maxRoots <= 0 || maxRoots > 10_000) {
+      return null;
+    }
+
+    const allocator = createI64Allocator(wasmExports);
+    allocator.reset();
+
+    const rootsPtr = allocator.allocate(maxRoots * I64_BYTES);
+    const view = allocator.view();
+    if (rootsPtr === null || !view) {
+      return null;
+    }
+
+    const count = wasmExports.primitive_root_search_i64(
+      prime,
+      rootsPtr,
+      maxRoots,
+    );
+    const result: bigint[] = [];
+    const limit = Math.min(count, maxRoots);
+    for (let index = 0; index < limit; index++) {
+      result.push(view[rootsPtr / I64_BYTES + index]);
+    }
+
+    return result;
+  },
+);
 
 export default function main(prime: number): [number[][], number[]] {
   if (!millerRabinPrimarilyTest(BigInt(prime), 10))
@@ -16,7 +61,7 @@ export default function main(prime: number): [number[][], number[]] {
 
   const arrayOfResult: number[] = [];
 
-  const maybeWasmRoots = wasmPrimitiveRootsIfAvailable(BigInt(prime));
+  const maybeWasmRoots = runWasmPrimitiveRoots(BigInt(prime));
   if (maybeWasmRoots !== null) {
     for (const root of maybeWasmRoots) {
       arrayOfResult.push(Number(root));
@@ -60,24 +105,35 @@ export default function main(prime: number): [number[][], number[]] {
   return [table, arrayOfResult];
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log("\tprimitive roots for x = y1, y2, y3...");
-  console.log(
-    chalk.gray(
-      "\tprimitive roots for 23 = 5, 7, 10, 11, 14, 15, 17, 19, 20, 21",
-    ),
-  );
+const runPrompt = createAlgorithmPrompt(
+  "primitive-root-search",
+  async ({ ask, writeLine }) => {
+    writeLine("\tprimitive roots for x = y1, y2, y3...");
+    writeLine(
+      chalk.gray(
+        "\tprimitive roots for 23 = 5, 7, 10, 11, 14, 15, 17, 19, 20, 21",
+      ),
+    );
 
-  const { prime } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "prime",
-      message: `Enter ${chalk.italic("prime")}:`,
-      default: 7,
-    },
-  ]);
+    const { prime } = await ask<{ prime: number }>([
+      {
+        type: "number",
+        name: "prime",
+        message: `Enter ${chalk.italic("prime")}:`,
+        default: 7,
+      },
+    ]);
 
-  const result = main(prime);
-  console.log(`primitive roots for ${prime} = ${result[1].sort()}`);
+    const result = main(prime);
+    writeLine(`primitive roots for ${prime} = ${result[1].sort()}`);
+
+    return {
+      inputs: { prime },
+      result,
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

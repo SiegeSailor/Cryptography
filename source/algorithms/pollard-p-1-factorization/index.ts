@@ -1,15 +1,32 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import pollardRho from "@/algorithms/pollard-rho";
-import { wasmPollardP1IfAvailable } from "./wasm";
+import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+
+const runWasmPollardP1 = createOptionalWasmInvoker<[bigint, number], bigint>(
+  "pollard-p-1-factorization",
+  (wasmExports, input, maxExponent) => {
+    if (
+      !wasmExports.pollard_p1_i64 ||
+      !fitsInI64(input) ||
+      !Number.isInteger(maxExponent) ||
+      maxExponent <= 0
+    ) {
+      return null;
+    }
+
+    const result = wasmExports.pollard_p1_i64(input, maxExponent);
+    return result > 1n ? result : null;
+  },
+);
 
 export default function main(input: bigint) {
   const pollardPMinusOne = (n: bigint) => {
-    const maybeWasmFactor = wasmPollardP1IfAvailable(n, 2500);
+    const maybeWasmFactor = runWasmPollardP1(n, 2500);
     if (
       maybeWasmFactor !== null &&
       maybeWasmFactor > 1n &&
@@ -65,22 +82,33 @@ export default function main(input: bigint) {
   return factors.map((factor) => Number(factor));
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log(
-    "\tFactorize a composite number using Pollard p-1 (with fallback). ",
-  );
-  console.log(chalk.gray("\tinput = 8051 -> factors = [83, 97]"));
+const runPrompt = createAlgorithmPrompt(
+  "pollard-p-1-factorization",
+  async ({ ask, writeLine }) => {
+    writeLine(
+      "\tFactorize a composite number using Pollard p-1 (with fallback). ",
+    );
+    writeLine(chalk.gray("\tinput = 8051 -> factors = [83, 97]"));
 
-  const { input } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "input",
-      message: `Enter ${chalk.italic("composite number")}:`,
-      default: 8051,
-    },
-  ]);
+    const { input } = await ask<{ input: number }>([
+      {
+        type: "number",
+        name: "input",
+        message: `Enter ${chalk.italic("composite number")}:`,
+        default: 8051,
+      },
+    ]);
 
-  const result = main(BigInt(input));
-  console.log(`\tFactors = ${result}`);
+    const result = main(BigInt(input));
+    writeLine(`\tFactors = ${result}`);
+
+    return {
+      inputs: { input },
+      result,
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

@@ -1,12 +1,12 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 
-import { ESymbols } from "@/common/constants";
-import { getInquirer } from "@/common/inquirer";
+import { ESymbols } from "@/shared/constants";
+import { getInquirer } from "@/shared/inquirer";
 
 export default class Procedure {
   public run: () => Promise<void>;
 
-  constructor(name: string, callback: () => Promise<void>) {
+  constructor(name: string, callback: () => Promise<unknown>) {
     const wrap = async () => {
       const timestamp = Date.now().toString(36).toUpperCase();
       console.log(chalk.bold(`\tProcedure identifier: ${timestamp}`));

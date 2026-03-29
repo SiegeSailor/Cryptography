@@ -1,8 +1,51 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
-import { randomBigIntBetween } from "@/common/random";
-import { wasmNaorReingoIfAvailable } from "./wasm";
+import { randomBigIntBetween } from "@/shared/random";
+import {
+  createI64Allocator,
+  createOptionalWasmInvoker,
+  fitsInI64,
+  I64_BYTES,
+} from "@/shared/wasm";
+
+const runWasmNaorReingo = createOptionalWasmInvoker<
+  [number, number, bigint],
+  bigint[]
+>("naor-reingo", (wasmExports, count, digits, seed) => {
+  if (
+    !wasmExports.naor_reingo_fill_i64 ||
+    !Number.isInteger(count) ||
+    count <= 0 ||
+    !Number.isInteger(digits) ||
+    digits <= 0 ||
+    digits > 18 ||
+    !fitsInI64(seed)
+  ) {
+    return null;
+  }
+
+  const allocator = createI64Allocator(wasmExports);
+  allocator.reset();
+
+  const outPtr = allocator.allocate(count * I64_BYTES);
+  const view = allocator.view();
+  if (outPtr === null || !view) {
+    return null;
+  }
+
+  const written = wasmExports.naor_reingo_fill_i64(count, digits, seed, outPtr);
+  if (written !== count) {
+    return null;
+  }
+
+  const values: bigint[] = [];
+  for (let index = 0; index < count; index++) {
+    values.push(view[outPtr / I64_BYTES + index]);
+  }
+
+  return values;
+});
 
 export default function main(count: number, digits: number) {
   if (!Number.isInteger(count) || count <= 0) {
@@ -15,11 +58,7 @@ export default function main(count: number, digits: number) {
   const lowerBound = 10n ** BigInt(Math.max(0, digits - 1));
   const upperBound = 10n ** BigInt(digits) - 1n;
 
-  const maybeWasmValues = wasmNaorReingoIfAvailable(
-    count,
-    digits,
-    BigInt(Date.now()),
-  );
+  const maybeWasmValues = runWasmNaorReingo(count, digits, BigInt(Date.now()));
   if (maybeWasmValues !== null) {
     return maybeWasmValues.map((value) => Number(value));
   }
@@ -32,28 +71,39 @@ export default function main(count: number, digits: number) {
   return arrayOfResult;
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log(
-    "\tGenerate pseudo-random decimal numbers with fixed digit length.",
-  );
-  console.log(chalk.gray("\tcount = 3, digits = 2 -> [.., .., ..]"));
+const runPrompt = createAlgorithmPrompt(
+  "naor-reingo",
+  async ({ ask, writeLine }) => {
+    writeLine(
+      "\tGenerate pseudo-random decimal numbers with fixed digit length.",
+    );
+    writeLine(chalk.gray("\tcount = 3, digits = 2 -> [.., .., ..]"));
 
-  const { count, digits } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "count",
-      message: `Enter ${chalk.italic("count")}:`,
-      default: 3,
-    },
-    {
-      type: "number",
-      name: "digits",
-      message: `Enter ${chalk.italic("digits")}:`,
-      default: 2,
-    },
-  ]);
+    const { count, digits } = await ask<{ count: number; digits: number }>([
+      {
+        type: "number",
+        name: "count",
+        message: `Enter ${chalk.italic("count")}:`,
+        default: 3,
+      },
+      {
+        type: "number",
+        name: "digits",
+        message: `Enter ${chalk.italic("digits")}:`,
+        default: 2,
+      },
+    ]);
 
-  const result = main(Number(count), Number(digits));
-  console.log(`\tResult = ${result}`);
+    const result = main(Number(count), Number(digits));
+    writeLine(`\tResult = ${result}`);
+
+    return {
+      inputs: { count, digits },
+      result,
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

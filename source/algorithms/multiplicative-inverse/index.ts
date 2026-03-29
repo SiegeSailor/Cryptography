@@ -1,8 +1,37 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import extendedEuclidean from "@/algorithms/extended-euclidean";
-import { wasmMultiplicativeInverseIfAvailable } from "./wasm";
+import {
+  createOptionalWasmInvoker,
+  fitsInI64,
+  MIN_I64,
+  normalizeI64,
+} from "@/shared/wasm";
+
+const runWasmMultiplicativeInverse = createOptionalWasmInvoker<
+  [bigint, bigint],
+  bigint
+>("multiplicative-inverse", (wasmExports, base, modulo) => {
+  if (
+    !wasmExports.multiplicative_inverse_i64 ||
+    modulo <= 1n ||
+    !fitsInI64(base) ||
+    !fitsInI64(modulo)
+  ) {
+    return null;
+  }
+
+  const value = wasmExports.multiplicative_inverse_i64(
+    normalizeI64(base),
+    normalizeI64(modulo),
+  );
+  if (value === MIN_I64) {
+    return null;
+  }
+
+  return value;
+});
 
 export default function main(base: bigint, modulo: bigint, number: number) {
   if (modulo <= 1n) {
@@ -12,7 +41,7 @@ export default function main(base: bigint, modulo: bigint, number: number) {
     throw new Error("number must be a positive integer.");
   }
 
-  const maybeWasmInverse = wasmMultiplicativeInverseIfAvailable(base, modulo);
+  const maybeWasmInverse = runWasmMultiplicativeInverse(base, modulo);
   let inverse: bigint;
 
   if (maybeWasmInverse !== null) {
@@ -34,34 +63,49 @@ export default function main(base: bigint, modulo: bigint, number: number) {
   return arrayOfInverse;
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log("\tmultiplicativeInverse(base, modulo, count) = [values]");
-  console.log(
-    chalk.gray("\tmultiplicativeInverse(23, 41, 5) = [25,50,75,100,125]"),
-  );
+const runPrompt = createAlgorithmPrompt(
+  "multiplicative-inverse",
+  async ({ ask, writeLine }) => {
+    writeLine("\tmultiplicativeInverse(base, modulo, count) = [values]");
+    writeLine(
+      chalk.gray("\tmultiplicativeInverse(23, 41, 5) = [25,50,75,100,125]"),
+    );
 
-  const { base, modulo, number } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "base",
-      message: `Enter ${chalk.italic("base")}:`,
-      default: 23,
-    },
-    {
-      type: "number",
-      name: "modulo",
-      message: `Enter ${chalk.italic("modulo")}:`,
-      default: 41,
-    },
-    {
-      type: "number",
-      name: "number",
-      message: `Enter ${chalk.italic("count")}:`,
-      default: 5,
-    },
-  ]);
+    const { base, modulo, number } = await ask<{
+      base: number;
+      modulo: number;
+      number: number;
+    }>([
+      {
+        type: "number",
+        name: "base",
+        message: `Enter ${chalk.italic("base")}:`,
+        default: 23,
+      },
+      {
+        type: "number",
+        name: "modulo",
+        message: `Enter ${chalk.italic("modulo")}:`,
+        default: 41,
+      },
+      {
+        type: "number",
+        name: "number",
+        message: `Enter ${chalk.italic("count")}:`,
+        default: 5,
+      },
+    ]);
 
-  const result = main(BigInt(base), BigInt(modulo), Number(number));
-  console.log(`\tResult = ${result}`);
+    const result = main(BigInt(base), BigInt(modulo), Number(number));
+    writeLine(`\tResult = ${result}`);
+
+    return {
+      inputs: { base, modulo, count: number },
+      result,
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

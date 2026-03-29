@@ -1,10 +1,27 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
-import { randomBigIntBits, randomBigIntBetween } from "@/common/random";
-import { wasmBlumBlumShubNextIfAvailable } from "./wasm";
+import { randomBigIntBits, randomBigIntBetween } from "@/shared/random";
+import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+
+const runWasmBlumBlumShubNext = createOptionalWasmInvoker<
+  [bigint, bigint],
+  bigint
+>("blum-blum-shub", (wasmExports, state, modulus) => {
+  if (
+    !wasmExports.blum_blum_shub_next_u64 ||
+    state < 0n ||
+    modulus <= 0n ||
+    !fitsInI64(state) ||
+    !fitsInI64(modulus)
+  ) {
+    return null;
+  }
+
+  return wasmExports.blum_blum_shub_next_u64(state, modulus);
+});
 
 export default function main(bits: number) {
   if (!Number.isInteger(bits) || bits < 8) {
@@ -47,7 +64,7 @@ export default function main(bits: number) {
   let result = (seed * seed) % m;
 
   return () => {
-    const maybeWasmResult = wasmBlumBlumShubNextIfAvailable(result, m);
+    const maybeWasmResult = runWasmBlumBlumShubNext(result, m);
     if (maybeWasmResult !== null) {
       result = maybeWasmResult;
       return result;
@@ -58,22 +75,35 @@ export default function main(bits: number) {
   };
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log(`\tgenerate a 8-bit pseudo-random number x. x = result`);
-  console.log(
-    chalk.gray(`\tx is smaller or equal to ${Math.pow(2, 8) * Math.pow(2, 8)}`),
-  );
+const runPrompt = createAlgorithmPrompt(
+  "blum-blum-shub",
+  async ({ ask, writeLine }) => {
+    writeLine(`\tgenerate a 8-bit pseudo-random number x. x = result`);
+    writeLine(
+      chalk.gray(
+        `\tx is smaller or equal to ${Math.pow(2, 8) * Math.pow(2, 8)}`,
+      ),
+    );
 
-  const { bits } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "bits",
-      message: `Enter ${chalk.italic("bits")}:`,
-      default: 1,
-    },
-  ]);
+    const { bits } = await ask<{ bits: number }>([
+      {
+        type: "number",
+        name: "bits",
+        message: `Enter ${chalk.italic("bits")}:`,
+        default: 8,
+      },
+    ]);
 
-  const x = main(bits)();
-  console.log(`\t${bits}-bit x = ${x}`);
+    const result = main(bits)();
+    writeLine(`\t${bits}-bit x = ${result}`);
+
+    return {
+      inputs: { bits },
+      result,
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

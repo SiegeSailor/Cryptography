@@ -1,11 +1,12 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 import { readdirSync } from "fs";
 import { isAbsolute, join } from "path";
 
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
-import { randomBigIntBits } from "@/common/random";
-import Procedure from "@/common/Procedure";
-import { getInquirer } from "@/common/inquirer";
+import type { PromptHandler } from "@/shared/prompt";
+import { randomBigIntBits } from "@/shared/random";
+import Procedure from "@/shared/Procedure";
+import { getInquirer } from "@/shared/inquirer";
 
 export const math = {
   absolute: (input: bigint) => {
@@ -82,7 +83,7 @@ export const inquire = {
 
       const name = fileFormatter(arrayOfFile[index]);
       console.log(chalk.gray(name));
-      const { prompt }: { prompt: () => Promise<void> } = await import(
+      const { prompt }: { prompt: PromptHandler } = await import(
         join(targetPath, arrayOfFile[index])
       );
       if (!prompt)

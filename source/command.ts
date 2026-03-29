@@ -1,9 +1,9 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 import { join } from "path";
 
-import { format, inquire } from "@/common/utilities";
-import { EChoices } from "@/common/constants";
-import { getInquirer } from "@/common/inquirer";
+import { format, inquire } from "@/shared/utilities";
+import { EChoices } from "@/shared/constants";
+import { getInquirer } from "@/shared/inquirer";
 
 async function main(message = "What do you want to do?") {
   try {

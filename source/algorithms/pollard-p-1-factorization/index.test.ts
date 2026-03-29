@@ -1,4 +1,4 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 
 import pollardP1Factorization from "@/algorithms/pollard-p-1-factorization";
 

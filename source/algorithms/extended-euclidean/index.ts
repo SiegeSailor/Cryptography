@@ -1,10 +1,54 @@
-import chalk from "@/common/chalk";
-import { getInquirer } from "@/common/inquirer";
+import chalk from "@/shared/chalk";
+import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
+import {
+  createI64Allocator,
+  createOptionalWasmInvoker,
+  fitsInI64,
+  I64_BYTES,
+  normalizeI64,
+} from "@/shared/wasm";
 
-import { wasmExtendedEuclideanIfAvailable } from "./wasm";
+const runWasmExtendedEuclidean = createOptionalWasmInvoker<
+  [bigint, bigint],
+  [bigint, bigint, bigint]
+>("extended-euclidean", (wasmExports, left, right) => {
+  if (
+    !wasmExports.extended_euclidean_i64 ||
+    !fitsInI64(left) ||
+    !fitsInI64(right)
+  ) {
+    return null;
+  }
+
+  const allocator = createI64Allocator(wasmExports);
+  allocator.reset();
+
+  const gcdPtr = allocator.allocate(I64_BYTES);
+  const xPtr = allocator.allocate(I64_BYTES);
+  const yPtr = allocator.allocate(I64_BYTES);
+  const view = allocator.view();
+
+  if (gcdPtr === null || xPtr === null || yPtr === null || !view) {
+    return null;
+  }
+
+  wasmExports.extended_euclidean_i64(
+    normalizeI64(left),
+    normalizeI64(right),
+    gcdPtr,
+    xPtr,
+    yPtr,
+  );
+
+  return [
+    view[gcdPtr / I64_BYTES],
+    view[xPtr / I64_BYTES],
+    view[yPtr / I64_BYTES],
+  ];
+});
 
 export default function main(left: bigint, right: bigint) {
-  const wasmResult = wasmExtendedEuclideanIfAvailable(left, right);
+  const wasmResult = runWasmExtendedEuclidean(left, right);
   if (wasmResult !== null) {
     return wasmResult;
   }
@@ -23,28 +67,39 @@ export default function main(left: bigint, right: bigint) {
   return recursion(left, right);
 }
 
-export async function prompt() {
-  const inquirer = await getInquirer();
-  console.log("\tGCD(left, right) = result");
-  console.log(chalk.gray("\tGCD(106, 112) = -19 * 106 + 18 * 112 = 2"));
+const runPrompt = createAlgorithmPrompt(
+  "extended-euclidean",
+  async ({ ask, writeLine }) => {
+    writeLine("\tGCD(left, right) = result");
+    writeLine(chalk.gray("\tGCD(106, 112) = -19 * 106 + 18 * 112 = 2"));
 
-  const { left, right } = await inquirer.prompt([
-    {
-      type: "number",
-      name: "left",
-      message: `Enter ${chalk.italic("left")}:`,
-      default: 1,
-    },
-    {
-      type: "number",
-      name: "right",
-      message: `Enter ${chalk.italic("right")}:`,
-      default: 1,
-    },
-  ]);
+    const { left, right } = await ask<{ left: number; right: number }>([
+      {
+        type: "number",
+        name: "left",
+        message: `Enter ${chalk.italic("left")}:`,
+        default: 1,
+      },
+      {
+        type: "number",
+        name: "right",
+        message: `Enter ${chalk.italic("right")}:`,
+        default: 1,
+      },
+    ]);
 
-  const [result, x, y] = main(BigInt(left), BigInt(right));
-  console.log(
-    `GCD(${left}, ${right}) = ${x} * ${left} + ${y} * ${right} = ${result}`,
-  );
+    const [result, x, y] = main(BigInt(left), BigInt(right));
+    writeLine(
+      `GCD(${left}, ${right}) = ${x} * ${left} + ${y} * ${right} = ${result}`,
+    );
+
+    return {
+      inputs: { left, right },
+      result: [result, x, y],
+    };
+  },
+);
+
+export async function prompt(options?: PromptOptions) {
+  return runPrompt(options);
 }

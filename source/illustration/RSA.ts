@@ -1,11 +1,11 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 
 import euclidean from "@/algorithms/euclidean";
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import pollardP1Factorization from "@/algorithms/pollard-p-1-factorization";
-import { EActors } from "@/common/constants";
-import { log, inquire, wrap } from "@/common/utilities";
+import { EActors } from "@/shared/constants";
+import { log, inquire, wrap } from "@/shared/utilities";
 
 export async function prompt() {
   try {

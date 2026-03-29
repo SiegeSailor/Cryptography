@@ -1,11 +1,11 @@
-import chalk from "@/common/chalk";
+import chalk from "@/shared/chalk";
 
 import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import primitiveRootSearch from "@/algorithms/primitive-root-search";
-import { EActors } from "@/common/constants";
-import { inquire, log, wrap } from "@/common/utilities";
-import { randomBigIntBetween } from "@/common/random";
+import { EActors } from "@/shared/constants";
+import { inquire, log, wrap } from "@/shared/utilities";
+import { randomBigIntBetween } from "@/shared/random";
 
 export async function prompt() {
   console.log(
