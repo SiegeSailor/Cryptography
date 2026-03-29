@@ -24,9 +24,9 @@ This library provides a collection of cryptography algorithms. It serves as a le
 
 And, a CLI is available to interact with these algorithms and demonstrate the 3 key encryption flows:
 
-- [Diffie Hellman Key Exchange](./source/illustration/DiffieHellman.ts)
-- [ElGamal](./source/illustration/ElGamal.ts)
-- [RSA](./source/illustration/RSA.ts)
+- [Diffie Hellman Key Exchange](./source/key-encryption/DiffieHellman.ts)
+- [ElGamal](./source/key-encryption/ElGamal.ts)
+- [RSA](./source/key-encryption/RSA.ts)
 
 ## Installation
 

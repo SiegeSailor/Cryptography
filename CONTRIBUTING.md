@@ -55,8 +55,8 @@ The project is structured as follows:
 │   ├── 📁 algorithms
 │   │   └── 📁 [algorithm]
 │   ├── 📁 shared
-│   ├── 📁 illustration       # key encryption flows
-│   ├── command.ts
+│   ├── 📁 key-encryption
+│   ├── command.ts.           # entrypoint for CLI
 │   └── entry-point.ts        # package public exports only
 ├── 📁 scripts
 └── 📁 build
