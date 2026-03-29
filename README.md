@@ -2,7 +2,7 @@
 
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
-This library provides a collection of cryptography algorithms. It serves as a learning resource for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows. The library is also production-ready, with a focus on performance and security, making it suitable for use in real-world applications:
+This library provides a collection of cryptography algorithms. It serves as a learning resource (Inspired by [Boston University MET CS 789](https://www.bu.edu/academics/met/courses/met-cs-789/)) for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows. The library is also production-ready, with a focus on performance and security, making it suitable for use in real-world applications:
 
 | Algorithm                   | JavaScript | TypeScript | WebAssembly |
 | --------------------------- | ---------- | ---------- | ----------- |
