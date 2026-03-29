@@ -4,30 +4,36 @@ Thank you for contributing to Cryptography. Please read through the following gu
 
 ## Prerequisites
 
-Required software for the client module:
+Required software for development and CI:
 
 - [Node.js](https://nodejs.org/): `>= 25.2.1`
-- [LLVM Clang](https://clang.llvm.org/) with `wasm32` target support
-- [LLVM LLD](https://lld.llvm.org/) (`wasm-ld` linker)
+- [LLVM Clang](https://clang.llvm.org/): `>= 22.1.1`
+- [LLVM LLD](https://lld.llvm.org/): `>= 22.1.1`
 
-macOS setup for WASM builds:
+<details>
+<summary>Setup macOS</summary>
 
-```bash
+We recommend using [NVM](https://github.com/nvm-sh/nvm) to manage Node.js versions on your machine. After setting up Node.js, you can install the Homebrew packages for WASM compilation:
+
+```shell
 brew install llvm
 brew install lld
 ```
 
-The build script auto-detects compilers in this order:
+Compilers are detected in the following order:
 
-1. `WASM_CLANG` environment variable (if set)
+1. `WASM_CLANG` environment variable
 2. `/opt/homebrew/opt/llvm/bin/clang`
-3. `clang` from your `PATH`
+3. `clang` in `PATH`
 
-If you want to use a specific compiler explicitly:
+> [!note]
+> Use a specific compiler explicitly:
+>
+> ```shell
+> WASM_CLANG=/opt/homebrew/opt/llvm/bin/clang npm run build:wasm:strict
+> ```
 
-```bash
-WASM_CLANG=/opt/homebrew/opt/llvm/bin/clang npm run build-webassembly-strict
-```
+</details>
 
 ## Branching Strategy
 
@@ -38,7 +44,7 @@ This is basically a Git Flow with some adjustment to fit the NPM release process
 | `develop`        |                   |              | `release`            |
 | `feature-<name>` |                   | `develop`    | `develop`            |
 | `main`           | `#.#.#`           |              |                      |
-| `release`        | `#.#.#-release.#` | `develop`    | `main` and `develop` |
+| `release`        | `#.#.#-release.#` | `main`       | `main` and `develop` |
 
 ## Project Structure
 
@@ -62,46 +68,28 @@ The project is structured as follows:
 
 ## Commands
 
-### NPM script rules (condensed)
+[NPM scripts](./package.json) are organized with [ESLint Package.json Conventions](https://eslint.org/docs/latest/contribute/package-json-conventions):
 
-1. `ci:<command>` is reserved for GitHub workflows only.
-2. `dev:<command>` is reserved for local development workflows.
-3. Unprefixed commands are atomic internal building blocks and use hyphenated names.
-4. Workflow files call only `ci:*` scripts.
-5. Scripts that only print echo messages are removed.
-6. `pre*` and `post*` hooks are not used for orchestration.
-
-### Command reference
-
-| Command                      | Purpose                                                         |
-| ---------------------------- | --------------------------------------------------------------- |
-| `build-typescript-output`    | Compile TypeScript and rewrite path aliases.                    |
-| `build-webassembly-assets`   | Copy generated wasm binaries to build output tree.              |
-| `build-webassembly-binaries` | Compile algorithm `main.c` files to `main.wasm` when available. |
-| `build-webassembly-strict`   | Compile wasm and fail when wasm compilation is unavailable.     |
-| `clean-workspace-files`      | Remove generated build directories.                             |
-| `run-cli-compiled`           | Run CLI from compiled build output.                             |
-| `run-cli-typescript`         | Run CLI directly from TypeScript sources.                       |
-| `test-unit-suite`            | Run Jest test suite with default config.                        |
-| `verify-webassembly-runtime` | Validate wasm artifacts and execute wasm smoke checks.          |
-| `ci:build`                   | Build artifacts for CI validation.                              |
-| `ci:install`                 | Install dependencies for workflow jobs.                         |
-| `ci:publish`                 | Run semantic-release for tags, GitHub release, and npm publish. |
-| `ci:release`                 | Run semantic-release for tags, GitHub release, and npm publish. |
-| `ci:test`                    | Run CI-mode tests with verbose coverage output.                 |
-| `ci:verify`                  | Execute CI test then CI build.                                  |
-| `dev:build`                  | Build wasm binaries, TypeScript output, and wasm assets.        |
-| `dev:clean`                  | Clean workspace outputs during local work.                      |
-| `dev:run-compiled`           | Start compiled CLI flow.                                        |
-| `dev:run`                    | Start local TypeScript CLI flow.                                |
-| `dev:test-wasm`              | Strict wasm build + wasm runtime verify + unit tests.           |
-| `dev:test`                   | Run local unit tests.                                           |
+| Command              | Purpose                                                         |
+| -------------------- | --------------------------------------------------------------- |
+| `build`              | Build wasm binaries, TypeScript output, and wasm assets.        |
+| `build:clean`        | Remove generated build directories.                             |
+| `build:typescript`   | Compile TypeScript and rewrite path aliases.                    |
+| `build:wasm`         | Compile algorithm `main.c` files to `main.wasm` when available. |
+| `build:wasm-assets`  | Copy generated wasm binaries to build output tree.              |
+| `build:wasm:check`   | Validate wasm artifacts and execute wasm smoke checks.          |
+| `build:wasm:strict`  | Compile wasm and fail when wasm compilation is unavailable.     |
+| `release`            | Run semantic-release for tags, GitHub release, and npm publish. |
+| `start:cli`          | Run CLI directly from TypeScript sources.                       |
+| `start:cli:compiled` | Run CLI from compiled build output.                             |
+| `test`               | Run Jest test suite with default config.                        |
+| `test:coverage`      | Run Jest with coverage output for CI and release validation.    |
 
 ## WASM notes
 
 - Generated `.wasm` files are ignored by git and should not be committed.
-- If no wasm32-capable compiler is detected, `npm run build-webassembly-binaries` prints a warning and skips wasm generation.
-- Use `npm run build-webassembly-strict` to fail immediately when wasm compilation is unavailable.
+- If no wasm32-capable compiler is detected, `npm run build:wasm` prints a warning and skips wasm generation.
+- Use `npm run build:wasm:strict` to fail immediately when wasm compilation is unavailable.
 - Runtime still works because all algorithms preserve TypeScript fallback paths.
 
 ## WebAssembly behavior
@@ -122,6 +110,6 @@ The project is structured as follows:
 
 ## Workflows
 
-- `Test`: runs on every push and executes test validation (`ci:test`).
+- `Test`: runs on every push and executes `npm run test:coverage -- --ci --runInBand --verbose`.
 - `Publish`: runs on every push to `main` using Node.js 25 and semantic-release.
 - `Release`: runs on every push to `main` using Node.js 25 and semantic-release.
