@@ -1,19 +1,19 @@
-export enum EChoices {
-  Demonstrate = "Demonstrate a cryptography procedure",
-  Execute = "Execute individual algorithm",
-  Exit = "Exit",
-}
+export const CHOICES = {
+  DEMONSTRATE: "Demonstrate a cryptography procedure",
+  EXECUTE: "Execute individual algorithm",
+  EXIT: "Exit",
+} as const;
 
-export enum ESymbols {
-  Congruent = "\u2245",
-  ArrowModifierTop = "\u2227",
-  ArrowModifierBottom = "\u2228",
-  ArrowDownloadTop = "\u2191",
-  ArrowDownloadBottom = "\u2193",
-}
+export const SYMBOLS = {
+  CONGRUENT: "\u2245",
+  ARROW_MODIFIER_TOP: "\u2227",
+  ARROW_MODIFIER_BOTTOM: "\u2228",
+  ARROW_DOWNLOAD_TOP: "\u2191",
+  ARROW_DOWNLOAD_BOTTOM: "\u2193",
+} as const;
 
-export enum EActors {
-  Alice = "Alice",
-  Bob = "Bob",
-  Eve = "Eve",
-}
+export const ACTORS = {
+  ALICE: "Alice",
+  BOB: "Bob",
+  EVE: "Eve",
+} as const;

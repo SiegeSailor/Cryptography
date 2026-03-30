@@ -2,7 +2,7 @@ import chalk from "@/shared/chalk";
 import { join } from "path";
 
 import { format, inquire } from "@/shared/utilities";
-import { EChoices } from "@/shared/constants";
+import { CHOICES } from "@/shared/constants";
 import { getInquirer } from "@/shared/inquirer";
 
 async function main(message = "What do you want to do?") {
@@ -14,15 +14,15 @@ async function main(message = "What do you want to do?") {
         name: "_",
         message,
         choices: [
-          { name: EChoices.Demonstrate, value: EChoices.Demonstrate },
-          { name: EChoices.Execute, value: EChoices.Execute },
-          { name: EChoices.Exit, value: EChoices.Exit },
+          { name: CHOICES.DEMONSTRATE, value: CHOICES.DEMONSTRATE },
+          { name: CHOICES.EXECUTE, value: CHOICES.EXECUTE },
+          { name: CHOICES.EXIT, value: CHOICES.EXIT },
         ],
       },
     ]);
 
     switch (purpose) {
-      case EChoices.Demonstrate:
+      case CHOICES.DEMONSTRATE:
         await inquire.procedure(
           join(__dirname, "key-encryption"),
           "Which cryptograph procedure do you want to demonstrate?",
@@ -30,7 +30,7 @@ async function main(message = "What do you want to do?") {
         );
         main();
         break;
-      case EChoices.Execute:
+      case CHOICES.EXECUTE:
         await inquire.procedure(
           join(__dirname, "algorithms"),
           "Which cryptograph algorithm do you want to execute?",
@@ -38,7 +38,7 @@ async function main(message = "What do you want to do?") {
         );
         main();
         break;
-      case EChoices.Exit:
+      case CHOICES.EXIT:
         console.log(chalk.gray("Successfully terminated the program.\n"));
         break;
       default:

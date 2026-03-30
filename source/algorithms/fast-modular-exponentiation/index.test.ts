@@ -1,7 +1,7 @@
 import chalk from "@/shared/chalk";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import { ESymbols } from "@/shared/constants";
+import { SYMBOLS } from "@/shared/constants";
 
 describe("Calculating the remainder from doing modulus for a number with exponentiation", () => {
   test.each([
@@ -11,7 +11,7 @@ describe("Calculating the remainder from doing modulus for a number with exponen
     [985019284, 118293113, 13, 6],
     [1314520, 17, 11, 4],
   ])(
-    `%p^%p % %p ${ESymbols.Congruent} x.\n\tx = ${chalk.greenBright("%p")}`,
+    `%p^%p % %p ${SYMBOLS.CONGRUENT} x.\n\tx = ${chalk.greenBright("%p")}`,
     (base, exponent, modulo, result) => {
       expect(
         fastModularExponentiation(

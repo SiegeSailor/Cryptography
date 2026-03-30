@@ -1,7 +1,7 @@
 import chalk from "@/shared/chalk";
 import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
-import { ESymbols } from "@/shared/constants";
+import { SYMBOLS } from "@/shared/constants";
 import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
 
 const runWasmPowMod = createOptionalWasmInvoker<
@@ -58,8 +58,8 @@ export default function main(
 const runPrompt = createAlgorithmPrompt(
   "fast-modular-exponentiation",
   async ({ ask, writeLine }) => {
-    writeLine(`\tbase^exponent % modulo ${ESymbols.Congruent} x. x = result`);
-    writeLine(chalk.gray(`\t2^100 % 71 ${ESymbols.Congruent} 20. x = 20`));
+    writeLine(`\tbase^exponent % modulo ${SYMBOLS.CONGRUENT} x. x = result`);
+    writeLine(chalk.gray(`\t2^100 % 71 ${SYMBOLS.CONGRUENT} 20. x = 20`));
 
     const { base, exponent, modulo } = await ask<{
       base: number;
@@ -88,7 +88,7 @@ const runPrompt = createAlgorithmPrompt(
 
     const result = main(BigInt(base), BigInt(exponent), BigInt(modulo));
     writeLine(
-      `\t${base}^${exponent} % ${modulo} ${ESymbols.Congruent} ${result}. x = ${result}`,
+      `\t${base}^${exponent} % ${modulo} ${SYMBOLS.CONGRUENT} ${result}. x = ${result}`,
     );
 
     return {

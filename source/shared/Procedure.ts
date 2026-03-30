@@ -1,6 +1,6 @@
 import chalk from "@/shared/chalk";
 
-import { ESymbols } from "@/shared/constants";
+import { SYMBOLS } from "@/shared/constants";
 import { getInquirer } from "@/shared/inquirer";
 
 export default class Procedure {
@@ -18,7 +18,7 @@ export default class Procedure {
     this.run = async function () {
       try {
         console.log(
-          chalk.bgCyan.bold(`\n ${ESymbols.ArrowDownloadBottom} ${name} `),
+          chalk.bgCyan.bold(`\n ${SYMBOLS.ARROW_DOWNLOAD_BOTTOM} ${name} `),
         );
         await wrap();
 
@@ -36,7 +36,7 @@ export default class Procedure {
           else break;
         }
         console.log(
-          chalk.bgCyan.bold(` ${ESymbols.ArrowDownloadTop} ${name} `),
+          chalk.bgCyan.bold(` ${SYMBOLS.ARROW_DOWNLOAD_TOP} ${name} `),
         );
         console.log(chalk.gray("Going back to the previous menu.\n"));
       } catch (error) {

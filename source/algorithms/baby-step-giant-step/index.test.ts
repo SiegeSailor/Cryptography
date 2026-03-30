@@ -1,7 +1,7 @@
 import chalk from "@/shared/chalk";
 
 import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
-import { ESymbols } from "@/shared/constants";
+import { SYMBOLS } from "@/shared/constants";
 
 describe("Finding the Discrete Log for the given numbers", () => {
   test.each([
@@ -11,7 +11,7 @@ describe("Finding the Discrete Log for the given numbers", () => {
     [227801, 155104, 291563, 74399],
     [62712, 30084, 83437, 68793],
   ])(
-    `%p^x ${ESymbols.Congruent} %p % %p.\n\tx = ${chalk.greenBright("%p")}`,
+    `%p^x ${SYMBOLS.CONGRUENT} %p % %p.\n\tx = ${chalk.greenBright("%p")}`,
     (generator, base, modulo, result) => {
       expect(
         babyStepGiantStep(BigInt(generator), BigInt(base), BigInt(modulo)),

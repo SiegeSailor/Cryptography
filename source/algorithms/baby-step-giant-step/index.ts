@@ -1,7 +1,7 @@
-import { ESymbols } from "@/shared/constants";
 import chalk from "@/shared/chalk";
 import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import euclidean from "@/algorithms/euclidean";
+import { SYMBOLS } from "@/shared/constants";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
 
@@ -73,8 +73,8 @@ export default function main(generator: bigint, base: bigint, modulo: bigint) {
 const runPrompt = createAlgorithmPrompt(
   "baby-step-giant-step",
   async ({ ask, writeLine }) => {
-    writeLine(`\tgenerator^x ${ESymbols.Congruent} base % modulo. x = result`);
-    writeLine(chalk.gray(`\t92^x ${ESymbols.Congruent} 13 % 5. x = 3`));
+    writeLine(`\tgenerator^x ${SYMBOLS.CONGRUENT} base % modulo. x = result`);
+    writeLine(chalk.gray(`\t92^x ${SYMBOLS.CONGRUENT} 13 % 5. x = 3`));
 
     const { generator, base, modulo } = await ask<{
       generator: number;
@@ -103,7 +103,7 @@ const runPrompt = createAlgorithmPrompt(
 
     const result = main(BigInt(generator), BigInt(base), BigInt(modulo));
     writeLine(
-      `\t${generator}^x ${ESymbols.Congruent} ${base} % ${modulo}. x = ${result}`,
+      `\t${generator}^x ${SYMBOLS.CONGRUENT} ${base} % ${modulo}. x = ${result}`,
     );
 
     return {

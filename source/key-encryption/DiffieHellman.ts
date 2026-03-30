@@ -3,7 +3,7 @@ import chalk from "@/shared/chalk";
 import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import primitiveRootSearch from "@/algorithms/primitive-root-search";
-import { EActors } from "@/shared/constants";
+import { ACTORS } from "@/shared/constants";
 import { inquire, log, wrap } from "@/shared/utilities";
 import { randomBigIntBetween } from "@/shared/random";
 
@@ -12,11 +12,11 @@ export async function prompt() {
     "There are three people in this Diffie-Hellman key exchange process:",
   );
   console.log(
-    `\t${EActors.Alice} - Party A\n\t${EActors.Bob} - Party B\n\t${EActors.Eve} - Eavesdropper`,
+    `\t${ACTORS.ALICE} - Party A\n\t${ACTORS.BOB} - Party B\n\t${ACTORS.EVE} - Eavesdropper`,
   );
 
   const [p, g, a, b, publicA, publicB] = await inquire.continue(
-    `${EActors.Alice} and ${EActors.Bob} select a public prime p and primitive root g, then choose private values a and b:`,
+    `${ACTORS.ALICE} and ${ACTORS.BOB} select a public prime p and primitive root g, then choose private values a and b:`,
     () => {
       const [p] = wrap.randomize(8, 8, 1);
       const [, roots] = primitiveRootSearch(Number(p));
@@ -40,14 +40,14 @@ export async function prompt() {
   );
 
   await inquire.continue(
-    `${EActors.Alice} and ${EActors.Bob} derive the same shared secret independently:`,
+    `${ACTORS.ALICE} and ${ACTORS.BOB} derive the same shared secret independently:`,
     () => {
       const secretAlice = fastModularExponentiation(publicB, a, p);
       const secretBob = fastModularExponentiation(publicA, b, p);
 
       log.list([
-        { name: `${EActors.Alice}'s secret`, value: secretAlice },
-        { name: `${EActors.Bob}'s secret`, value: secretBob },
+        { name: `${ACTORS.ALICE}'s secret`, value: secretAlice },
+        { name: `${ACTORS.BOB}'s secret`, value: secretBob },
       ]);
 
       console.log(
@@ -59,7 +59,7 @@ export async function prompt() {
   );
 
   await inquire.continue(
-    `${EActors.Eve} can also recover the secret for small teaching parameters by solving the discrete log problem:`,
+    `${ACTORS.EVE} can also recover the secret for small teaching parameters by solving the discrete log problem:`,
     () => {
       const aRecovered = babyStepGiantStep(g, publicA, p);
       const bRecovered = babyStepGiantStep(g, publicB, p);
@@ -72,7 +72,7 @@ export async function prompt() {
       log.list([
         { name: "Recovered a", value: aRecovered },
         { name: "Recovered b", value: bRecovered },
-        { name: `${EActors.Eve}'s recovered shared secret`, value: secretEve },
+        { name: `${ACTORS.EVE}'s recovered shared secret`, value: secretEve },
       ]);
     },
   );

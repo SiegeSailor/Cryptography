@@ -4,7 +4,7 @@ import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
 import euclidean from "@/algorithms/euclidean";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import primitiveRootSearch from "@/algorithms/primitive-root-search";
-import { EActors } from "@/shared/constants";
+import { ACTORS } from "@/shared/constants";
 import { log, inquire, wrap } from "@/shared/utilities";
 import { randomBigIntBetween } from "@/shared/random";
 
@@ -12,11 +12,11 @@ export async function prompt() {
   try {
     console.log("There are three people in this ElGamal encryption process:");
     console.log(
-      `\t${EActors.Alice} - Receiver\n\t${EActors.Bob} - Sender\n\t${EActors.Eve} - Eavesdropper`,
+      `\t${ACTORS.ALICE} - Receiver\n\t${ACTORS.BOB} - Sender\n\t${ACTORS.EVE} - Eavesdropper`,
     );
 
     const [p, g, r, x, y] = await inquire.continue(
-      `${EActors.Alice} is going to pick prime number P, generator g, and random numbers r and x:`,
+      `${ACTORS.ALICE} is going to pick prime number P, generator g, and random numbers r and x:`,
       () => {
         const [p] = wrap.randomize(8, 8, 1);
         const [, roots] = primitiveRootSearch(Number(p));
@@ -34,14 +34,14 @@ export async function prompt() {
           { name: "x", value: x },
         ]);
 
-        console.log(`\n\t${EActors.Alice} generates y:`);
+        console.log(`\n\t${ACTORS.ALICE} generates y:`);
         const y = fastModularExponentiation(g, x, p);
         console.log(`\ty: ${chalk.gray(y)}`);
 
         console.log(
-          `\n\t${EActors.Alice} sends ${chalk.bold.bgCyan(
+          `\n\t${ACTORS.ALICE} sends ${chalk.bold.bgCyan(
             "(g, r, p, y)",
-          )} as the public key to ${EActors.Bob} and ${EActors.Eve}.`,
+          )} as the public key to ${ACTORS.BOB} and ${ACTORS.EVE}.`,
         );
 
         return [p, g, r, x, y];
@@ -50,7 +50,7 @@ export async function prompt() {
 
     const message = "This is a hardcoded secret message.";
     const [keyEncrypted, arrayOfEncryptedCode] = await inquire.continue(
-      `${EActors.Bob} encrypts the message and sends it back to ${EActors.Alice} (while ${EActors.Eve} is eavesdropping).`,
+      `${ACTORS.BOB} encrypts the message and sends it back to ${ACTORS.ALICE} (while ${ACTORS.EVE} is eavesdropping).`,
       () => {
         const keyEncrypted = fastModularExponentiation(g, r, p);
         const sharedSecret = fastModularExponentiation(y, r, p);
@@ -70,21 +70,21 @@ export async function prompt() {
         );
         console.log(
           `\n\t${
-            EActors.Alice
+            ACTORS.ALICE
           } can decrypt the message since she has the random number ${chalk.bold.bgCyan(
             "(x)",
           )}.\n\tDecrypted message: ${chalk.gray(messageDecrypted)}\n\t${
-            EActors.Alice
-          } verifies the message with ${EActors.Bob} privately.`,
+            ACTORS.ALICE
+          } verifies the message with ${ACTORS.BOB} privately.`,
         );
         return [keyEncrypted, arrayOfEncryptedCode];
       },
     );
 
     await inquire.continue(
-      `${EActors.Eve} is going to decrypt the secret message.`,
+      `${ACTORS.EVE} is going to decrypt the secret message.`,
       () => {
-        console.log(`\tNow ${EActors.Eve} has the following stuff:`);
+        console.log(`\tNow ${ACTORS.EVE} has the following stuff:`);
         log.list([
           { name: "g", value: g },
           { name: "r", value: r },
@@ -95,7 +95,7 @@ export async function prompt() {
         ]);
 
         console.log(
-          `\n\t${EActors.Eve} is going to figure out what the random number x is using Discrete Log with the information she has.`,
+          `\n\t${ACTORS.EVE} is going to figure out what the random number x is using Discrete Log with the information she has.`,
         );
 
         const xEavesdropped = babyStepGiantStep(g, y, p);
@@ -118,8 +118,8 @@ export async function prompt() {
         );
         console.log(
           `\tDecrypted message: ${chalk.gray(messageEavesdropped)}\n\t${
-            EActors.Eve
-          } verifies the message with ${EActors.Bob}.`,
+            ACTORS.EVE
+          } verifies the message with ${ACTORS.BOB}.`,
         );
       },
     );
