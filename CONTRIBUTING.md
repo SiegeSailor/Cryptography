@@ -1,6 +1,8 @@
 # CONTRIBUTING
 
-Thank you for contributing to Cryptography. Please read through the following guideline before making any contributions.
+Thank you for contributing to Cryptography. Please read through the following guideline before making any contributions. You can find more details on the project structure, coding standards, architecture decisions, and compliance requirements in [.github/copilot-instructions.md](./.github/copilot-instructions.md) and [.github/instructions/](./.github/instructions/).
+
+This repository has enabled GitHub Copilot and any other compatible A.I. code assistants to help contributors. Please see [.github/](./.github/) for agents and skills.
 
 ## Prerequisites
 
@@ -70,15 +72,15 @@ Per-algorithm notes on WebAssembly behavior and guardrails:
 ```mermaid
 flowchart TD
   A[Build WASM] --> B{Is compiler found?}
-  B -->|Yes| C[Compile main.c to main.wasm]
+  B -->|Yes| C[Compile main.c]
   B -->|No| D{Is WASM_STRICT set?}
   D -->|Yes| E[Fail build immediately]
   D -->|No| F[Skip WASM generation]
   F --> R
   C --> R[Runtime]
   R --> I{Is WASM loaded at runtime?}
-  I -->|Yes| J[Use compiled main.wasm]
-  I -->|No| K[Fallback to TypeScript implementation]
+  I -->|Yes| J[Use main.wasm]
+  I -->|No| K[Use index.ts]
 ```
 
 ## Workflows
