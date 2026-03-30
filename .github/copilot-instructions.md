@@ -14,10 +14,10 @@ The project is structured as follows:
 │   │   └── [file]
 │   ├── 📁 key-encryption
 │   │   └── [flow]
-│   ├── command.ts # entrypoint for CLI
-│   └── entry-point.ts # package public exports only
-├── 📁 scripts # build and utility scripts
-└── 📁 build # compiled output
+│   ├── command.ts
+│   └── entry-point.ts
+├── 📁 scripts
+└── 📁 build
 ```
 
 | File(s)        | Purpose                                                                  |
@@ -47,6 +47,7 @@ The project is structured as follows:
 
 ## Compliance Requirements
 
-- Algorithm implementations must be atomic and deterministic, and should not have side effects outside of their defined inputs and outputs
-- WASM implementations must have a TypeScript fallback that preserves behavior and error handling when WASM loading or execution fails
+- Algorithm implementations must be atomic and deterministic, and should not have side effects
+- C (WASM) implementations are mandatory and must have a TypeScript fallback
+- Implementations in C and TypeScript must have consistent behavior and error handling
 - Tests must cover both nominal and edge-case behavior, and should be deterministic
