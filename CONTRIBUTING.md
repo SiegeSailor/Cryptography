@@ -85,6 +85,8 @@ flowchart TD
 
 ## Workflows
 
+GitHub Actions workflows for testing, publishing, releasing:
+
 ```mermaid
 flowchart TB
   A[Push event] --> B[Test workflow]
