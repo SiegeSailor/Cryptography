@@ -34,8 +34,8 @@ Each algorithm folder under `source/algorithms/*/` contains at least:
         2. Errors thrown in TypeScript should be consistent with C error messages when the same input is given
         3. If checks or implementation require another implemented algorithm, import it as a TypeScript module and use it
   - `export async function prompt` for the CLI interaction
+  - Use `bigint`-safe behavior consistently when expected by existing APIs
 - `main.c` implements the same algorithm in C, compiled to `main.wasm` for accelerated path when available
-- Use `bigint`-safe behavior consistently when expected by existing APIs
 
 ## Naming Conventions
 
