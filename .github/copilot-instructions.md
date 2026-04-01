@@ -12,7 +12,7 @@ The project is structured as follows:
 │   │   └── 📁 [algorithm]
 │   ├── 📁 shared
 │   │   └── [file]
-│   ├── 📁 key-encryption
+│   ├── 📁 key-encryptions
 │   │   └── [flow]
 │   ├── command.ts
 │   └── entry-point.ts

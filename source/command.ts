@@ -24,7 +24,7 @@ async function main(message = "What do you want to do?") {
     switch (purpose) {
       case CHOICES.DEMONSTRATE:
         await inquire.procedure(
-          join(__dirname, "key-encryption"),
+          join(__dirname, "key-encryptions"),
           "Which cryptograph procedure do you want to demonstrate?",
           format.filename,
         );
