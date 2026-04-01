@@ -85,15 +85,14 @@ flowchart TD
 
 ## Workflows
 
-GitHub Actions workflows for testing, publishing, releasing:
+GitHub Actions workflows for testing and releasing:
 
 ```mermaid
 flowchart TB
   A[Push event] --> B[Test workflow]
   B --> D[/Test reports/]
   A --> E{Is it in main?}
-  E -->|Yes| F[Publish workflow]
+  E -->|Yes| F[Release workflow]
   F --> H[/NPM package/]
-  E -->|Yes| I[Release workflow]
-  I --> K[/Git tag and release record/]
+  F --> I[/Git tag and release record/]
 ```
