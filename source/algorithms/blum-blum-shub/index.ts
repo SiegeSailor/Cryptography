@@ -4,24 +4,24 @@ import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import { randomBigIntBits, randomBigIntBetween } from "@/shared/random";
-import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
 
-const runWasmBlumBlumShubNext = createOptionalWasmInvoker<
-  [bigint, bigint],
-  bigint
->("blum-blum-shub", (wasmExports, state, modulus) => {
-  if (
-    !wasmExports.blum_blum_shub_next_u64 ||
-    state < 0n ||
-    modulus <= 0n ||
-    !fitsInI64(state) ||
-    !fitsInI64(modulus)
-  ) {
-    return null;
-  }
+const runWASMBlumBlumShubNext = createWASMInvoker<[bigint, bigint], bigint>(
+  "blum-blum-shub",
+  (wasmExports, state, modulus) => {
+    if (
+      !wasmExports.blum_blum_shub_next_u64 ||
+      state < 0n ||
+      modulus <= 0n ||
+      !fitsInI64(state) ||
+      !fitsInI64(modulus)
+    ) {
+      return null;
+    }
 
-  return wasmExports.blum_blum_shub_next_u64(state, modulus);
-});
+    return wasmExports.blum_blum_shub_next_u64(state, modulus);
+  },
+);
 
 export default function main(bits: number) {
   if (!Number.isInteger(bits) || bits < 8) {
@@ -64,9 +64,9 @@ export default function main(bits: number) {
   let result = (seed * seed) % m;
 
   return () => {
-    const maybeWasmResult = runWasmBlumBlumShubNext(result, m);
-    if (maybeWasmResult !== null) {
-      result = maybeWasmResult;
+    const maybeWASMResult = runWASMBlumBlumShubNext(result, m);
+    if (maybeWASMResult !== null) {
+      result = maybeWASMResult;
       return result;
     }
 

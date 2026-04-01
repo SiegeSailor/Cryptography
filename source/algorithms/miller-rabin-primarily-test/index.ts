@@ -3,9 +3,9 @@ import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import { randomBigIntBetween } from "@/shared/random";
-import { createOptionalWasmInvoker, MAX_U64 } from "@/shared/wasm";
+import { createWASMInvoker, MAX_U64 } from "@/shared/wasm";
 
-const runWasmMillerRabin = createOptionalWasmInvoker<[bigint, number], boolean>(
+const runWASMMillerRabin = createWASMInvoker<[bigint, number], boolean>(
   "miller-rabin-primarily-test",
   (wasmExports, input, level) => {
     if (
@@ -29,9 +29,9 @@ export default function main(input: bigint, level: number) {
     throw new Error("level must be a positive integer.");
   }
 
-  const maybeWasmResult = runWasmMillerRabin(input, level);
-  if (maybeWasmResult !== null) {
-    return maybeWasmResult;
+  const maybeWASMResult = runWASMMillerRabin(input, level);
+  if (maybeWASMResult !== null) {
+    return maybeWASMResult;
   }
 
   let odd = input - 1n;

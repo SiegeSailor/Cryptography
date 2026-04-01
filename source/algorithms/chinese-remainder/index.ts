@@ -5,56 +5,56 @@ import euclidean from "@/algorithms/euclidean";
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 import {
   createI64Allocator,
-  createOptionalWasmInvoker,
+  createWASMInvoker,
   fitsInI64,
   I64_BYTES,
   MIN_I64,
   normalizeI64,
 } from "@/shared/wasm";
 
-const runWasmChineseRemainder = createOptionalWasmInvoker<
-  [bigint[], bigint[]],
-  bigint
->("chinese-remainder", (wasmExports, remainders, modulos) => {
-  if (
-    !wasmExports.chinese_remainder_i64 ||
-    remainders.length !== modulos.length ||
-    remainders.length === 0
-  ) {
-    return null;
-  }
+const runWASMChineseRemainder = createWASMInvoker<[bigint[], bigint[]], bigint>(
+  "chinese-remainder",
+  (wasmExports, remainders, modulos) => {
+    if (
+      !wasmExports.chinese_remainder_i64 ||
+      remainders.length !== modulos.length ||
+      remainders.length === 0
+    ) {
+      return null;
+    }
 
-  if (
-    remainders.some((value) => !fitsInI64(value)) ||
-    modulos.some((value) => value <= 0n || !fitsInI64(value))
-  ) {
-    return null;
-  }
+    if (
+      remainders.some((value) => !fitsInI64(value)) ||
+      modulos.some((value) => value <= 0n || !fitsInI64(value))
+    ) {
+      return null;
+    }
 
-  const allocator = createI64Allocator(wasmExports);
-  allocator.reset();
+    const allocator = createI64Allocator(wasmExports);
+    allocator.reset();
 
-  const bytes = remainders.length * I64_BYTES;
-  const remaindersPtr = allocator.allocate(bytes);
-  const modulosPtr = allocator.allocate(bytes);
-  const view = allocator.view();
+    const bytes = remainders.length * I64_BYTES;
+    const remaindersPtr = allocator.allocate(bytes);
+    const modulosPtr = allocator.allocate(bytes);
+    const view = allocator.view();
 
-  if (remaindersPtr === null || modulosPtr === null || !view) {
-    return null;
-  }
+    if (remaindersPtr === null || modulosPtr === null || !view) {
+      return null;
+    }
 
-  for (let index = 0; index < remainders.length; index++) {
-    view[remaindersPtr / I64_BYTES + index] = normalizeI64(remainders[index]);
-    view[modulosPtr / I64_BYTES + index] = normalizeI64(modulos[index]);
-  }
+    for (let index = 0; index < remainders.length; index++) {
+      view[remaindersPtr / I64_BYTES + index] = normalizeI64(remainders[index]);
+      view[modulosPtr / I64_BYTES + index] = normalizeI64(modulos[index]);
+    }
 
-  const result = wasmExports.chinese_remainder_i64(
-    remaindersPtr,
-    modulosPtr,
-    remainders.length,
-  );
-  return result === MIN_I64 ? null : result;
-});
+    const result = wasmExports.chinese_remainder_i64(
+      remaindersPtr,
+      modulosPtr,
+      remainders.length,
+    );
+    return result === MIN_I64 ? null : result;
+  },
+);
 
 export default function main(arrayOfBase: number[], arrayOfModulo: number[]) {
   if (arrayOfBase.length !== arrayOfModulo.length)
@@ -63,12 +63,12 @@ export default function main(arrayOfBase: number[], arrayOfModulo: number[]) {
   const base = arrayOfBase.map((item) => BigInt(item));
   const modulo = arrayOfModulo.map((item) => BigInt(item));
 
-  const maybeWasmResult = runWasmChineseRemainder(base, modulo);
-  if (maybeWasmResult !== null) {
-    if (maybeWasmResult > BigInt(Number.MAX_SAFE_INTEGER)) {
+  const maybeWASMResult = runWASMChineseRemainder(base, modulo);
+  if (maybeWASMResult !== null) {
+    if (maybeWASMResult > BigInt(Number.MAX_SAFE_INTEGER)) {
       throw new Error("CRT result exceeds Number.MAX_SAFE_INTEGER.");
     }
-    return Number(maybeWasmResult);
+    return Number(maybeWASMResult);
   }
 
   for (let i = 0; i < modulo.length; i++) {

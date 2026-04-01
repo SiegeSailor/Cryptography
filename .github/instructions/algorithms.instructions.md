@@ -40,20 +40,13 @@ Each algorithm folder under `source/algorithms/*/` contains at least:
 ## Naming Conventions
 
 - Keep algorithm folders in kebab-case under `source/algorithms/`, e.g. `pollard-p1-factorization`
-- Use `run*` for internal helper functions that execute the core logic for the exported functions, e.g. `runWASMPollardP1Factorization` or `runPrompt`
 
 ## Integration Rules
 
-- Use the shared helpers in `source/shared/*` instead of algorithm-local files for any common logic or utilities that may be used across multiple algorithms, e.g. input validation, WASM loading, or error handling
 - Keep algorithm APIs and return types stable, deterministic, and testable
-- Include or import another algorithm as a dependency when possible, rather than re-implementing shared or local logic
 - Preserve function names and parameter semantics unless explicitly requested
-- If a new algorithm is added, also update `source/entry-point.ts` exports
-- If a WASM support is added, ensure `scripts/verify-wasm.js` expected export mapping includes the new algorithm
 
 ## Testing Rules
 
-- Add or update tests in `index.test.ts`
-- Test both the TypeScript and WASM paths, ensuring consistent behavior and error handling
 - Validate both nominal and edge-case behavior
 - Do not remove assertions unless replacing them with stronger coverage

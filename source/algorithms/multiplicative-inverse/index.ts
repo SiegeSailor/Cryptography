@@ -3,13 +3,13 @@ import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 import {
-  createOptionalWasmInvoker,
+  createWASMInvoker,
   fitsInI64,
   MIN_I64,
   normalizeI64,
 } from "@/shared/wasm";
 
-const runWasmMultiplicativeInverse = createOptionalWasmInvoker<
+const runWASMMultiplicativeInverse = createWASMInvoker<
   [bigint, bigint],
   bigint
 >("multiplicative-inverse", (wasmExports, base, modulo) => {
@@ -41,11 +41,11 @@ export default function main(base: bigint, modulo: bigint, number: number) {
     throw new Error("number must be a positive integer.");
   }
 
-  const maybeWasmInverse = runWasmMultiplicativeInverse(base, modulo);
+  const maybeWASMInverse = runWASMMultiplicativeInverse(base, modulo);
   let inverse: bigint;
 
-  if (maybeWasmInverse !== null) {
-    inverse = maybeWasmInverse;
+  if (maybeWASMInverse !== null) {
+    inverse = maybeWASMInverse;
   } else {
     const [gcd, x] = extendedEuclidean(base, modulo);
     if (gcd !== 1n) {

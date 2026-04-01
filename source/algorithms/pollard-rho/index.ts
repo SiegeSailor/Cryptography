@@ -4,9 +4,9 @@ import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import euclidean from "@/algorithms/euclidean";
 import { math } from "@/shared/utilities";
 import { randomBigIntBetween } from "@/shared/random";
-import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
 
-const runWasmPollardRho = createOptionalWasmInvoker<
+const runWASMPollardRho = createWASMInvoker<
   [bigint, bigint, bigint, number],
   bigint
 >("pollard-rho", (wasmExports, input, seed, c, maxIterations) => {
@@ -38,14 +38,14 @@ export default function main(input: bigint) {
     const c = randomBigIntBetween(1n, input - 1n);
     let x = randomBigIntBetween(2n, input - 1n);
 
-    const maybeWasmFactor = runWasmPollardRho(input, x, c, 100_000);
+    const maybeWASMFactor = runWASMPollardRho(input, x, c, 100_000);
     if (
-      maybeWasmFactor !== null &&
-      maybeWasmFactor > 1n &&
-      maybeWasmFactor < input &&
-      input % maybeWasmFactor === 0n
+      maybeWASMFactor !== null &&
+      maybeWASMFactor > 1n &&
+      maybeWASMFactor < input &&
+      input % maybeWASMFactor === 0n
     ) {
-      return maybeWasmFactor;
+      return maybeWASMFactor;
     }
 
     let y = x;

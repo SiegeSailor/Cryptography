@@ -2,13 +2,13 @@ import chalk from "@/shared/chalk";
 import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import {
   createI64Allocator,
-  createOptionalWasmInvoker,
+  createWASMInvoker,
   fitsInI64,
   I64_BYTES,
   normalizeI64,
 } from "@/shared/wasm";
 
-const runWasmExtendedEuclidean = createOptionalWasmInvoker<
+const runWASMExtendedEuclidean = createWASMInvoker<
   [bigint, bigint],
   [bigint, bigint, bigint]
 >("extended-euclidean", (wasmExports, left, right) => {
@@ -48,7 +48,7 @@ const runWasmExtendedEuclidean = createOptionalWasmInvoker<
 });
 
 export default function main(left: bigint, right: bigint) {
-  const wasmResult = runWasmExtendedEuclidean(left, right);
+  const wasmResult = runWASMExtendedEuclidean(left, right);
   if (wasmResult !== null) {
     return wasmResult;
   }

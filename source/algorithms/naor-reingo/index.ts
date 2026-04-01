@@ -4,48 +4,53 @@ import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import { randomBigIntBetween } from "@/shared/random";
 import {
   createI64Allocator,
-  createOptionalWasmInvoker,
+  createWASMInvoker,
   fitsInI64,
   I64_BYTES,
 } from "@/shared/wasm";
 
-const runWasmNaorReingo = createOptionalWasmInvoker<
-  [number, number, bigint],
-  bigint[]
->("naor-reingo", (wasmExports, count, digits, seed) => {
-  if (
-    !wasmExports.naor_reingo_fill_i64 ||
-    !Number.isInteger(count) ||
-    count <= 0 ||
-    !Number.isInteger(digits) ||
-    digits <= 0 ||
-    digits > 18 ||
-    !fitsInI64(seed)
-  ) {
-    return null;
-  }
+const runWASMNaorReingo = createWASMInvoker<[number, number, bigint], bigint[]>(
+  "naor-reingo",
+  (wasmExports, count, digits, seed) => {
+    if (
+      !wasmExports.naor_reingo_fill_i64 ||
+      !Number.isInteger(count) ||
+      count <= 0 ||
+      !Number.isInteger(digits) ||
+      digits <= 0 ||
+      digits > 18 ||
+      !fitsInI64(seed)
+    ) {
+      return null;
+    }
 
-  const allocator = createI64Allocator(wasmExports);
-  allocator.reset();
+    const allocator = createI64Allocator(wasmExports);
+    allocator.reset();
 
-  const outPtr = allocator.allocate(count * I64_BYTES);
-  const view = allocator.view();
-  if (outPtr === null || !view) {
-    return null;
-  }
+    const outPtr = allocator.allocate(count * I64_BYTES);
+    const view = allocator.view();
+    if (outPtr === null || !view) {
+      return null;
+    }
 
-  const written = wasmExports.naor_reingo_fill_i64(count, digits, seed, outPtr);
-  if (written !== count) {
-    return null;
-  }
+    const written = wasmExports.naor_reingo_fill_i64(
+      count,
+      digits,
+      seed,
+      outPtr,
+    );
+    if (written !== count) {
+      return null;
+    }
 
-  const values: bigint[] = [];
-  for (let index = 0; index < count; index++) {
-    values.push(view[outPtr / I64_BYTES + index]);
-  }
+    const values: bigint[] = [];
+    for (let index = 0; index < count; index++) {
+      values.push(view[outPtr / I64_BYTES + index]);
+    }
 
-  return values;
-});
+    return values;
+  },
+);
 
 export default function main(count: number, digits: number) {
   if (!Number.isInteger(count) || count <= 0) {
@@ -58,9 +63,9 @@ export default function main(count: number, digits: number) {
   const lowerBound = 10n ** BigInt(Math.max(0, digits - 1));
   const upperBound = 10n ** BigInt(digits) - 1n;
 
-  const maybeWasmValues = runWasmNaorReingo(count, digits, BigInt(Date.now()));
-  if (maybeWasmValues !== null) {
-    return maybeWasmValues.map((value) => Number(value));
+  const maybeWASMValues = runWASMNaorReingo(count, digits, BigInt(Date.now()));
+  if (maybeWASMValues !== null) {
+    return maybeWASMValues.map((value) => Number(value));
   }
 
   const arrayOfResult: number[] = [];

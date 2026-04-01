@@ -5,9 +5,9 @@ import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import pollardRho from "@/algorithms/pollard-rho";
-import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
 
-const runWasmPollardP1 = createOptionalWasmInvoker<[bigint, number], bigint>(
+const runWASMPollardP1 = createWASMInvoker<[bigint, number], bigint>(
   "pollard-p-1-factorization",
   (wasmExports, input, maxExponent) => {
     if (
@@ -26,13 +26,13 @@ const runWasmPollardP1 = createOptionalWasmInvoker<[bigint, number], bigint>(
 
 export default function main(input: bigint) {
   const pollardPMinusOne = (n: bigint) => {
-    const maybeWasmFactor = runWasmPollardP1(n, 2500);
+    const maybeWASMFactor = runWASMPollardP1(n, 2500);
     if (
-      maybeWasmFactor !== null &&
-      maybeWasmFactor > 1n &&
-      maybeWasmFactor < n
+      maybeWASMFactor !== null &&
+      maybeWASMFactor > 1n &&
+      maybeWASMFactor < n
     ) {
-      return maybeWasmFactor;
+      return maybeWASMFactor;
     }
 
     let base = 2n;

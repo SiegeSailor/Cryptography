@@ -3,9 +3,9 @@ import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import euclidean from "@/algorithms/euclidean";
 import { SYMBOLS } from "@/shared/constants";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
 
-const runWasmBabyStepGiantStep = createOptionalWasmInvoker<
+const runWASMBabyStepGiantStep = createWASMInvoker<
   [bigint, bigint, bigint],
   bigint
 >("baby-step-giant-step", (wasmExports, generator, base, modulo) => {
@@ -39,9 +39,9 @@ export default function main(generator: bigint, base: bigint, modulo: bigint) {
   if (euclidean(base, modulo) != BigInt(1))
     throw new Error("Given base must satisfy GCD(base, modulo) = 1");
 
-  const maybeWasmResult = runWasmBabyStepGiantStep(generator, base, modulo);
-  if (maybeWasmResult !== null) {
-    return maybeWasmResult;
+  const maybeWASMResult = runWASMBabyStepGiantStep(generator, base, modulo);
+  if (maybeWASMResult !== null) {
+    return maybeWASMResult;
   }
 
   const numberOfSteps = BigInt(Math.ceil(Math.sqrt(Number(modulo)))) + 1n;

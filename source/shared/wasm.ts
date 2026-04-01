@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-export type WasmExports = WebAssembly.Exports & {
+export type WASMExports = WebAssembly.Exports & {
   memory?: WebAssembly.Memory;
   gcd_u64?: (left: bigint, right: bigint) => bigint;
   powmod_u64?: (base: bigint, exponent: bigint, modulo: bigint) => bigint;
@@ -46,7 +46,7 @@ export type WasmExports = WebAssembly.Exports & {
   ) => number;
 };
 
-export type AlgorithmWasmKey =
+export type AlgorithmWASMKey =
   | "baby-step-giant-step"
   | "blum-blum-shub"
   | "chinese-remainder"
@@ -60,15 +60,15 @@ export type AlgorithmWasmKey =
   | "pollard-rho"
   | "primitive-root-search";
 
-const wasmExportsByAlgorithm = new Map<AlgorithmWasmKey, WasmExports | null>();
+const wasmExportsByAlgorithm = new Map<AlgorithmWASMKey, WASMExports | null>();
 
 export const I64_BYTES = 8;
 export const MIN_I64 = -(1n << 63n);
 export const MAX_U64 = (1n << 64n) - 1n;
 
-export function getAlgorithmWasmExports(
-  key: AlgorithmWasmKey,
-): WasmExports | null {
+export function getAlgorithmWASMExports(
+  key: AlgorithmWASMKey,
+): WASMExports | null {
   if (wasmExportsByAlgorithm.has(key)) {
     return wasmExportsByAlgorithm.get(key) ?? null;
   }
@@ -78,7 +78,7 @@ export function getAlgorithmWasmExports(
     const wasmBytes = readFileSync(wasmPath);
     const module = new WebAssembly.Module(wasmBytes);
     const instance = new WebAssembly.Instance(module, {});
-    const wasmExports = instance.exports as WasmExports;
+    const wasmExports = instance.exports as WASMExports;
 
     if (!wasmExports.memory) {
       wasmExportsByAlgorithm.set(key, null);
@@ -93,11 +93,11 @@ export function getAlgorithmWasmExports(
   }
 }
 
-export function withAlgorithmWasm<TResult>(
-  key: AlgorithmWasmKey,
-  execute: (wasmExports: WasmExports) => TResult | null,
+export function withAlgorithmWASM<TResult>(
+  key: AlgorithmWASMKey,
+  execute: (wasmExports: WASMExports) => TResult | null,
 ): TResult | null {
-  const wasmExports = getAlgorithmWasmExports(key);
+  const wasmExports = getAlgorithmWASMExports(key);
   if (!wasmExports) {
     return null;
   }
@@ -109,12 +109,12 @@ export function withAlgorithmWasm<TResult>(
   }
 }
 
-export function createOptionalWasmInvoker<TArgs extends unknown[], TResult>(
-  key: AlgorithmWasmKey,
-  execute: (wasmExports: WasmExports, ...args: TArgs) => TResult | null,
+export function createWASMInvoker<TArgs extends unknown[], TResult>(
+  key: AlgorithmWASMKey,
+  execute: (wasmExports: WASMExports, ...args: TArgs) => TResult | null,
 ) {
   return (...args: TArgs): TResult | null => {
-    return withAlgorithmWasm(key, (wasmExports) =>
+    return withAlgorithmWASM(key, (wasmExports) =>
       execute(wasmExports, ...args),
     );
   };
@@ -128,7 +128,7 @@ export function normalizeI64(value: bigint) {
   return BigInt.asIntN(64, value);
 }
 
-export function createI64Allocator(wasmExports: WasmExports) {
+export function createI64Allocator(wasmExports: WASMExports) {
   let heapOffset = 4096;
 
   const ensureMemorySize = (bytesNeeded: number) => {

@@ -2,26 +2,26 @@ import chalk from "@/shared/chalk";
 import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 
 import { SYMBOLS } from "@/shared/constants";
-import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
 
-const runWasmPowMod = createOptionalWasmInvoker<
-  [bigint, bigint, bigint],
-  bigint
->("fast-modular-exponentiation", (wasmExports, base, exponent, modulo) => {
-  if (
-    !wasmExports.powmod_u64 ||
-    base < 0n ||
-    exponent < 0n ||
-    modulo <= 0n ||
-    !fitsInI64(base) ||
-    !fitsInI64(exponent) ||
-    !fitsInI64(modulo)
-  ) {
-    return null;
-  }
+const runWASMPowMod = createWASMInvoker<[bigint, bigint, bigint], bigint>(
+  "fast-modular-exponentiation",
+  (wasmExports, base, exponent, modulo) => {
+    if (
+      !wasmExports.powmod_u64 ||
+      base < 0n ||
+      exponent < 0n ||
+      modulo <= 0n ||
+      !fitsInI64(base) ||
+      !fitsInI64(exponent) ||
+      !fitsInI64(modulo)
+    ) {
+      return null;
+    }
 
-  return wasmExports.powmod_u64(base, exponent, modulo);
-});
+    return wasmExports.powmod_u64(base, exponent, modulo);
+  },
+);
 
 export default function main(
   base: bigint,
@@ -35,9 +35,9 @@ export default function main(
     throw new Error("exponent must be non-negative.");
   }
 
-  const maybeWasmResult = runWasmPowMod(base, exponent, modulo);
-  if (maybeWasmResult !== null) {
-    return maybeWasmResult;
+  const maybeWASMResult = runWASMPowMod(base, exponent, modulo);
+  if (maybeWASMResult !== null) {
+    return maybeWASMResult;
   }
 
   let result = 1n;

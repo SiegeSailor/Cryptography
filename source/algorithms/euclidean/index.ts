@@ -1,8 +1,8 @@
 import chalk from "@/shared/chalk";
 import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-import { createOptionalWasmInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
 
-const runWasmGcd = createOptionalWasmInvoker<[bigint, bigint], bigint>(
+const runWASMGcd = createWASMInvoker<[bigint, bigint], bigint>(
   "euclidean",
   (wasmExports, left, right) => {
     if (
@@ -20,7 +20,7 @@ const runWasmGcd = createOptionalWasmInvoker<[bigint, bigint], bigint>(
 );
 
 export default function main(left: bigint, right: bigint): bigint {
-  const wasmResult = runWasmGcd(left, right);
+  const wasmResult = runWASMGcd(left, right);
   if (wasmResult !== null) {
     return wasmResult;
   }

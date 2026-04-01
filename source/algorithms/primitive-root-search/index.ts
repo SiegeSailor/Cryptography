@@ -5,12 +5,12 @@ import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation"
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import {
   createI64Allocator,
-  createOptionalWasmInvoker,
+  createWASMInvoker,
   fitsInI64,
   I64_BYTES,
 } from "@/shared/wasm";
 
-const runWasmPrimitiveRoots = createOptionalWasmInvoker<[bigint], bigint[]>(
+const runWASMPrimitiveRoots = createWASMInvoker<[bigint], bigint[]>(
   "primitive-root-search",
   (wasmExports, prime) => {
     if (
@@ -61,9 +61,9 @@ export default function main(prime: number): [number[][], number[]] {
 
   const arrayOfResult: number[] = [];
 
-  const maybeWasmRoots = runWasmPrimitiveRoots(BigInt(prime));
-  if (maybeWasmRoots !== null) {
-    for (const root of maybeWasmRoots) {
+  const maybeWASMRoots = runWASMPrimitiveRoots(BigInt(prime));
+  if (maybeWASMRoots !== null) {
+    for (const root of maybeWASMRoots) {
       arrayOfResult.push(Number(root));
     }
 

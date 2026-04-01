@@ -34,9 +34,9 @@ The project is structured as follows:
 
 ## Framework-Specific Guidance
 
-- Ensure prerequisites described in [CONTRIBUTING.md](../CONTRIBUTING.md#prerequisites) are met for local development and testing
+- Ensure prerequisites described in `CONTRIBUTING.md` are met for local development and testing
 - Ensure CLI prompts and flows in `source/command.ts` are updated when adding new algorithms or key encryption flows
-- Ensure CLI prompts and flows `source/command.ts` and helper functions in `source/shared/*` are automation-and-agent-friendly, e.g., by accepting parameters to avoid interactive-only logic, and adjust result and error outputs formatting
+- Ensure CLI prompts and flows in `source/command.ts` and helper functions in `source/shared/*` are automation-and-agent-friendly, e.g., by accepting parameters to avoid interactive-only logic, and adjust result and error outputs formatting
 
 ## Architecture Decisions
 
