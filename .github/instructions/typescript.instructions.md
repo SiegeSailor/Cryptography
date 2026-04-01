@@ -12,11 +12,10 @@ Follow these guidelines and the [TypeScript Do's and Don'ts](https://www.typescr
 - Use `@/*` imports for code under `source/*`
 - Do not import internal code from `@/entry-point`
 - Use `type` prefix for type imports, e.g. `import { type TFoo }`
-- Import order:
-  1. External dependencies
-  2. Built-in modules
-  3. Internal imports, e.g. `@/shared/*`
-  4. Sibling imports, e.g. `./*`
+- Import order. Follow alphabetical within groups:
+  1. External and Built-in dependencies
+  2. Internal imports, e.g. `@/shared/*`
+  3. Sibling imports, e.g. `./*`
 - Refactor code that can be reused into `source/shared/`
 
 ## Naming Conventions
