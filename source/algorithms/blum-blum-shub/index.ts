@@ -1,6 +1,9 @@
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
-import { randomBigIntBits, randomBigIntBetween } from "@/shared/algorithm/random";
+import {
+  randomBigIntBits,
+  randomBigIntBetween,
+} from "@/shared/algorithm/random";
 import { createWASMInvoker, fitsInU64 } from "@/shared/algorithm/wasm";
 import chalk from "@/shared/cli/chalk";
 import {

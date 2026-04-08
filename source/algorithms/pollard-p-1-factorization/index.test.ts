@@ -21,7 +21,9 @@ describe("Factor the given number", () => {
         });
       };
 
-      expect(execute()).toEqual([...result].sort((left, right) => left - right));
+      expect(execute()).toEqual(
+        [...result].sort((left, right) => left - right),
+      );
       expectSameResultWithAndWithoutWASM(execute);
     },
   );

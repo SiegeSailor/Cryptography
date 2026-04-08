@@ -37,10 +37,14 @@ describe("Finding the Primitive Roots of the given numbers", () => {
     )}`,
     (input, result) => {
       const execute = () => {
-        return primitiveRootSearch(input)[1].sort((left, right) => left - right);
+        return primitiveRootSearch(input)[1].sort(
+          (left, right) => left - right,
+        );
       };
 
-      expect(execute()).toEqual([...result].sort((left, right) => left - right));
+      expect(execute()).toEqual(
+        [...result].sort((left, right) => left - right),
+      );
       expectSameResultWithAndWithoutWASM(execute);
     },
   );

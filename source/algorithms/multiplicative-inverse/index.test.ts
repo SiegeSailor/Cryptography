@@ -17,7 +17,8 @@ describe("Finding the Multiplicative Inverses of the given numbers", () => {
       "$result",
     )}`,
     ({ base, modulo, result }) => {
-      const execute = () => multiplicativeInverse(BigInt(base), BigInt(modulo), 5);
+      const execute = () =>
+        multiplicativeInverse(BigInt(base), BigInt(modulo), 5);
 
       expect(execute()).toEqual(result.map((item) => BigInt(item)));
       expectSameResultWithAndWithoutWASM(execute);

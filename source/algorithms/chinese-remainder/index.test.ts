@@ -23,11 +23,7 @@ describe("Finding a number by the product of different remainders", () => {
   );
 
   test.each([
-    [
-      [1, 2],
-      [3],
-      "The length for the two given arrays should be the same.",
-    ],
+    [[1, 2], [3], "The length for the two given arrays should be the same."],
     [[1, 2], [4, 6], "All modulo values must be pairwise coprime."],
   ])(
     "keeps the same error with and without WASM for %p and %p",
