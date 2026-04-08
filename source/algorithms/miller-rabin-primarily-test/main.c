@@ -1,26 +1,10 @@
 #include <stdint.h>
 
+#ifndef WASM_EXPORT
 #define WASM_EXPORT __attribute__((visibility("default")))
+#endif
 
-static uint64_t powmod_u64_internal(uint64_t base, uint64_t exponent, uint64_t modulo) {
-  if (modulo == 0) {
-    return 0;
-  }
-
-  uint64_t result = 1;
-  uint64_t current_base = base % modulo;
-  uint64_t current_exponent = exponent;
-
-  while (current_exponent > 0) {
-    if ((current_exponent & 1ULL) == 1ULL) {
-      result = (result * current_base) % modulo;
-    }
-    current_base = (current_base * current_base) % modulo;
-    current_exponent >>= 1ULL;
-  }
-
-  return result;
-}
+#include "../fast-modular-exponentiation/main.c"
 
 WASM_EXPORT int32_t miller_rabin_u64(uint64_t input, int32_t level) {
   if (input <= 1ULL || input == 4ULL) {
@@ -45,7 +29,7 @@ WASM_EXPORT int32_t miller_rabin_u64(uint64_t input, int32_t level) {
 
   for (int32_t i = 0; i < rounds; i++) {
     const uint64_t a = bases[i] % (input - 2ULL) + 2ULL;
-    uint64_t x = powmod_u64_internal(a, d, input);
+    uint64_t x = powmod_u64(a, d, input);
 
     if (x == 1ULL || x == input - 1ULL) {
       continue;

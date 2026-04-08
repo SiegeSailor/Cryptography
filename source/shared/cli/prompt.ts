@@ -1,30 +1,30 @@
-import { getInquirer } from "@/shared/inquirer";
+import { getInquirer } from "@/shared/cli/inquirer";
 
-export type PromptOutputFormat = "text" | "json" | "none";
-export type PromptErrorFormat = "throw" | "text" | "json";
+export type TPromptOutputFormat = "text" | "json" | "none";
+export type TPromptErrorFormat = "throw" | "text" | "json";
 
-export interface PromptOptions {
+export interface IPromptOptions {
   answers?: Record<string, unknown>;
   interactive?: boolean;
-  outputFormat?: PromptOutputFormat;
-  errorFormat?: PromptErrorFormat;
+  outputFormat?: TPromptOutputFormat;
+  errorFormat?: TPromptErrorFormat;
   writer?: (message: string) => void;
 }
 
-type NormalizedPromptOptions = {
+type TNormalizedPromptOptions = {
   answers: Record<string, unknown>;
   interactive: boolean;
-  outputFormat: PromptOutputFormat;
-  errorFormat: PromptErrorFormat;
+  outputFormat: TPromptOutputFormat;
+  errorFormat: TPromptErrorFormat;
   writer: (message: string) => void;
 };
 
-type PromptQuestion = {
+type TPromptQuestion = {
   name?: string;
   [key: string]: unknown;
 };
 
-export interface PromptExecution<TResult = unknown> {
+export interface IPromptExecution<TResult = unknown> {
   algorithm: string;
   success: boolean;
   result?: TResult;
@@ -32,17 +32,17 @@ export interface PromptExecution<TResult = unknown> {
   transcript: string[];
 }
 
-export interface PromptContext {
-  options: Readonly<NormalizedPromptOptions>;
+export interface IPromptContext {
+  options: Readonly<TNormalizedPromptOptions>;
   ask<TAnswers extends Record<string, unknown>>(
-    questions: PromptQuestion | PromptQuestion[],
+    questions: TPromptQuestion | TPromptQuestion[],
   ): Promise<TAnswers>;
   writeLine(value: unknown): void;
 }
 
-export type PromptHandler<TResult = unknown> = (
-  options?: PromptOptions,
-) => Promise<PromptExecution<TResult>>;
+export type TPromptHandler<TResult = unknown> = (
+  options?: IPromptOptions,
+) => Promise<IPromptExecution<TResult>>;
 
 function serialize(value: unknown) {
   return JSON.stringify(value, (_, currentValue) => {
@@ -61,7 +61,7 @@ function serialize(value: unknown) {
   });
 }
 
-function normalizeOptions(options: PromptOptions): NormalizedPromptOptions {
+function normalizeOptions(options: IPromptOptions): TNormalizedPromptOptions {
   return {
     answers: options.answers ?? {},
     interactive: options.interactive ?? true,
@@ -73,9 +73,9 @@ function normalizeOptions(options: PromptOptions): NormalizedPromptOptions {
 
 export function createAlgorithmPrompt<TResult>(
   algorithm: string,
-  execute: (context: PromptContext) => Promise<TResult> | TResult,
-): PromptHandler<TResult> {
-  return async (options: PromptOptions = {}) => {
+  execute: (context: IPromptContext) => Promise<TResult> | TResult,
+): TPromptHandler<TResult> {
+  return async (options: IPromptOptions = {}) => {
     const normalizedOptions = normalizeOptions(options);
     const transcript: string[] = [];
 
@@ -88,10 +88,10 @@ export function createAlgorithmPrompt<TResult>(
       }
     };
 
-    const context: PromptContext = {
+    const context: IPromptContext = {
       options: normalizedOptions,
       async ask<TAnswers extends Record<string, unknown>>(
-        questions: PromptQuestion | PromptQuestion[],
+        questions: TPromptQuestion | TPromptQuestion[],
       ) {
         const normalizedQuestions = Array.isArray(questions)
           ? questions
@@ -125,7 +125,7 @@ export function createAlgorithmPrompt<TResult>(
 
     try {
       const result = await execute(context);
-      const payload: PromptExecution<TResult> = {
+      const payload: IPromptExecution<TResult> = {
         algorithm,
         success: true,
         result,
@@ -138,7 +138,7 @@ export function createAlgorithmPrompt<TResult>(
 
       return payload;
     } catch (error) {
-      const payload: PromptExecution<TResult> = {
+      const payload: IPromptExecution<TResult> = {
         algorithm,
         success: false,
         error: error instanceof Error ? error.message : String(error),

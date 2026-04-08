@@ -1,6 +1,9 @@
-import chalk from "@/shared/chalk";
-
 import multiplicativeInverse from "@/algorithms/multiplicative-inverse";
+import chalk from "@/shared/cli/chalk";
+import {
+  expectSameErrorWithAndWithoutWASM,
+  expectSameResultWithAndWithoutWASM,
+} from "@/shared/testing/wasm";
 
 describe("Finding the Multiplicative Inverses of the given numbers", () => {
   test.each([
@@ -14,14 +17,24 @@ describe("Finding the Multiplicative Inverses of the given numbers", () => {
       "$result",
     )}`,
     ({ base, modulo, result }) => {
-      expect(
-        multiplicativeInverse(BigInt(base), BigInt(modulo), 5).sort(),
-      ).toEqual(
-        result
-          .map((item) => {
-            return BigInt(item);
-          })
-          .sort(),
+      const execute = () => multiplicativeInverse(BigInt(base), BigInt(modulo), 5);
+
+      expect(execute()).toEqual(result.map((item) => BigInt(item)));
+      expectSameResultWithAndWithoutWASM(execute);
+    },
+  );
+
+  test.each([
+    [23n, 1n, 5, "modulo must be greater than 1."],
+    [23n, 41n, 0, "number must be a positive integer."],
+    [2n, 4n, 1, "base and modulo must be coprime."],
+    [(1n << 63n) + 1n, 3n, 1, "base and modulo must be coprime."],
+  ])(
+    "keeps the same error with and without WASM for %p mod %p",
+    (base, modulo, count, errorMessage) => {
+      expectSameErrorWithAndWithoutWASM(
+        () => multiplicativeInverse(base, modulo, count),
+        errorMessage,
       );
     },
   );

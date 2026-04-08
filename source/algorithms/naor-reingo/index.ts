@@ -1,13 +1,15 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
-import { randomBigIntBetween } from "@/shared/random";
 import {
   createI64Allocator,
   createWASMInvoker,
   fitsInI64,
   I64_BYTES,
-} from "@/shared/wasm";
+} from "@/shared/algorithm/wasm";
+import { randomBigIntBetween } from "@/shared/algorithm/random";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMNaorReingo = createWASMInvoker<[number, number, bigint], bigint[]>(
   "naor-reingo",
@@ -109,6 +111,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

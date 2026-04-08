@@ -1,6 +1,3 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import euclidean from "@/algorithms/euclidean";
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 import {
@@ -10,7 +7,12 @@ import {
   I64_BYTES,
   MIN_I64,
   normalizeI64,
-} from "@/shared/wasm";
+} from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMChineseRemainder = createWASMInvoker<[bigint[], bigint[]], bigint>(
   "chinese-remainder",
@@ -145,6 +147,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

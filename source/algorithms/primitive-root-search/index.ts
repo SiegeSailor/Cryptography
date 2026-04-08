@@ -1,6 +1,3 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import {
@@ -8,7 +5,12 @@ import {
   createWASMInvoker,
   fitsInI64,
   I64_BYTES,
-} from "@/shared/wasm";
+} from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMPrimitiveRoots = createWASMInvoker<[bigint], bigint[]>(
   "primitive-root-search",
@@ -134,6 +136,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

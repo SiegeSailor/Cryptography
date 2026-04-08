@@ -1,26 +1,10 @@
 #include <stdint.h>
 
+#ifndef WASM_EXPORT
 #define WASM_EXPORT __attribute__((visibility("default")))
+#endif
 
-static uint64_t powmod_u64_internal(uint64_t base, uint64_t exponent, uint64_t modulo) {
-  if (modulo == 0) {
-    return 0;
-  }
-
-  uint64_t result = 1;
-  uint64_t current_base = base % modulo;
-  uint64_t current_exponent = exponent;
-
-  while (current_exponent > 0) {
-    if ((current_exponent & 1ULL) == 1ULL) {
-      result = (result * current_base) % modulo;
-    }
-    current_base = (current_base * current_base) % modulo;
-    current_exponent >>= 1ULL;
-  }
-
-  return result;
-}
+#include "../fast-modular-exponentiation/main.c"
 
 WASM_EXPORT int32_t primitive_root_search_i64(int64_t prime, int64_t* out_roots, int32_t max_roots) {
   if (prime <= 2 || max_roots <= 0) {
@@ -51,7 +35,7 @@ WASM_EXPORT int32_t primitive_root_search_i64(int64_t prime, int64_t* out_roots,
     int32_t is_primitive = 1;
     for (int32_t i = 0; i < factor_count; i++) {
       const int64_t exponent = phi / factors[i];
-      const uint64_t value = powmod_u64_internal((uint64_t)candidate, (uint64_t)exponent, (uint64_t)prime);
+      const uint64_t value = powmod_u64((uint64_t)candidate, (uint64_t)exponent, (uint64_t)prime);
       if (value == 1ULL) {
         is_primitive = 0;
         break;

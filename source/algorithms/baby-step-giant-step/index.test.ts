@@ -1,7 +1,10 @@
-import chalk from "@/shared/chalk";
-
 import babyStepGiantStep from "@/algorithms/baby-step-giant-step";
+import chalk from "@/shared/cli/chalk";
 import { SYMBOLS } from "@/shared/constants";
+import {
+  expectSameErrorWithAndWithoutWASM,
+  expectSameResultWithAndWithoutWASM,
+} from "@/shared/testing/wasm";
 
 describe("Finding the Discrete Log for the given numbers", () => {
   test.each([
@@ -13,9 +16,30 @@ describe("Finding the Discrete Log for the given numbers", () => {
   ])(
     `%p^x ${SYMBOLS.CONGRUENT} %p % %p.\n\tx = ${chalk.greenBright("%p")}`,
     (generator, base, modulo, result) => {
-      expect(
-        babyStepGiantStep(BigInt(generator), BigInt(base), BigInt(modulo)),
-      ).toEqual(BigInt(result));
+      const execute = () => {
+        return babyStepGiantStep(
+          BigInt(generator),
+          BigInt(base),
+          BigInt(modulo),
+        );
+      };
+
+      expect(execute()).toEqual(BigInt(result));
+      expectSameResultWithAndWithoutWASM(execute);
+    },
+  );
+
+  test.each([
+    [1n, 1n, 1n, "Given modulo must be higher than 1"],
+    [4n, 1n, 8n, "Given generator must satisfy GCD(generator, modulo) = 1"],
+    [3n, 4n, 8n, "Given base must satisfy GCD(base, modulo) = 1"],
+  ])(
+    "keeps the same error with and without WASM for %p, %p, %p",
+    (generator, base, modulo, errorMessage) => {
+      expectSameErrorWithAndWithoutWASM(
+        () => babyStepGiantStep(generator, base, modulo),
+        errorMessage,
+      );
     },
   );
 });

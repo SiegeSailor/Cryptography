@@ -1,9 +1,12 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
 import euclidean from "@/algorithms/euclidean";
-import { SYMBOLS } from "@/shared/constants";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
+import { SYMBOLS } from "@/shared/constants";
 
 const runWASMBabyStepGiantStep = createWASMInvoker<
   [bigint, bigint, bigint],
@@ -113,6 +116,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

@@ -1,8 +1,10 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import { SYMBOLS } from "@/shared/constants";
-import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInU64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMPowMod = createWASMInvoker<[bigint, bigint, bigint], bigint>(
   "fast-modular-exponentiation",
@@ -12,9 +14,9 @@ const runWASMPowMod = createWASMInvoker<[bigint, bigint, bigint], bigint>(
       base < 0n ||
       exponent < 0n ||
       modulo <= 0n ||
-      !fitsInI64(base) ||
-      !fitsInI64(exponent) ||
-      !fitsInI64(modulo)
+      !fitsInU64(base) ||
+      !fitsInU64(exponent) ||
+      !fitsInU64(modulo)
     ) {
       return null;
     }
@@ -98,6 +100,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

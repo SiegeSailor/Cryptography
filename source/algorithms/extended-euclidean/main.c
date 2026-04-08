@@ -1,6 +1,8 @@
 #include <stdint.h>
 
+#ifndef WASM_EXPORT
 #define WASM_EXPORT __attribute__((visibility("default")))
+#endif
 
 WASM_EXPORT void extended_euclidean_i64(int64_t left, int64_t right, int64_t* gcd, int64_t* x, int64_t* y) {
   int64_t old_r = left;

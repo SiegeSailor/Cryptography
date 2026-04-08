@@ -1,11 +1,13 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import euclidean from "@/algorithms/euclidean";
-import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
+import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
 import pollardRho from "@/algorithms/pollard-rho";
-import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInI64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMPollardP1 = createWASMInvoker<[bigint, number], bigint>(
   "pollard-p-1-factorization",
@@ -109,6 +111,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

@@ -1,10 +1,12 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import euclidean from "@/algorithms/euclidean";
 import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
-import { randomBigIntBits, randomBigIntBetween } from "@/shared/random";
-import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
+import { randomBigIntBits, randomBigIntBetween } from "@/shared/algorithm/random";
+import { createWASMInvoker, fitsInU64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMBlumBlumShubNext = createWASMInvoker<[bigint, bigint], bigint>(
   "blum-blum-shub",
@@ -13,8 +15,8 @@ const runWASMBlumBlumShubNext = createWASMInvoker<[bigint, bigint], bigint>(
       !wasmExports.blum_blum_shub_next_u64 ||
       state < 0n ||
       modulus <= 0n ||
-      !fitsInI64(state) ||
-      !fitsInI64(modulus)
+      !fitsInU64(state) ||
+      !fitsInU64(modulus)
     ) {
       return null;
     }
@@ -104,6 +106,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

@@ -1,9 +1,11 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import { randomBigIntBetween } from "@/shared/random";
-import { createWASMInvoker, MAX_U64 } from "@/shared/wasm";
+import { randomBigIntBetween } from "@/shared/algorithm/random";
+import { createWASMInvoker, MAX_U64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMMillerRabin = createWASMInvoker<[bigint, number], boolean>(
   "miller-rabin-primarily-test",
@@ -92,6 +94,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

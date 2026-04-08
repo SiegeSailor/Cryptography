@@ -1,11 +1,11 @@
-type ChalkStyle = ((value: unknown) => string) & {
-  bold: ChalkStyle;
-  italic: ChalkStyle;
-  red: ChalkStyle;
-  cyan: ChalkStyle;
-  gray: ChalkStyle;
-  greenBright: ChalkStyle;
-  bgCyan: ChalkStyle;
+type TChalkStyle = ((value: unknown) => string) & {
+  bold: TChalkStyle;
+  italic: TChalkStyle;
+  red: TChalkStyle;
+  cyan: TChalkStyle;
+  gray: TChalkStyle;
+  greenBright: TChalkStyle;
+  bgCyan: TChalkStyle;
 };
 
 const STYLE_CODES = {
@@ -27,8 +27,8 @@ function applyStyle(codes: number[], value: unknown) {
   return `\u001b[${codes.join(";")}m${text}\u001b[0m`;
 }
 
-function createStyle(codes: number[] = []): ChalkStyle {
-  const style = ((value: unknown) => applyStyle(codes, value)) as ChalkStyle;
+function createStyle(codes: number[] = []): TChalkStyle {
+  const style = ((value: unknown) => applyStyle(codes, value)) as TChalkStyle;
 
   Object.defineProperties(style, {
     bold: {

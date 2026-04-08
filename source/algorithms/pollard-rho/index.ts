@@ -1,10 +1,12 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import euclidean from "@/algorithms/euclidean";
-import { math } from "@/shared/utilities";
-import { randomBigIntBetween } from "@/shared/random";
-import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
+import { math } from "@/shared/algorithm/math";
+import { randomBigIntBetween } from "@/shared/algorithm/random";
+import { createWASMInvoker, fitsInI64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMPollardRho = createWASMInvoker<
   [bigint, bigint, bigint, number],
@@ -96,6 +98,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

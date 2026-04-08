@@ -1,6 +1,8 @@
 #include <stdint.h>
 
+#ifndef WASM_EXPORT
 #define WASM_EXPORT __attribute__((visibility("default")))
+#endif
 
 WASM_EXPORT uint64_t powmod_u64(uint64_t base, uint64_t exponent, uint64_t modulo) {
   if (modulo == 0) {

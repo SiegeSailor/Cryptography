@@ -1,6 +1,6 @@
-import chalk from "@/shared/chalk";
-
 import extendedEuclidean from "@/algorithms/extended-euclidean";
+import chalk from "@/shared/cli/chalk";
+import { expectSameResultWithAndWithoutWASM } from "@/shared/testing/wasm";
 
 describe("Finding the Greatest Common Divisor of the given numbers in smallest integers form", () => {
   test.each([
@@ -14,11 +14,10 @@ describe("Finding the Greatest Common Divisor of the given numbers in smallest i
       "$x * $left + $y * $right",
     )}`,
     ({ left, right, x, y, result }) => {
-      expect(extendedEuclidean(BigInt(left), BigInt(right))).toEqual([
-        BigInt(result),
-        BigInt(x),
-        BigInt(y),
-      ]);
+      const execute = () => extendedEuclidean(BigInt(left), BigInt(right));
+
+      expect(execute()).toEqual([BigInt(result), BigInt(x), BigInt(y)]);
+      expectSameResultWithAndWithoutWASM(execute);
     },
   );
 });

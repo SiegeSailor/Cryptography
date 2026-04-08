@@ -1,6 +1,9 @@
-import chalk from "@/shared/chalk";
-
 import primitiveRootSearch from "@/algorithms/primitive-root-search";
+import chalk from "@/shared/cli/chalk";
+import {
+  expectSameErrorWithAndWithoutWASM,
+  expectSameResultWithAndWithoutWASM,
+} from "@/shared/testing/wasm";
 
 describe("Finding the Primitive Roots of the given numbers", () => {
   test.each([
@@ -33,7 +36,19 @@ describe("Finding the Primitive Roots of the given numbers", () => {
       "%p",
     )}`,
     (input, result) => {
-      expect(primitiveRootSearch(input)[1].sort()).toEqual(result.sort());
+      const execute = () => {
+        return primitiveRootSearch(input)[1].sort((left, right) => left - right);
+      };
+
+      expect(execute()).toEqual([...result].sort((left, right) => left - right));
+      expectSameResultWithAndWithoutWASM(execute);
     },
   );
+
+  test("keeps the same error with and without WASM for non-prime input", () => {
+    expectSameErrorWithAndWithoutWASM(
+      () => primitiveRootSearch(21),
+      "The Given number must be prime.",
+    );
+  });
 });

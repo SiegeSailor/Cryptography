@@ -1,6 +1,9 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-import { createWASMInvoker, fitsInI64 } from "@/shared/wasm";
+import { createWASMInvoker, fitsInU64 } from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMGcd = createWASMInvoker<[bigint, bigint], bigint>(
   "euclidean",
@@ -9,8 +12,8 @@ const runWASMGcd = createWASMInvoker<[bigint, bigint], bigint>(
       !wasmExports.gcd_u64 ||
       left < 0n ||
       right < 0n ||
-      !fitsInI64(left) ||
-      !fitsInI64(right)
+      !fitsInU64(left) ||
+      !fitsInU64(right)
     ) {
       return null;
     }
@@ -64,6 +67,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

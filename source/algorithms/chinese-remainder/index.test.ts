@@ -1,6 +1,9 @@
-import chalk from "@/shared/chalk";
-
 import chineseRemainder from "@/algorithms/chinese-remainder";
+import chalk from "@/shared/cli/chalk";
+import {
+  expectSameErrorWithAndWithoutWASM,
+  expectSameResultWithAndWithoutWASM,
+} from "@/shared/testing/wasm";
 
 describe("Finding a number by the product of different remainders", () => {
   test.each([
@@ -12,7 +15,27 @@ describe("Finding a number by the product of different remainders", () => {
   ])(
     `%p as integers and %p as modulo\n\tnumber is ${chalk.greenBright("%p")}`,
     (arrayOfBase, arrayOfModulo, result) => {
-      expect(chineseRemainder(arrayOfBase, arrayOfModulo)).toEqual(result);
+      const execute = () => chineseRemainder(arrayOfBase, arrayOfModulo);
+
+      expect(execute()).toEqual(result);
+      expectSameResultWithAndWithoutWASM(execute);
+    },
+  );
+
+  test.each([
+    [
+      [1, 2],
+      [3],
+      "The length for the two given arrays should be the same.",
+    ],
+    [[1, 2], [4, 6], "All modulo values must be pairwise coprime."],
+  ])(
+    "keeps the same error with and without WASM for %p and %p",
+    (remainders, modulos, errorMessage) => {
+      expectSameErrorWithAndWithoutWASM(
+        () => chineseRemainder(remainders, modulos),
+        errorMessage,
+      );
     },
   );
 });

@@ -1,15 +1,10 @@
 #include <stdint.h>
 
+#ifndef WASM_EXPORT
 #define WASM_EXPORT __attribute__((visibility("default")))
+#endif
 
-static uint64_t gcd_u64_internal(uint64_t left, uint64_t right) {
-  while (right != 0) {
-    const uint64_t cache = right;
-    right = left % right;
-    left = cache;
-  }
-  return left;
-}
+#include "../euclidean/main.c"
 
 WASM_EXPORT int64_t pollard_rho_i64(int64_t input, int64_t seed, int64_t c, int32_t max_iterations) {
   if (input <= 1) {
@@ -30,7 +25,7 @@ WASM_EXPORT int64_t pollard_rho_i64(int64_t input, int64_t seed, int64_t c, int3
     y = (y * y + constant) % n;
 
     const uint64_t diff = x > y ? x - y : y - x;
-    const uint64_t divisor = gcd_u64_internal(diff, n);
+    const uint64_t divisor = gcd_u64(diff, n);
 
     if (divisor > 1 && divisor < n) {
       return (int64_t)divisor;

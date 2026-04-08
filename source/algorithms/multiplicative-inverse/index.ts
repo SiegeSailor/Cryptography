@@ -1,13 +1,15 @@
-import chalk from "@/shared/chalk";
-import { createAlgorithmPrompt, type PromptOptions } from "@/shared/prompt";
-
 import extendedEuclidean from "@/algorithms/extended-euclidean";
 import {
   createWASMInvoker,
   fitsInI64,
   MIN_I64,
   normalizeI64,
-} from "@/shared/wasm";
+} from "@/shared/algorithm/wasm";
+import chalk from "@/shared/cli/chalk";
+import {
+  createAlgorithmPrompt,
+  type IPromptOptions,
+} from "@/shared/cli/prompt";
 
 const runWASMMultiplicativeInverse = createWASMInvoker<
   [bigint, bigint],
@@ -106,6 +108,6 @@ const runPrompt = createAlgorithmPrompt(
   },
 );
 
-export async function prompt(options?: PromptOptions) {
+export async function prompt(options?: IPromptOptions) {
   return runPrompt(options);
 }

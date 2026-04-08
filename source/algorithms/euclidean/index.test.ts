@@ -1,6 +1,6 @@
-import chalk from "@/shared/chalk";
-
 import euclidean from "@/algorithms/euclidean";
+import chalk from "@/shared/cli/chalk";
+import { expectSameResultWithAndWithoutWASM } from "@/shared/testing/wasm";
 
 describe("Finding the Greatest Common Divisor of the given numbers", () => {
   test.each([
@@ -12,7 +12,10 @@ describe("Finding the Greatest Common Divisor of the given numbers", () => {
   ])(
     `GCD(%p, %p) = x.\n\tx = ${chalk.greenBright("%p")}`,
     (left, right, result) => {
-      expect(euclidean(BigInt(left), BigInt(right))).toEqual(BigInt(result));
+      const execute = () => euclidean(BigInt(left), BigInt(right));
+
+      expect(execute()).toEqual(BigInt(result));
+      expectSameResultWithAndWithoutWASM(execute);
     },
   );
 });
