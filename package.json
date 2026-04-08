@@ -4,7 +4,7 @@
     "@siegesailor/cryptography": "./build/command.js"
   },
   "bugs": {
-    "url": "https://github.com/SiegeSailor/cryptography/issues"
+    "url": "https://github.com/SiegeSailor/Cryptography/issues"
   },
   "dependencies": {
     "chalk": "5.6.2",
@@ -35,7 +35,7 @@
   "files": [
     "./build/**/*"
   ],
-  "homepage": "https://github.com/SiegeSailor/cryptography#readme",
+  "homepage": "https://github.com/SiegeSailor/Cryptography#readme",
   "keywords": [
     "command-line-tool",
     "cryptography",
@@ -55,7 +55,7 @@
   "name": "@siegesailor/cryptography",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SiegeSailor/cryptography.git"
+    "url": "git+https://github.com/SiegeSailor/Cryptography.git"
   },
   "scripts": {
     "build": "npm run build:wasm && npm run build:typescript && npm run build:wasm-assets",
