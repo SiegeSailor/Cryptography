@@ -42,7 +42,7 @@
     "typescript",
     "webassembly"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "main": "./build/source/entry-point.js",
   "publishConfig": {
     "access": "public",
