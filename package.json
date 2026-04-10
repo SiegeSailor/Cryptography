@@ -45,7 +45,8 @@
   "license": "ISC",
   "main": "./build/source/entry-point.js",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "types": "./build/source/entry-point.d.ts",
   "exports": {
