@@ -85,7 +85,7 @@ jobs:
       - name: Setup | Build Project
         run: npm run build
 
-      - name: Create release with semantic-release
+      - name: Action | Create Release
         run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
