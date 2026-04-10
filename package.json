@@ -22,11 +22,11 @@
     "conventional-changelog-conventionalcommits": "9.3.1",
     "jest": "30.3.0",
     "semantic-release": "24.2.9",
-    "ts-jest": "29.4.6",
+    "ts-jest": "29.4.9",
     "ts-node": "10.9.2",
     "tsc-alias": "1.8.16",
     "tsconfig-paths": "4.2.0",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "engines": {
     "node": ">= 25.2.1",
