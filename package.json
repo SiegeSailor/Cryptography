@@ -13,20 +13,15 @@
   },
   "description": "Provide a collection of cryptography functions and a CLI.",
   "devDependencies": {
-    "@semantic-release/commit-analyzer": "13.0.1",
-    "@semantic-release/github": "11.0.6",
-    "@semantic-release/npm": "12.0.2",
-    "@semantic-release/release-notes-generator": "14.1.0",
     "@types/jest": "30.0.0",
     "@types/node": "25.5.0",
     "conventional-changelog-conventionalcommits": "9.3.1",
     "jest": "30.3.0",
-    "semantic-release": "24.2.9",
-    "ts-jest": "29.4.6",
+    "ts-jest": "29.4.9",
     "ts-node": "10.9.2",
     "tsc-alias": "1.8.16",
     "tsconfig-paths": "4.2.0",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "engines": {
     "node": ">= 25.2.1",
@@ -42,7 +37,7 @@
     "typescript",
     "webassembly"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "main": "./build/source/entry-point.js",
   "publishConfig": {
     "access": "public",
@@ -69,7 +64,7 @@
     "build:wasm-assets": "node ./scripts/copy-wasm.js",
     "build:wasm:check": "node ./scripts/verify-wasm.js",
     "build:wasm:strict": "WASM_STRICT=1 node ./scripts/compile-wasm.js",
-    "release": "semantic-release",
+    "release": "npx --yes --package semantic-release@25.0.3 --package @semantic-release/commit-analyzer@13.0.1 --package @semantic-release/github@11.0.6 --package @semantic-release/npm@12.0.2 --package @semantic-release/release-notes-generator@14.1.0 semantic-release",
     "start:cli": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
     "start:cli:compiled": "node ./build/command.js",
     "test": "jest",

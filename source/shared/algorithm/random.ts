@@ -1,6 +1,6 @@
 import { randomBytes, webcrypto } from "crypto";
 
-function fillRandom(buffer: Uint8Array) {
+function fillRandom(buffer: Uint8Array<ArrayBuffer>) {
   const cryptoProvider = globalThis.crypto ?? webcrypto;
   if (cryptoProvider?.getRandomValues) {
     cryptoProvider.getRandomValues(buffer);
@@ -17,7 +17,7 @@ function randomBigIntBitsInternal(bits: number, forceTopBit: boolean): bigint {
   }
 
   const byteLength = Math.ceil(bits / 8);
-  const bytes = new Uint8Array(byteLength);
+  const bytes = new Uint8Array(new ArrayBuffer(byteLength));
   fillRandom(bytes);
 
   const excessBits = byteLength * 8 - bits;
