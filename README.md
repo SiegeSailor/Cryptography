@@ -4,7 +4,7 @@
 [![Test](https://github.com/SiegeSailor/Cryptography/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/Cryptography/actions/workflows/test.yml)
 [![Release](https://github.com/SiegeSailor/Cryptography/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/Cryptography/actions/workflows/release.yml)
 
-This project is inspired by [Boston University MET CS 789 Cryptography](https://www.bu.edu/academics/met/courses/met-cs-789/) for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows. The library is production-ready, with a focus on security and performance. It includes implementations for:
+Zero configuration needed. WebAssembly availability is determined at runtime, with a safe fallback to JavaScript with TypeScript support implemented. The library is production-ready, with a focus on security and performance, providing implementations for:
 
 | Algorithm                   | JavaScript | TypeScript | WebAssembly |
 | --------------------------- | ---------- | ---------- | ----------- |
@@ -21,14 +21,13 @@ This project is inspired by [Boston University MET CS 789 Cryptography](https://
 | Pollard Rho                 | ✅         | ✅         | ✅          |
 | Primitive Root Search       | ✅         | ✅         | ✅          |
 
-> [!tip]
-> Zero configuration needed. WebAssembly availability is determined at runtime, with a safe fallback to JavaScript with TypeScript support implemented.
-
 And, a CLI is available to interact with these algorithms and demonstrate the 3 key encryption flows:
 
 - [Diffie Hellman Key Exchange](./source/key-encryptions/DiffieHellman.ts)
 - [ElGamal](./source/key-encryptions/ElGamal.ts)
 - [RSA](./source/key-encryptions/RSA.ts)
+
+> This project is inspired by [Boston University MET CS 789 Cryptography](https://www.bu.edu/academics/met/courses/met-cs-789/) for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows.
 
 ## Installation
 

@@ -59,14 +59,20 @@ const runWASMChineseRemainder = createWASMInvoker<[bigint[], bigint[]], bigint>(
 );
 
 /**
- * Solves a system of simultaneous congruences with the Chinese Remainder Theorem.
+ * Solves a system of simultaneous congruences `x ≡ r_i (mod m_i)` with the
+ * Chinese Remainder Theorem.
  *
- * When the moduli are pairwise coprime, the system has a unique solution modulo
- * the product of all moduli, and this function returns its least non-negative representative.
+ * When the moduli are pairwise coprime, the system has a unique solution
+ * modulo `M = ∏ m_i`, and this function returns its least non-negative
+ * representative. The implementation checks pairwise coprimality with the
+ * Euclidean algorithm and computes each modular inverse for `M_i = M / m_i`
+ * with the Extended Euclidean algorithm.
  *
- * @param arrayOfBase Remainders r_i in congruences of the form x ≡ r_i (mod m_i).
- * @param arrayOfModulo Moduli m_i that define each congruence.
- * @returns The least non-negative solution as a JavaScript number.
+ * @param arrayOfBase Remainders `r_i` in congruences of the form
+ * `x ≡ r_i (mod m_i)`.
+ * @param arrayOfModulo Moduli `m_i` that define each congruence.
+ * @returns The least non-negative solution `x` modulo `M` as a JavaScript
+ * number.
  * @throws {Error} When the remainder and modulus arrays have different lengths.
  * @throws {Error} When the moduli are not pairwise coprime.
  * @throws {Error} When a required modular inverse cannot be computed.

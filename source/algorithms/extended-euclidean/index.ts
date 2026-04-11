@@ -51,13 +51,18 @@ const runWASMExtendedEuclidean = createWASMInvoker<
 });
 
 /**
- * Computes the greatest common divisor together with Bezout coefficients for two integers.
+ * Computes `gcd(left, right)` together with Bezout coefficients for two
+ * integers.
  *
- * The returned tuple [gcd, x, y] satisfies left * x + right * y = gcd, which is the standard Bezout identity.
+ * The returned tuple `[gcd, x, y]` satisfies `left * x + right * y = gcd`,
+ * which is the standard Bezout identity. The fallback implementation performs
+ * recursive Euclidean reduction and back-substitutes the quotients to recover
+ * the coefficients.
  *
- * @param left First integer in the Bezout identity.
- * @param right Second integer in the Bezout identity.
- * @returns A tuple [gcd, x, y] where gcd is the greatest common divisor of the inputs.
+ * @param left First integer `a` in the identity `a * x + b * y = gcd(a, b)`.
+ * @param right Second integer `b` in the identity `a * x + b * y = gcd(a, b)`.
+ * @returns A tuple `[gcd, x, y]` where `gcd` is the greatest common divisor of
+ * the inputs and `x`, `y` are Bezout coefficients.
  */
 export default function main(left: bigint, right: bigint) {
   const wasmResult = runWASMExtendedEuclidean(left, right);

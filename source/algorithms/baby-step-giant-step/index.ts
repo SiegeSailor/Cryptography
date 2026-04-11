@@ -36,16 +36,21 @@ const runWASMBabyStepGiantStep = createWASMInvoker<
 });
 
 /**
- * Solves the discrete logarithm problem by finding an exponent x such that
- * generator^x is congruent to base modulo modulo.
+ * Solves the discrete logarithm problem by finding an exponent `x` such that
+ * `generator^x` is congruent to `base` modulo `modulo`.
  *
- * The congruence is evaluated in the multiplicative group modulo modulo, so the
- * generator and base must both be coprime with the modulus.
+ * The congruence is evaluated in the multiplicative group modulo `modulo`, so
+ * `generator` and `base` must both be coprime with the modulus. The
+ * TypeScript fallback uses the baby-step giant-step meet-in-the-middle method,
+ * validates those coprimality conditions with the Euclidean algorithm, and
+ * builds its collision table with fast modular exponentiation.
  *
- * @param generator Base whose powers are searched in the congruence relation.
- * @param base Target residue in the congruence relation.
- * @param modulo Modulus of the congruence; must be greater than 1.
- * @returns The exponent x when a solution is found, or -1n when no solution is found.
+ * @param generator Candidate generator `g` whose powers are searched in the
+ * congruence relation.
+ * @param base Target residue `h` in the congruence `g^x ≡ h (mod m)`.
+ * @param modulo Modulus `m` of the congruence; it must be greater than `1`.
+ * @returns An exponent `x` satisfying the congruence when one is found, or
+ * `-1n` when no solution is found.
  * @throws {Error} When modulo is not greater than 1.
  * @throws {Error} When generator and modulo are not coprime.
  * @throws {Error} When base and modulo are not coprime.
