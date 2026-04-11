@@ -65,8 +65,8 @@
     "build:wasm:check": "node ./scripts/verify-wasm.js",
     "build:wasm:strict": "WASM_STRICT=1 node ./scripts/compile-wasm.js",
     "release": "npx --yes --package semantic-release@25.0.3 --package @semantic-release/commit-analyzer@13.0.1 --package @semantic-release/github@11.0.6 --package @semantic-release/npm@12.0.2 --package @semantic-release/release-notes-generator@14.1.0 semantic-release",
-    "start:cli": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
-    "start:cli:compiled": "node ./build/command.js",
+    "start": "clear && ts-node -r tsconfig-paths/register ./source/command.ts",
+    "start:compiled": "node ./build/command.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
