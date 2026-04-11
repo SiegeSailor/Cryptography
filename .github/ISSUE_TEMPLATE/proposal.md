@@ -1,6 +1,6 @@
 ---
-name: Proposal
-about: Suggest an idea for this project.
+name: Propose
+about: Propose an idea for this project.
 title: "Propose an Idea"
 labels: ["proposal"]
 assignees: SiegeSailor
