@@ -1,23 +1,17 @@
 ---
 name: Proposal
 about: Suggest an idea for this project.
-title: ""
-labels: proposal
+title: "Propose an Idea"
+labels: ["proposal"]
 assignees: SiegeSailor
 ---
 
-# Description
+# Summary
 
-A clear and concise description of what the problem is.
+<!-- A clear and concise description of what the problem is. -->
 
-## Solution
+## Acceptance Criteria
 
-A clear and concise description of what you want to happen.
+<!-- Use bullet points to describe the proposed solution. Update the list as progress is made. -->
 
-## Alternatives
-
-A clear and concise description of any alternative solutions or features you have considered.
-
-## Additional Context
-
-Add any other context about the proposal here.
+- [ ] Acceptance criterion 1
