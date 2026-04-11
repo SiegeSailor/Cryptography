@@ -1,7 +1,7 @@
 {
   "author": "SiegeSailor",
   "bin": {
-    "@siegesailor/cryptography": "./build/command.js"
+    "siegesailor-cryptography": "build/command.js"
   },
   "bugs": {
     "url": "https://github.com/SiegeSailor/Cryptography/issues"

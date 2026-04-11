@@ -1,8 +1,10 @@
+#!/usr/bin/env node
+
 import { join } from "path";
 
 import chalk from "@/shared/cli/chalk";
 import { getInquirer } from "@/shared/cli/inquirer";
-import type { IPromptOptions } from "@/shared/cli/prompt";
+import { type IPromptOptions } from "@/shared/cli/prompt";
 import { format, inquire } from "@/shared/cli/utilities";
 import { CHOICES } from "@/shared/constants";
 
