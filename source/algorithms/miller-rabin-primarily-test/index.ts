@@ -25,13 +25,19 @@ const runWASMMillerRabin = createWASMInvoker<[bigint, number], boolean>(
 );
 
 /**
- * Performs the Miller-Rabin probable-prime test on an integer.
+ * Performs the Miller-Rabin probable-prime test on an integer `input`.
  *
- * Each witness round checks whether input behaves like a prime in the multiplicative group modulo input, so a true result means input is a probable prime rather than a proof of primality.
+ * Each witness round checks whether `input` behaves like a prime in the
+ * multiplicative group modulo `input`, so a true result means `input` is a
+ * probable prime rather than a proof of primality. The algorithm decomposes
+ * `input - 1 = 2^s d` with odd `d` and uses fast modular exponentiation for
+ * each random witness.
  *
- * @param input Integer to classify as composite or probable prime.
- * @param level Number of witness rounds used to reduce the probability of a false positive.
- * @returns False when a witness proves the number composite, or true when all rounds pass.
+ * @param input Integer `n` to classify as composite or probable prime.
+ * @param level Number of witness rounds `k` used to reduce the probability of
+ * a false positive.
+ * @returns `false` when a witness proves the number composite, or `true` when
+ * all rounds pass.
  * @throws {Error} When level is not a positive integer.
  */
 export default function main(input: bigint, level: number) {

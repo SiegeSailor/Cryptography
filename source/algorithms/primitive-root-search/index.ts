@@ -75,12 +75,21 @@ function listPrimeFactors(value: number) {
 }
 
 /**
- * Enumerates primitive roots modulo a prime and builds the corresponding power table.
+ * Enumerates primitive roots modulo a prime and builds the corresponding power
+ * table.
  *
- * For a prime p, the non-zero residue classes form a cyclic multiplicative group of order p - 1; this function identifies the generators of that group with the prime divisors of p - 1 and records their powers modulo p.
+ * For a prime `p`, the non-zero residue classes form a cyclic multiplicative
+ * group of order `phi = p - 1`; this function identifies the generators of
+ * that group by checking `g^(phi / q) ≠ 1 (mod p)` for every prime divisor `q`
+ * of `phi`, and it records the power table for every candidate. The
+ * implementation validates `p` with the Miller-Rabin test and uses fast
+ * modular exponentiation both for the primitive-root checks and for the table
+ * entries.
  *
- * @param prime Prime modulus whose multiplicative group is analyzed.
- * @returns A tuple [table, roots] where table[row][column] stores (row + 1)^(column + 1) mod prime and roots lists the primitive roots modulo prime.
+ * @param prime Prime modulus `p` whose multiplicative group is analyzed.
+ * @returns A tuple `[table, roots]` where `table[row][column]` stores
+ * `(row + 1)^(column + 1) mod p` and `roots` lists the primitive roots modulo
+ * `p`.
  * @throws {Error} When prime is not prime.
  */
 export default function main(prime: number): [number[][], number[]] {

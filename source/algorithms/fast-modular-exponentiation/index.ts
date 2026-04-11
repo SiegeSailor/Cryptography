@@ -26,14 +26,17 @@ const runWASMPowMod = createWASMInvoker<[bigint, bigint, bigint], bigint>(
 );
 
 /**
- * Computes modular exponentiation by evaluating base^exponent modulo modulo.
+ * Computes the residue `base^exponent mod modulo` with binary exponentiation.
  *
- * The result is calculated with binary exponentiation, which keeps the intermediate values inside the residue class ring modulo modulo.
+ * The result is calculated with repeated squaring, which keeps every
+ * intermediate value inside the residue class ring modulo `modulo` and reduces
+ * the exponent one bit at a time. The WASM path calls the equivalent modular
+ * power routine for the same recurrence.
  *
- * @param base Base value whose power is computed.
- * @param exponent Non-negative exponent applied to the base.
- * @param modulo Positive modulus that defines the residue class ring.
- * @returns The least non-negative residue of base^exponent modulo modulo.
+ * @param base Base `a` whose power is computed.
+ * @param exponent Non-negative exponent `e` applied to `base`.
+ * @param modulo Positive modulus `m` that defines the residue class ring.
+ * @returns The least non-negative residue of `base^exponent mod modulo`.
  * @throws {Error} When modulo is not greater than 0.
  * @throws {Error} When exponent is negative.
  */

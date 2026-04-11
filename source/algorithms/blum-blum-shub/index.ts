@@ -29,14 +29,20 @@ const runWASMBlumBlumShubNext = createWASMInvoker<[bigint, bigint], bigint>(
 );
 
 /**
- * Initializes a Blum Blum Shub generator over quadratic residues modulo M = pq,
- * where p and q are distinct Blum primes with p ≡ q ≡ 3 (mod 4).
+ * Initializes a Blum Blum Shub generator over quadratic residues modulo
+ * `M = p * q`, where `p` and `q` are distinct Blum primes satisfying
+ * `p ≡ q ≡ 3 (mod 4)`.
  *
- * The returned closure advances the recurrence x_(n+1) = x_n^2 mod M and yields
- * the next generator state each time it is called.
+ * The returned closure advances the recurrence `x_(n+1) = x_n^2 mod M` and
+ * yields the next generator state each time it is called. This implementation
+ * samples candidate primes with the Miller-Rabin primality test, screens the
+ * seed with the Euclidean algorithm so `gcd(seed, M) = 1`, and then iterates
+ * the quadratic-residue recurrence.
  *
- * @param bits Bit length used when generating each Blum prime factor.
- * @returns A stateful zero-argument generator function that produces successive pseudorandom states.
+ * @param bits Bit length used when generating each Blum prime factor `p` and
+ * `q`.
+ * @returns A stateful zero-argument generator function that produces
+ * successive pseudorandom states `x_n`.
  * @throws {Error} When bits is not an integer or is smaller than 8.
  */
 export default function main(bits: number) {
