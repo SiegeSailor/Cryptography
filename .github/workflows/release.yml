@@ -85,11 +85,56 @@ jobs:
       - name: Setup | Build Project
         run: npm run build
 
+      - name: Evaluate | Snapshot Tags before Release
+        id: snapshot_tags
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAGS_FILE="$RUNNER_TEMP/release-tags-before.txt"
+          git fetch --tags --force origin
+          git tag --list | LC_ALL=C sort > "$TAGS_FILE"
+
+          printf 'tags_file=%s\n' "$TAGS_FILE" >> "$GITHUB_OUTPUT"
+
       - name: Action | Create Release
+        id: create_release
         run: npm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
           NPM_CONFIG_ACCESS: public
           NPM_CONFIG_REGISTRY: https://registry.npmjs.org/
-          NPM_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+
+      - name: Cleanup | Delete Release Tag after Failed Release
+        if: ${{ failure() && steps.create_release.outcome == 'failure' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          BEFORE_TAGS_FILE='${{ steps.snapshot_tags.outputs.tags_file }}'
+          AFTER_TAGS_FILE="$RUNNER_TEMP/release-tags-after.txt"
+
+          if [ -z "$BEFORE_TAGS_FILE" ] || [ ! -f "$BEFORE_TAGS_FILE" ]; then
+            printf '%s\n' 'No baseline tag snapshot found. Skipping tag cleanup.'
+            exit 0
+          fi
+
+          git fetch --tags --force origin
+          git tag --list | LC_ALL=C sort > "$AFTER_TAGS_FILE"
+
+          NEW_TAGS="$(comm -13 "$BEFORE_TAGS_FILE" "$AFTER_TAGS_FILE")"
+
+          if [ -z "$NEW_TAGS" ]; then
+            printf '%s\n' 'No new tags were created during this run. Skipping tag cleanup.'
+            exit 0
+          fi
+
+          while IFS= read -r tag; do
+            if [ -z "$tag" ]; then
+              continue
+            fi
+
+            printf 'Deleting tag created during failed release: %s\n' "$tag"
+            git tag -d "$tag" >/dev/null 2>&1 || true
+            git push origin ":refs/tags/$tag"
+          done <<< "$NEW_TAGS"
