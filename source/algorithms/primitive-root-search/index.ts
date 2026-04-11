@@ -140,11 +140,7 @@ export default function main(prime: number): [number[][], number[]] {
 
     const isPrimitiveRoot = primitiveRootExponents.every(
       (primitiveRootExponent) =>
-        fastModularExponentiation(
-          candidate,
-          primitiveRootExponent,
-          primeBigInt,
-        ) !== 1n,
+        table[indexRow][Number(primitiveRootExponent) - 1] !== 1,
     );
 
     if (isPrimitiveRoot) {
