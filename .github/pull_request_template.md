@@ -6,7 +6,7 @@
 
 <!-- Use bullet points to include important details. -->
 
-- Issue Closed: <!-- Please reference the issue number that was closed by this PR. -->
+- Issue(s) Closed: Closes <!-- Reference the issue number that was closed by this PR. -->
 
 ## Checklist
 
