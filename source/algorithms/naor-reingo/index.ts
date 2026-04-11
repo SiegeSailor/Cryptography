@@ -54,6 +54,17 @@ const runWASMNaorReingo = createWASMInvoker<[number, number, bigint], bigint[]>(
   },
 );
 
+/**
+ * Generates pseudorandom positive integers with a fixed decimal digit length.
+ *
+ * Each returned value lies in the interval [10^(digits - 1), 10^digits - 1], so every output has exactly the requested number of decimal digits.
+ *
+ * @param count Number of values to generate.
+ * @param digits Decimal digit length required for each generated value.
+ * @returns An array of generated values as JavaScript numbers.
+ * @throws {Error} When count is not a positive integer.
+ * @throws {Error} When digits is not a positive integer.
+ */
 export default function main(count: number, digits: number) {
   if (!Number.isInteger(count) || count <= 0) {
     throw new Error("count must be a positive integer.");

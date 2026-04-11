@@ -35,6 +35,19 @@ const runWASMMultiplicativeInverse = createWASMInvoker<
   return value;
 });
 
+/**
+ * Computes a modular inverse and lists its first positive integer multiples.
+ *
+ * When gcd(base, modulo) = 1, the first returned value is the least non-negative x such that base * x ≡ 1 (mod modulo), and each later value is the next positive multiple of that inverse.
+ *
+ * @param base Integer whose multiplicative inverse is computed modulo modulo.
+ * @param modulo Modulus that defines the congruence relation and must be greater than 1.
+ * @param number Count of positive multiples to return.
+ * @returns An array whose first element is the modular inverse and whose remaining elements are successive positive multiples of that inverse.
+ * @throws {Error} When modulo is not greater than 1.
+ * @throws {Error} When number is not a positive integer.
+ * @throws {Error} When base and modulo are not coprime.
+ */
 export default function main(base: bigint, modulo: bigint, number: number) {
   if (modulo <= 1n) {
     throw new Error("modulo must be greater than 1.");

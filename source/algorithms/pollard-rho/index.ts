@@ -26,6 +26,15 @@ const runWASMPollardRho = createWASMInvoker<
   return wasmExports.pollard_rho_i64(input, seed, c, maxIterations);
 });
 
+/**
+ * Searches for a non-trivial divisor of an integer with Pollard's rho method.
+ *
+ * The iteration uses the polynomial x^2 + c modulo input together with cycle detection to turn repeated residues into a gcd computation that can expose a factor.
+ *
+ * @param input Integer to factor.
+ * @returns A non-trivial factor of input, 2n for even inputs, or 1n when no factor is found after the retry limit.
+ * @throws {Error} When input is not greater than 1.
+ */
 export default function main(input: bigint) {
   if (input <= 1n) {
     throw new Error("input must be greater than 1.");

@@ -15,6 +15,39 @@ applyTo: "source/algorithms/**/index.ts"
 - `export async function prompt` for the CLI interaction
 - Use `bigint`-safe behavior consistently when expected by existing APIs
 
+## Documentation Rules
+
+- Add a JSDoc block above every `export default function main`
+- The summary must explain the mathematical problem, theorem, or relation being computed instead of restating the function name
+- Add a second sentence when the algebraic setting, existence conditions, or result interpretation are needed to understand the contract
+- Use `@param` tags to describe parameter meaning and mathematical constraints instead of repeating the TypeScript types
+- Use `@returns` to describe the semantic result, including tuple ordering, array meaning, generator behavior, or sentinel values when relevant
+- Add `@throws {Error}` only for validations that are explicitly enforced in the TypeScript implementation
+- Keep this documentation scope limited to the default export `main`; do not add JSDoc to `prompt`, `runWASM*`, or nested helpers unless a task explicitly asks for that
+
+Example:
+
+```ts
+/**
+ * Solves the discrete logarithm problem by finding an exponent x such that
+ * generator^x is congruent to base modulo modulo.
+ *
+ * The congruence is evaluated in the multiplicative group modulo modulo, so the
+ * generator and base must both be coprime with the modulus.
+ *
+ * @param generator Base whose powers are searched in the congruence relation.
+ * @param base Target residue in the congruence relation.
+ * @param modulo Modulus of the congruence; must be greater than 1.
+ * @returns The exponent x when a solution is found, or -1n when no solution is found.
+ * @throws {Error} When modulo is not greater than 1.
+ * @throws {Error} When generator and modulo are not coprime.
+ * @throws {Error} When base and modulo are not coprime.
+ */
+export default function main(generator: bigint, base: bigint, modulo: bigint) {
+  // ...
+}
+```
+
 ## Naming Conventions
 
 - Use `run*` for internal helper functions that execute the core logic for the exported functions, e.g. `runWASMPollardP1Factorization` or `runPrompt`

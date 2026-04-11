@@ -26,6 +26,17 @@ const runWASMPollardP1 = createWASMInvoker<[bigint, number], bigint>(
   },
 );
 
+/**
+ * Factors a composite integer by recursively applying Pollard's p - 1 method.
+ *
+ * The search succeeds quickly when a prime divisor p of the input has a smooth p - 1, and the implementation falls back to Pollard rho when that condition does not yield a non-trivial split.
+ *
+ * @param input Composite integer to factor.
+ * @returns An array of prime factors, including repeated factors, as JavaScript numbers.
+ * @throws {Error} When input is not greater than 1.
+ * @throws {Error} When input is prime.
+ * @throws {Error} When recursive factorization fails to produce non-trivial prime factors.
+ */
 export default function main(input: bigint) {
   const pollardPMinusOne = (n: bigint) => {
     const maybeWASMFactor = runWASMPollardP1(n, 2500);

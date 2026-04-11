@@ -25,6 +25,18 @@ const runWASMPowMod = createWASMInvoker<[bigint, bigint, bigint], bigint>(
   },
 );
 
+/**
+ * Computes modular exponentiation by evaluating base^exponent modulo modulo.
+ *
+ * The result is calculated with binary exponentiation, which keeps the intermediate values inside the residue class ring modulo modulo.
+ *
+ * @param base Base value whose power is computed.
+ * @param exponent Non-negative exponent applied to the base.
+ * @param modulo Positive modulus that defines the residue class ring.
+ * @returns The least non-negative residue of base^exponent modulo modulo.
+ * @throws {Error} When modulo is not greater than 0.
+ * @throws {Error} When exponent is negative.
+ */
 export default function main(
   base: bigint,
   exponent: bigint,

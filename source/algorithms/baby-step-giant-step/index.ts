@@ -35,6 +35,21 @@ const runWASMBabyStepGiantStep = createWASMInvoker<
   return result < 0n ? null : result;
 });
 
+/**
+ * Solves the discrete logarithm problem by finding an exponent x such that
+ * generator^x is congruent to base modulo modulo.
+ *
+ * The congruence is evaluated in the multiplicative group modulo modulo, so the
+ * generator and base must both be coprime with the modulus.
+ *
+ * @param generator Base whose powers are searched in the congruence relation.
+ * @param base Target residue in the congruence relation.
+ * @param modulo Modulus of the congruence; must be greater than 1.
+ * @returns The exponent x when a solution is found, or -1n when no solution is found.
+ * @throws {Error} When modulo is not greater than 1.
+ * @throws {Error} When generator and modulo are not coprime.
+ * @throws {Error} When base and modulo are not coprime.
+ */
 export default function main(generator: bigint, base: bigint, modulo: bigint) {
   if (modulo <= 1) throw new Error("Given modulo must be higher than 1");
   if (euclidean(generator, modulo) != BigInt(1))

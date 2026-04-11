@@ -22,6 +22,15 @@ const runWASMGcd = createWASMInvoker<[bigint, bigint], bigint>(
   },
 );
 
+/**
+ * Computes the greatest common divisor of two integers with the Euclidean algorithm.
+ *
+ * The result is the largest integer that divides both inputs, and it is 0n only when both inputs are 0n.
+ *
+ * @param left First integer in the gcd computation.
+ * @param right Second integer in the gcd computation.
+ * @returns The greatest common divisor of left and right.
+ */
 export default function main(left: bigint, right: bigint): bigint {
   const wasmResult = runWASMGcd(left, right);
   if (wasmResult !== null) {

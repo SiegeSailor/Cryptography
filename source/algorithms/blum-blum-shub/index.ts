@@ -28,6 +28,17 @@ const runWASMBlumBlumShubNext = createWASMInvoker<[bigint, bigint], bigint>(
   },
 );
 
+/**
+ * Initializes a Blum Blum Shub generator over quadratic residues modulo M = pq,
+ * where p and q are distinct Blum primes with p ≡ q ≡ 3 (mod 4).
+ *
+ * The returned closure advances the recurrence x_(n+1) = x_n^2 mod M and yields
+ * the next generator state each time it is called.
+ *
+ * @param bits Bit length used when generating each Blum prime factor.
+ * @returns A stateful zero-argument generator function that produces successive pseudorandom states.
+ * @throws {Error} When bits is not an integer or is smaller than 8.
+ */
 export default function main(bits: number) {
   if (!Number.isInteger(bits) || bits < 8) {
     throw new Error("Given bits must be an integer and at least 8.");

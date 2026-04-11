@@ -52,6 +52,15 @@ const runWASMPrimitiveRoots = createWASMInvoker<[bigint], bigint[]>(
   },
 );
 
+/**
+ * Enumerates primitive roots modulo a prime and builds the corresponding power table.
+ *
+ * For a prime p, the non-zero residue classes form a cyclic multiplicative group of order p - 1; this function identifies the generators of that group and records their powers modulo p.
+ *
+ * @param prime Prime modulus whose multiplicative group is analyzed.
+ * @returns A tuple [table, roots] where table[row][column] stores (row + 1)^(column + 1) mod prime and roots lists the primitive roots modulo prime.
+ * @throws {Error} When prime is not prime.
+ */
 export default function main(prime: number): [number[][], number[]] {
   if (!millerRabinPrimarilyTest(BigInt(prime), 10))
     throw new Error("The Given number must be prime.");
