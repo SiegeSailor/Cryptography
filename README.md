@@ -4,7 +4,7 @@
 [![Test](https://github.com/SiegeSailor/Cryptography/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/Cryptography/actions/workflows/test.yml)
 [![Release](https://github.com/SiegeSailor/Cryptography/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/Cryptography/actions/workflows/release.yml)
 
-This library provides a collection of cryptography algorithms. It serves as a learning resource (Inspired by [Boston University MET CS 789 Cryptography](https://www.bu.edu/academics/met/courses/met-cs-789/)) for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows. The library is also production-ready, with a focus on performance and security, making it suitable for use in real-world applications:
+This project is inspired by [Boston University MET CS 789 Cryptography](https://www.bu.edu/academics/met/courses/met-cs-789/) for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows. The library is production-ready, with a focus on security and performance. It includes implementations for:
 
 | Algorithm                   | JavaScript | TypeScript | WebAssembly |
 | --------------------------- | ---------- | ---------- | ----------- |
