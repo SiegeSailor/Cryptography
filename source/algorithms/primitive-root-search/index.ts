@@ -52,10 +52,32 @@ const runWASMPrimitiveRoots = createWASMInvoker<[bigint], bigint[]>(
   },
 );
 
+function listPrimeFactors(value: number) {
+  const factors: number[] = [];
+  let remainder = value;
+
+  for (let factor = 2; factor * factor <= remainder; factor++) {
+    if (remainder % factor !== 0) {
+      continue;
+    }
+
+    factors.push(factor);
+    while (remainder % factor === 0) {
+      remainder /= factor;
+    }
+  }
+
+  if (remainder > 1) {
+    factors.push(remainder);
+  }
+
+  return factors;
+}
+
 /**
  * Enumerates primitive roots modulo a prime and builds the corresponding power table.
  *
- * For a prime p, the non-zero residue classes form a cyclic multiplicative group of order p - 1; this function identifies the generators of that group and records their powers modulo p.
+ * For a prime p, the non-zero residue classes form a cyclic multiplicative group of order p - 1; this function identifies the generators of that group with the prime divisors of p - 1 and records their powers modulo p.
  *
  * @param prime Prime modulus whose multiplicative group is analyzed.
  * @returns A tuple [table, roots] where table[row][column] stores (row + 1)^(column + 1) mod prime and roots lists the primitive roots modulo prime.
@@ -65,7 +87,11 @@ export default function main(prime: number): [number[][], number[]] {
   if (!millerRabinPrimarilyTest(BigInt(prime), 10))
     throw new Error("The Given number must be prime.");
 
+  const primeBigInt = BigInt(prime);
   const phi = prime - 1;
+  const primitiveRootExponents = listPrimeFactors(phi).map((factor) =>
+    BigInt(phi / factor),
+  );
   const table: number[][] = Array.from({ length: phi }, () =>
     Array.from({ length: phi }, () => 0),
   );
@@ -83,7 +109,7 @@ export default function main(prime: number): [number[][], number[]] {
         const exponent = fastModularExponentiation(
           BigInt(indexRow + 1),
           BigInt(indexColumn + 1),
-          BigInt(prime),
+          primeBigInt,
         );
         table[indexRow][indexColumn] = Number(exponent);
       }
@@ -93,24 +119,28 @@ export default function main(prime: number): [number[][], number[]] {
   }
 
   for (let indexRow = 0; indexRow < table.length; indexRow++) {
-    const set = new Set<number>();
-    let isPrimitiveRoot = true;
+    const candidate = BigInt(indexRow + 1);
     for (let indexColumn = 0; indexColumn < table[0].length; indexColumn++) {
       const exponent = fastModularExponentiation(
-        BigInt(indexRow + 1),
+        candidate,
         BigInt(indexColumn + 1),
-        BigInt(prime),
+        primeBigInt,
       );
-      const index = Number(exponent);
-      table[indexRow][indexColumn] = index;
-
-      if (set.has(index)) {
-        isPrimitiveRoot = false;
-      }
-      set.add(index);
+      table[indexRow][indexColumn] = Number(exponent);
     }
 
-    if (isPrimitiveRoot) arrayOfResult.push(indexRow + 1);
+    const isPrimitiveRoot = primitiveRootExponents.every(
+      (primitiveRootExponent) =>
+        fastModularExponentiation(
+          candidate,
+          primitiveRootExponent,
+          primeBigInt,
+        ) !== 1n,
+    );
+
+    if (isPrimitiveRoot) {
+      arrayOfResult.push(indexRow + 1);
+    }
   }
 
   return [table, arrayOfResult];

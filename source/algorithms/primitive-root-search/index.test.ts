@@ -55,4 +55,8 @@ describe("Finding the Primitive Roots of the given numbers", () => {
       "The Given number must be prime.",
     );
   });
+
+  test("returns the primitive root table for the smallest prime", () => {
+    expect(primitiveRootSearch(2)).toEqual([[[1]], [1]]);
+  });
 });
