@@ -2,6 +2,9 @@ name: Test
 
 on:
   push:
+    paths:
+      - "source/**"
+      - "scripts/**"
 
 permissions:
   contents: read
@@ -11,17 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Checkout repository code
+      - name: Action | Checkout Repository Code
         uses: actions/checkout@v6
 
-      - name: Setup Node.js 25
+      - name: Setup | Configure Node.js
         uses: actions/setup-node@v6
         with:
           node-version: "25"
           cache: "npm"
 
-      - name: Install dependencies
+      - name: Setup | Install Dependencies
         run: npm ci
 
-      - name: Run tests
+      - name: Evaluate | Run Tests
         run: npm run test:coverage -- --ci --runInBand --verbose
