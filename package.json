@@ -33,7 +33,6 @@
   "homepage": "https://github.com/SiegeSailor/Cryptography#readme",
   "keywords": [
     "command-line-tool",
-    "cryptography",
     "typescript",
     "webassembly"
   ],
