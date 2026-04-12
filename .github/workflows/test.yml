@@ -3,8 +3,14 @@ name: Test
 on:
   push:
     paths:
-      - "source/**"
+      - ".github/workflows/**"
+      - ".releaserc.json"
+      - "jest.config.ts"
+      - "package-lock.json"
+      - "package.json"
       - "scripts/**"
+      - "source/**"
+      - "tsconfig.json"
 
 permissions:
   contents: read
