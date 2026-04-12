@@ -1,5 +1,5 @@
 ---
-name: Propose
+name: Proposal
 about: Propose an idea for this project.
 title: "Propose an Idea"
 labels: ["proposal"]
