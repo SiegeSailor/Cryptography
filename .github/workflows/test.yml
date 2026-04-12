@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - ".github/workflows/**"
+      - ".npmrc"
       - ".releaserc.json"
       - "jest.config.ts"
       - "package-lock.json"
