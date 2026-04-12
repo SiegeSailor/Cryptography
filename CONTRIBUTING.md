@@ -91,10 +91,11 @@ GitHub Actions workflows for testing and releasing:
 
 ```mermaid
 flowchart TB
-  A[Push event] --> B[Test workflow]
+  A[Push event] --> J{File changed?}
+  J --> |Yes| B[Test workflow]
   B --> D[/Test reports/]
-  A --> E{Is it in main?}
-  E -->|Yes| F[Release workflow]
+  B --> E{In main branch?}
+  E --> |Yes| F[Release workflow]
   F --> H[/NPM package/]
   F --> I[/Git tag and release record/]
 ```
