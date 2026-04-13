@@ -27,8 +27,6 @@ And, a CLI is available to interact with these algorithms and demonstrate the 3 
 - [ElGamal](./source/key-encryptions/ElGamal.ts)
 - [RSA](./source/key-encryptions/RSA.ts)
 
-> This project is inspired by [Boston University MET CS 789 Cryptography](https://www.bu.edu/academics/met/courses/met-cs-789/) for understanding the implementation of various cryptographic algorithms and their applications in key encryption flows.
-
 ## Installation
 
 The package is available on NPM:
