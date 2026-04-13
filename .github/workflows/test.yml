@@ -9,6 +9,7 @@ on:
       - "jest.config.ts"
       - "package-lock.json"
       - "package.json"
+      - "README.md"
       - "scripts/**"
       - "source/**"
       - "tsconfig.json"
