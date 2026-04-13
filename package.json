@@ -37,16 +37,16 @@
     "webassembly"
   ],
   "license": "MIT",
-  "main": "./build/source/entry-point.js",
+  "main": "./build/entry-point.js",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "types": "./build/source/entry-point.d.ts",
+  "types": "./build/entry-point.d.ts",
   "exports": {
     ".": {
-      "types": "./build/source/entry-point.d.ts",
-      "default": "./build/source/entry-point.js"
+      "types": "./build/entry-point.d.ts",
+      "default": "./build/entry-point.js"
     },
     "./package.json": "./package.json"
   },
