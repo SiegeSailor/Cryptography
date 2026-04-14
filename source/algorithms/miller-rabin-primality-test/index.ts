@@ -8,7 +8,7 @@ import {
 } from "@/shared/cli/prompt";
 
 const runWASMMillerRabin = createWASMInvoker<[bigint, number], boolean>(
-  "miller-rabin-primarily-test",
+  "miller-rabin-primality-test",
   (wasmExports, input, level) => {
     if (
       !wasmExports.miller_rabin_u64 ||
