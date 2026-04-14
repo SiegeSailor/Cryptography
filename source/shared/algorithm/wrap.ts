@@ -1,4 +1,4 @@
-import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import millerRabinPrimalityTest from "@/algorithms/miller-rabin-primality-test";
 import { randomBigIntBits } from "@/shared/algorithm/random";
 
 export const wrap = {
@@ -18,7 +18,7 @@ export const wrap = {
     const arrayOfPrime: bigint[] = [];
     while (arrayOfPrime.length !== count) {
       const candidate = randomOdd();
-      if (millerRabinPrimarilyTest(candidate, level)) {
+      if (millerRabinPrimalityTest(candidate, level)) {
         arrayOfPrime.push(candidate);
       }
     }

@@ -53,14 +53,17 @@ export type TAlgorithmWASMKey =
   | "euclidean"
   | "extended-euclidean"
   | "fast-modular-exponentiation"
-  | "miller-rabin-primarily-test"
+  | "miller-rabin-primality-test"
   | "multiplicative-inverse"
   | "naor-reingo"
   | "pollard-p-1-factorization"
   | "pollard-rho"
   | "primitive-root-search";
 
-const wasmExportsByAlgorithm = new Map<TAlgorithmWASMKey, TWASMExports | null>();
+const wasmExportsByAlgorithm = new Map<
+  TAlgorithmWASMKey,
+  TWASMExports | null
+>();
 
 export const I64_BYTES = 8;
 export const MIN_I64 = -(1n << 63n);
@@ -75,7 +78,14 @@ export function getAlgorithmWASMExports(
   }
 
   try {
-    const wasmPath = join(__dirname, "..", "..", "algorithms", key, "main.wasm");
+    const wasmPath = join(
+      __dirname,
+      "..",
+      "..",
+      "algorithms",
+      key,
+      "main.wasm",
+    );
     const wasmBytes = readFileSync(wasmPath);
     const module = new WebAssembly.Module(wasmBytes);
     const instance = new WebAssembly.Instance(module, {});

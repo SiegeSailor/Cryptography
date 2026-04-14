@@ -4,7 +4,7 @@ export { default as chineseRemainder } from "@/algorithms/chinese-remainder";
 export { default as euclidean } from "@/algorithms/euclidean";
 export { default as extendedEuclidean } from "@/algorithms/extended-euclidean";
 export { default as fastModularExponentiation } from "@/algorithms/fast-modular-exponentiation";
-export { default as millerRabinPrimarilyTest } from "@/algorithms/miller-rabin-primarily-test";
+export { default as millerRabinPrimalityTest } from "@/algorithms/miller-rabin-primality-test";
 export { default as multiplicativeInverse } from "@/algorithms/multiplicative-inverse";
 export { default as naorReingo } from "@/algorithms/naor-reingo";
 export { default as pollardP1Factorization } from "@/algorithms/pollard-p-1-factorization";

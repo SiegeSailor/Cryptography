@@ -1,4 +1,4 @@
-import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primality-test";
 import * as random from "@/shared/algorithm/random";
 import chalk from "@/shared/cli/chalk";
 import {

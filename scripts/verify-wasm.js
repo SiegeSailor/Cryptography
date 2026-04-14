@@ -8,7 +8,7 @@ const expectedExports = {
   euclidean: "gcd_u64",
   "extended-euclidean": "extended_euclidean_i64",
   "fast-modular-exponentiation": "powmod_u64",
-  "miller-rabin-primarily-test": "miller_rabin_u64",
+  "miller-rabin-primality-test": "miller_rabin_u64",
   "multiplicative-inverse": "multiplicative_inverse_i64",
   "naor-reingo": "naor_reingo_fill_i64",
   "pollard-p-1-factorization": "pollard_p1_i64",

@@ -1,6 +1,6 @@
 import euclidean from "@/algorithms/euclidean";
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import millerRabinPrimalityTest from "@/algorithms/miller-rabin-primality-test";
 import pollardRho from "@/algorithms/pollard-rho";
 import { createWASMInvoker, fitsInI64 } from "@/shared/algorithm/wasm";
 import chalk from "@/shared/cli/chalk";
@@ -71,7 +71,7 @@ export default function main(input: bigint) {
   if (input <= 1n) {
     throw new Error("input must be greater than 1.");
   }
-  if (millerRabinPrimarilyTest(input, 10)) {
+  if (millerRabinPrimalityTest(input, 10)) {
     throw new Error(`${input} is prime.`);
   }
 
@@ -80,7 +80,7 @@ export default function main(input: bigint) {
     if (n === 1n) {
       return;
     }
-    if (millerRabinPrimarilyTest(n, 10)) {
+    if (millerRabinPrimalityTest(n, 10)) {
       factors.push(n);
       return;
     }

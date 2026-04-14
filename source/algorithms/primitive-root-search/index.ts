@@ -1,5 +1,5 @@
 import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation";
-import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import millerRabinPrimalityTest from "@/algorithms/miller-rabin-primality-test";
 import {
   createI64Allocator,
   createWASMInvoker,
@@ -93,7 +93,7 @@ function listPrimeFactors(value: number) {
  * @throws {Error} When prime is not prime.
  */
 export default function main(prime: number): [number[][], number[]] {
-  if (!millerRabinPrimarilyTest(BigInt(prime), 10))
+  if (!millerRabinPrimalityTest(BigInt(prime), 10))
     throw new Error("The Given number must be prime.");
 
   const primeBigInt = BigInt(prime);

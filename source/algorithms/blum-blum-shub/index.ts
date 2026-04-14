@@ -1,5 +1,5 @@
 import euclidean from "@/algorithms/euclidean";
-import millerRabinPrimarilyTest from "@/algorithms/miller-rabin-primarily-test";
+import millerRabinPrimalityTest from "@/algorithms/miller-rabin-primality-test";
 import {
   randomBigIntBits,
   randomBigIntBetween,
@@ -64,7 +64,7 @@ export default function main(bits: number) {
       if (candidate % 4n !== 3n) {
         candidate += (3n - (candidate % 4n) + 4n) % 4n;
       }
-      if (millerRabinPrimarilyTest(candidate, certainty)) {
+      if (millerRabinPrimalityTest(candidate, certainty)) {
         return candidate;
       }
     }
