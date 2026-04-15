@@ -5,10 +5,11 @@ import primitiveRootSearch from "@/algorithms/primitive-root-search";
 import { randomBigIntBetween } from "@/shared/algorithm/random";
 import { wrap } from "@/shared/algorithm/wrap";
 import chalk from "@/shared/cli/chalk";
+import { type IPromptOptions } from "@/shared/cli/prompt";
 import { inquire, log } from "@/shared/cli/utilities";
 import { ACTORS } from "@/shared/constants";
 
-export async function prompt() {
+export async function prompt(options?: IPromptOptions) {
   try {
     console.log("There are three people in this ElGamal encryption process:");
     console.log(
@@ -46,6 +47,7 @@ export async function prompt() {
 
         return [p, g, r, x, y];
       },
+      options,
     );
 
     const message = "This is a hardcoded secret message.";
@@ -79,6 +81,7 @@ export async function prompt() {
         );
         return [keyEncrypted, arrayOfEncryptedCode];
       },
+      options,
     );
 
     await inquire.continue(
@@ -122,6 +125,7 @@ export async function prompt() {
           } verifies the message with ${ACTORS.BOB}.`,
         );
       },
+      options,
     );
   } catch (error) {
     throw error;

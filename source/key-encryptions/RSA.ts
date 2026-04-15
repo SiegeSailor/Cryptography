@@ -4,10 +4,11 @@ import fastModularExponentiation from "@/algorithms/fast-modular-exponentiation"
 import pollardP1Factorization from "@/algorithms/pollard-p-1-factorization";
 import { wrap } from "@/shared/algorithm/wrap";
 import chalk from "@/shared/cli/chalk";
+import { type IPromptOptions } from "@/shared/cli/prompt";
 import { inquire, log } from "@/shared/cli/utilities";
 import { ACTORS } from "@/shared/constants";
 
-export async function prompt() {
+export async function prompt(options?: IPromptOptions) {
   try {
     console.log("There are three people in this RSA encryption process:");
     console.log(
@@ -30,6 +31,7 @@ export async function prompt() {
 
         return [p, q, n, r];
       },
+      options,
     );
 
     const [e, d] = await inquire.continue(
@@ -55,6 +57,7 @@ export async function prompt() {
 
         return [e, d];
       },
+      options,
     );
 
     await inquire.continue(
@@ -70,6 +73,7 @@ export async function prompt() {
           { name: "d", value: d },
         ]);
       },
+      options,
     );
 
     const message = "This is a hardcoded secret message.";
@@ -99,6 +103,7 @@ export async function prompt() {
 
         return arrayOfEncryptedCode;
       },
+      options,
     );
 
     await inquire.continue(
@@ -148,6 +153,7 @@ export async function prompt() {
           } verifies the message with ${ACTORS.BOB}.`,
         );
       },
+      options,
     );
   } catch (error) {
     throw error;
