@@ -10,7 +10,8 @@ This repository has enabled GitHub Copilot and any other compatible A.I. code as
 
 Required software for development and CI:
 
-- [Node.js](https://nodejs.org/): `>= 25.2.1`
+- [Node.js](https://nodejs.org/): `>= 14.18.0`
+- [NPM](https://www.npmjs.com/): `>= 6.14.15`
 - [LLVM Clang](https://clang.llvm.org/): `>= 22.1.1`
 - [LLVM LLD](https://lld.llvm.org/): `>= 22.1.1`
 
@@ -64,8 +65,11 @@ This repository follows a simple [GitHub Flow](https://docs.github.com/en/get-st
 | `release`           | Run semantic-release for tags, GitHub release, and npm publish. |
 | `start`             | Run CLI directly from TypeScript sources.                       |
 | `start:compiled`    | Run CLI from compiled build output.                             |
-| `test`              | Run Jest test suite with default config.                        |
-| `test:coverage`     | Run Jest with coverage output for CI and release validation.    |
+| `test`              | Run the default test suite by chaining test subcommands.        |
+| `test:cli`          | Run the CLI smoke suite across all algorithms and demos.        |
+| `test:compat`       | Build the project and run the default test suite.               |
+| `test:coverage`     | Run the Jest unit test suite with coverage output.              |
+| `test:unit`         | Run the Jest unit test suite without coverage.                  |
 
 ## WebAssembly Behavior
 

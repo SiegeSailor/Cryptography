@@ -76,15 +76,22 @@ export const log = {
 };
 
 export const inquire = {
-  continue: async <T>(title: string, callback: () => T): Promise<T> => {
+  continue: async <T>(
+    title: string,
+    callback: () => T,
+    promptOptions?: IPromptOptions,
+  ): Promise<T> => {
     try {
       log.highlight(title);
-      const inquirer = await getInquirer();
-      await inquirer.prompt({
-        type: "input",
-        name: "_",
-        message: "Press Enter to continue.",
-      });
+
+      if (promptOptions?.interactive !== false) {
+        const inquirer = await getInquirer();
+        await inquirer.prompt({
+          type: "input",
+          name: "_",
+          message: "Press Enter to continue.",
+        });
+      }
 
       return await callback();
     } catch (error) {

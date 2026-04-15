@@ -4,10 +4,11 @@ import primitiveRootSearch from "@/algorithms/primitive-root-search";
 import { randomBigIntBetween } from "@/shared/algorithm/random";
 import { wrap } from "@/shared/algorithm/wrap";
 import chalk from "@/shared/cli/chalk";
+import { type IPromptOptions } from "@/shared/cli/prompt";
 import { inquire, log } from "@/shared/cli/utilities";
 import { ACTORS } from "@/shared/constants";
 
-export async function prompt() {
+export async function prompt(options?: IPromptOptions) {
   console.log(
     "There are three people in this Diffie-Hellman key exchange process:",
   );
@@ -37,6 +38,7 @@ export async function prompt() {
 
       return [p, g, a, b, publicA, publicB];
     },
+    options,
   );
 
   await inquire.continue(
@@ -56,6 +58,7 @@ export async function prompt() {
         )}`,
       );
     },
+    options,
   );
 
   await inquire.continue(
@@ -75,5 +78,6 @@ export async function prompt() {
         { name: `${ACTORS.EVE}'s recovered shared secret`, value: secretEve },
       ]);
     },
+    options,
   );
 }
