@@ -78,7 +78,7 @@ export const log = {
 export const inquire = {
   continue: async <T>(
     title: string,
-    callback: () => T,
+    callback: () => T | Promise<T>,
     promptOptions?: IPromptOptions,
   ): Promise<T> => {
     try {
