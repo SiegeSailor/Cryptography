@@ -43,7 +43,7 @@ jobs:
         run: npm ci
 
       - name: Evaluate | Run Compatibility Suite
-        run: npm run test:compat
+        run: npm run test:compatibility
 
       - name: Evaluate | Run Coverage Suite
         if: ${{ matrix.node-version == '25.2.1' }}

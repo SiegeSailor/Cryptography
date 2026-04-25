@@ -53,23 +53,24 @@ This repository follows a simple [GitHub Flow](https://docs.github.com/en/get-st
 
 [NPM scripts](./package.json) are organized with [ESLint Package.json Conventions](https://eslint.org/docs/latest/contribute/package-json-conventions):
 
-| Command             | Purpose                                                         |
-| ------------------- | --------------------------------------------------------------- |
-| `build`             | Build WASM binaries, TypeScript output, and WASM assets.        |
-| `build:clean`       | Remove generated build directories.                             |
-| `build:typescript`  | Compile TypeScript and rewrite path aliases.                    |
-| `build:wasm`        | Compile algorithm `main.c` files to `main.wasm` when available. |
-| `build:wasm-assets` | Copy generated WASM binaries to build output tree.              |
-| `build:wasm:check`  | Validate WASM artifacts and execute WASM smoke checks.          |
-| `build:wasm:strict` | Compile WASM and fail when WASM compilation is unavailable.     |
-| `release`           | Run semantic-release for tags, GitHub release, and npm publish. |
-| `start`             | Run CLI directly from TypeScript sources.                       |
-| `start:compiled`    | Run CLI from compiled build output.                             |
-| `test`              | Run the default test suite by chaining test subcommands.        |
-| `test:cli`          | Run the CLI smoke suite across all algorithms and demos.        |
-| `test:compat`       | Build the project and run the default test suite.               |
-| `test:coverage`     | Run the Jest unit test suite with coverage output.              |
-| `test:unit`         | Run the Jest unit test suite without coverage.                  |
+| Command              | Purpose                                                                |
+| -------------------- | ---------------------------------------------------------------------- |
+| `build`              | Build WASM binaries, TypeScript output, and WASM assets.               |
+| `build:clean`        | Remove generated build directories.                                    |
+| `build:typescript`   | Compile TypeScript and rewrite path aliases.                           |
+| `build:wasm`         | Compile algorithm `main.c` files to `main.wasm` when available.        |
+| `build:wasm-assets`  | Copy generated WASM binaries to build output tree.                     |
+| `build:wasm:check`   | Validate WASM artifacts and execute WASM smoke checks.                 |
+| `build:wasm:strict`  | Compile WASM and fail when WASM compilation is unavailable.            |
+| `release`            | Run semantic-release for tags, GitHub release, and npm publish.        |
+| `start`              | Run CLI directly from TypeScript sources.                              |
+| `start:compiled`     | Run CLI from compiled build output.                                    |
+| `test`               | Run the default test suite by chaining test subcommands.               |
+| `test:cli`           | Run the CLI smoke suite across all algorithms and demos.               |
+| `test:cli:compiled`  | Build the project and run the CLI smoke suite against compiled output. |
+| `test:compatibility` | Build the project and run the default test suite.                      |
+| `test:coverage`      | Run the Jest unit test suite with coverage output.                     |
+| `test:unit`          | Run the Jest unit test suite without coverage.                         |
 
 ## WebAssembly Behavior
 

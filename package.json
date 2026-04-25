@@ -68,7 +68,8 @@
     "start:compiled": "node ./build/command.js",
     "test": "npm run test:unit && npm run test:cli",
     "test:cli": "node ./scripts/test-cli.js",
-    "test:compat": "npm run build && npm run test",
+    "test:cli:compiled": "CRYPTOGRAPHY_CLI_BUILD=1 node scripts/test-cli.js",
+    "test:compatibility": "npm run build && npm run test && npm run test:cli:compiled",
     "test:coverage": "npm run test:unit -- --coverage",
     "test:unit": "jest"
   },
