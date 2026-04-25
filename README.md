@@ -39,7 +39,15 @@ npm install @siegesailor/cryptography
 
 Required software for this module:
 
-- [Node.js](https://nodejs.org/): `>= 25.2.1`
+- [Node.js](https://nodejs.org/): `>= 14.18.0`
+- [NPM](https://www.npmjs.com/): `>= 6.14.15`
+
+Tested and compatible Node.js versions:
+
+- `14.18.0`
+- `16.20.2`
+- `18.0.0`
+- `25.2.1`
 
 ## Use as a Library
 

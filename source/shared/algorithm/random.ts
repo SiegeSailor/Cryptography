@@ -1,9 +1,8 @@
-import { randomBytes, webcrypto } from "crypto";
+import { randomBytes } from "crypto";
 
 function fillRandom(buffer: Uint8Array<ArrayBuffer>) {
-  const cryptoProvider = globalThis.crypto ?? webcrypto;
-  if (cryptoProvider?.getRandomValues) {
-    cryptoProvider.getRandomValues(buffer);
+  if (globalThis.crypto?.getRandomValues) {
+    globalThis.crypto.getRandomValues(buffer);
     return;
   }
 
