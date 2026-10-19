@@ -1,8 +1,8 @@
 # Cryptography
 
 [![NPM Version](https://img.shields.io/npm/v/%40siegesailor/cryptography?logo=npm)](https://www.npmjs.com/package/@siegesailor/cryptography)
-[![Test](https://github.com/SiegeSailor/Cryptography/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/Cryptography/actions/workflows/test.yml)
-[![Release](https://github.com/SiegeSailor/Cryptography/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/Cryptography/actions/workflows/release.yml)
+[![Test](https://github.com/SiegeSailor/library-cryptography/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/library-cryptography/actions/workflows/test.yml)
+[![Release](https://github.com/SiegeSailor/library-cryptography/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/SiegeSailor/library-cryptography/actions/workflows/release.yml)
 
 Zero configuration needed. WebAssembly availability is determined at runtime, with a safe fallback to JavaScript with TypeScript support implemented. The library is production-ready, with a focus on security and performance, providing implementations for:
 

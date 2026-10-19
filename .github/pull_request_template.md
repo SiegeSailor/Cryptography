@@ -13,5 +13,5 @@
 <!-- Fill x for fulfilled, ~ for unapplicable tasks. -->
 
 - [ ] Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format for the PR title
-- [ ] Read and follow [CONTRIBUTING.md](https://github.com/SiegeSailor/Cryptography?tab=contributing-ov-file)
+- [ ] Read and follow [CONTRIBUTING.md](https://github.com/SiegeSailor/library-cryptography?tab=contributing-ov-file)
 - [ ] Link to at least one related issue (create one if none exist)

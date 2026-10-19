@@ -1,5 +1,5 @@
 {
-  "repositoryUrl": "https://github.com/SiegeSailor/Cryptography.git",
+  "repositoryUrl": "https://github.com/SiegeSailor/library-cryptography.git",
   "branches": ["main"],
   "plugins": [
     ["@semantic-release/commit-analyzer", { "preset": "conventionalcommits" }],
